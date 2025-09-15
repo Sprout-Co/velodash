@@ -31,27 +31,63 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div className="dashboard">
         <header className="dashboard__header">
-          <h1 className="dashboard__title">Mission Control</h1>
-          <p className="dashboard__subtitle">Real-time business overview</p>
+          <div className="dashboard__header-content">
+            <div className="dashboard__header-text">
+              <h1 className="dashboard__title">Mission Control</h1>
+              <p className="dashboard__subtitle">Real-time business overview</p>
+            </div>
+            <div className="dashboard__header-actions">
+              <div className="dashboard__last-updated">
+                Last updated: {new Date().toLocaleTimeString()}
+              </div>
+            </div>
+          </div>
         </header>
 
         <div className="dashboard__content">
           {/* KPI Cards Section */}
-          <section className="dashboard__kpis">
-            <KPICards data={kpis} isLoading={isLoading} />
+          <section className="dashboard__section dashboard__section--kpis">
+            <div className="dashboard__section-header">
+              <h2 className="dashboard__section-title">Key Performance Indicators</h2>
+            </div>
+            <div className="dashboard__section-content">
+              <KPICards data={kpis} isLoading={isLoading} />
+            </div>
           </section>
 
           {/* Main Content Grid */}
-          <div className="dashboard__grid">
+          <div className="dashboard__main-grid">
             {/* Left Column */}
-            <div className="dashboard__left">
-              <InventoryFunnel data={funnelData} isLoading={isLoading} />
-              <ActionRequiredList items={actionItems} isLoading={isLoading} />
+            <div className="dashboard__column dashboard__column--left">
+              <section className="dashboard__section dashboard__section--funnel">
+                <div className="dashboard__section-header">
+                  <h2 className="dashboard__section-title">Inventory Pipeline</h2>
+                </div>
+                <div className="dashboard__section-content">
+                  <InventoryFunnel data={funnelData} isLoading={isLoading} />
+                </div>
+              </section>
+              
+              <section className="dashboard__section dashboard__section--actions">
+                <div className="dashboard__section-header">
+                  <h2 className="dashboard__section-title">Action Required</h2>
+                </div>
+                <div className="dashboard__section-content">
+                  <ActionRequiredList items={actionItems} isLoading={isLoading} />
+                </div>
+              </section>
             </div>
 
             {/* Right Column */}
-            <div className="dashboard__right">
-              <RecentActivityFeed activities={recentActivity} isLoading={isLoading} />
+            <div className="dashboard__column dashboard__column--right">
+              <section className="dashboard__section dashboard__section--activity">
+                <div className="dashboard__section-header">
+                  <h2 className="dashboard__section-title">Recent Activity</h2>
+                </div>
+                <div className="dashboard__section-content">
+                  <RecentActivityFeed activities={recentActivity} isLoading={isLoading} />
+                </div>
+              </section>
             </div>
           </div>
         </div>

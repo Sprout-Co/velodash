@@ -6,8 +6,32 @@
   min-height: 100vh;
   background-color: var(--color-background);
 
+  // Dashboard Header
   &__header {
     margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-card-background);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  &__header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+
+  &__header-text {
+    flex: 1;
   }
 
   &__title {
@@ -15,25 +39,130 @@
     font-weight: 700;
     color: var(--color-text-primary);
     margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
   }
 
   &__subtitle {
     font-size: 1.125rem;
     color: var(--color-text-secondary);
     margin: 0;
+    line-height: 1.4;
   }
 
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  &__last-updated {
+    font-size: 0.875rem;
+    color: var(--color-text-tertiary);
+    background: var(--color-background);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+  }
+
+  // Dashboard Content
   &__content {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
 
-  &__kpis {
-    margin-bottom: 1rem;
+  // Dashboard Sections
+  &__section {
+    background: var(--color-card-background);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-border);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    &--kpis {
+      padding-bottom: 0.5rem;
+      border-top: 4px solid var(--color-blue-500);
+      background: linear-gradient(to bottom, rgba(59, 130, 246, 0.05), transparent 15%);
+    }
+
+    &--funnel {
+      margin-bottom: 2rem;
+      border-top: 4px solid var(--color-purple-500);
+      background: linear-gradient(to bottom, rgba(139, 92, 246, 0.05), transparent 15%);
+    }
+
+    &--actions {
+      border-top: 4px solid var(--color-red-500);
+      background: linear-gradient(to bottom, rgba(239, 68, 68, 0.05), transparent 15%);
+    }
+
+    &--activity {
+      border-top: 4px solid var(--color-green-500);
+      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), transparent 15%);
+      height: 100%;
+    }
   }
 
-  &__grid {
+  &__section-header {
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 1.25rem;
+      border-radius: 2px;
+    }
+  }
+
+  .dashboard__section--kpis .dashboard__section-title::before {
+    background: var(--color-blue-500);
+  }
+
+  .dashboard__section--funnel .dashboard__section-title::before {
+    background: var(--color-purple-500);
+  }
+
+  .dashboard__section--actions .dashboard__section-title::before {
+    background: var(--color-red-500);
+  }
+
+  .dashboard__section--activity .dashboard__section-title::before {
+    background: var(--color-green-500);
+  }
+
+  &__section-content {
+    // Content styles are handled by individual components
+    display: block;
+  }
+
+  // Main Grid Layout
+  &__main-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 2rem;
@@ -43,22 +172,27 @@
     }
   }
 
-  &__left {
+  &__column {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+
+    &--left {
+      gap: 2rem;
+    }
+
+    &--right {
+      gap: 2rem;
+    }
   }
 
-  &__right {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
+  // Error State
   &__error {
     text-align: center;
     padding: 4rem 2rem;
     color: var(--color-error);
+    background: var(--color-card-background);
+    border-radius: 12px;
+    border: 1px solid var(--color-border);
 
     h2 {
       font-size: 1.5rem;
@@ -77,7 +211,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 2rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -106,18 +239,22 @@
 
   &--blue {
     border-left: 4px solid var(--color-blue-500);
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.05), transparent 15%);
   }
 
   &--green {
     border-left: 4px solid var(--color-green-500);
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.05), transparent 15%);
   }
 
   &--purple {
     border-left: 4px solid var(--color-purple-500);
+    background: linear-gradient(to right, rgba(139, 92, 246, 0.05), transparent 15%);
   }
 
   &--emerald {
     border-left: 4px solid var(--color-emerald-500);
+    background: linear-gradient(to right, rgba(5, 150, 105, 0.05), transparent 15%);
   }
 
   &__skeleton {
@@ -210,12 +347,6 @@
 
 // Inventory Funnel
 .inventory-funnel {
-  background: var(--color-card-background);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
-
   &__header {
     margin-bottom: 1.5rem;
   }
@@ -231,6 +362,8 @@
     font-size: 0.875rem;
     color: var(--color-text-secondary);
     margin: 0;
+    margin-bottom: 1rem;
+    font-weight: 500;
   }
 
   &__content {
@@ -329,12 +462,6 @@
 
 // Action Required List
 .action-required {
-  background: var(--color-card-background);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
-
   &__header {
     display: flex;
     align-items: center;
@@ -356,6 +483,8 @@
     font-weight: 600;
     padding: 0.25rem 0.5rem;
     border-radius: 9999px;
+    margin-bottom: 1rem;
+    display: inline-block;
   }
 
   &__content {
@@ -393,17 +522,17 @@
 
     &--high {
       border-left: 4px solid var(--color-red-500);
-      background: var(--color-red-50);
+      background: linear-gradient(to right, rgba(239, 68, 68, 0.05), transparent 15%);
     }
 
     &--medium {
       border-left: 4px solid var(--color-yellow-500);
-      background: var(--color-yellow-50);
+      background: linear-gradient(to right, rgba(245, 158, 11, 0.05), transparent 15%);
     }
 
     &--low {
       border-left: 4px solid var(--color-blue-500);
-      background: var(--color-blue-50);
+      background: linear-gradient(to right, rgba(59, 130, 246, 0.05), transparent 15%);
     }
 
     &-skeleton {
@@ -555,12 +684,6 @@
 
 // Recent Activity Feed
 .activity-feed {
-  background: var(--color-card-background);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
-
   &__header {
     display: flex;
     align-items: center;
@@ -576,12 +699,14 @@
   }
 
   &__count {
-    background: var(--color-blue-100);
-    color: var(--color-blue-700);
+    background: var(--color-green-100);
+    color: var(--color-green-700);
     font-size: 0.75rem;
     font-weight: 600;
     padding: 0.25rem 0.5rem;
     border-radius: 9999px;
+    margin-bottom: 1rem;
+    display: inline-block;
   }
 
   &__content {
@@ -615,9 +740,12 @@
     padding: 1rem;
     border-radius: 8px;
     transition: all 0.2s ease;
+    border: 1px solid var(--color-border);
+    background: linear-gradient(to right, rgba(16, 185, 129, 0.02), transparent 20%);
 
     &:hover {
       background: var(--color-background);
+      border-color: var(--color-green-200);
     }
 
     &-skeleton {
@@ -668,7 +796,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-blue-100);
+    background: var(--color-green-100);
     border-radius: 50%;
     flex-shrink: 0;
   }
@@ -676,7 +804,7 @@
   &__item-icon-svg {
     width: 1rem;
     height: 1rem;
-    color: var(--color-blue-600);
+    color: var(--color-green-600);
   }
 
   &__item-content {
@@ -702,7 +830,7 @@
 
   &__item-vehicle {
     font-weight: 500;
-    color: var(--color-blue-600);
+    color: var(--color-green-600);
   }
 
   &__item-meta {
@@ -756,6 +884,14 @@
     &__subtitle {
       font-size: 1rem;
     }
+
+    &__section {
+      padding: 1.25rem;
+    }
+
+    &__section-title {
+      font-size: 1.125rem;
+    }
   }
 
   .kpi-cards {
@@ -768,11 +904,5 @@
     &__value {
       font-size: 1.5rem;
     }
-  }
-
-  .inventory-funnel,
-  .action-required,
-  .activity-feed {
-    padding: 1rem;
   }
 }
