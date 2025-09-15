@@ -122,7 +122,7 @@ function VehicleDetailsContent({ id }: { id: string }) {
           Back to inventory
         </button>
         
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <button
             className="flex items-center text-gray-500 hover:text-primary"
             onClick={() => router.push(`/vehicles/${id}/edit`)}
