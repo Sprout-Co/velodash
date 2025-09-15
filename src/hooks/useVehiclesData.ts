@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Vehicle, PaginatedResponse, VehicleFilters } from '@/types';
+import { generateId } from '@/lib/utils';
 
 // Mock data - to be replaced with actual API calls
 const mockVehicles: Vehicle[] = [
@@ -183,6 +184,63 @@ export const getVehicleById = async (id: string): Promise<Vehicle | null> => {
   // This would be an actual API call in production
   const vehicle = mockVehicles.find(v => v.id === id);
   return vehicle || null;
+};
+
+export const createVehicle = async (formData: any): Promise<Vehicle> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // This would be an actual API call in production
+  const newVehicle: Vehicle = {
+    id: generateId(),
+    vin: formData.vin,
+    make: formData.make,
+    model: formData.model,
+    year: formData.year,
+    color: formData.color,
+    trim: formData.trim,
+    mileage: formData.mileage,
+    status: 'sourced', // Default status for new vehicles
+    acquisitionDetails: {
+      sourceChannel: formData.acquisitionDetails.sourceChannel,
+      purchaseDate: new Date(formData.acquisitionDetails.purchaseDate),
+      purchasePrice: formData.acquisitionDetails.purchasePrice,
+      currency: formData.acquisitionDetails.currency,
+      auctionLot: formData.acquisitionDetails.auctionLot || undefined,
+      listingUrl: formData.acquisitionDetails.listingUrl || undefined,
+    },
+    media: {
+      photos: [],
+      videos: [],
+    },
+    documents: {
+      repairReceipts: [],
+    },
+    costs: [
+      {
+        id: generateId(),
+        vehicleId: '', // Will be set after vehicle creation
+        date: new Date(formData.acquisitionDetails.purchaseDate),
+        category: 'purchase-price',
+        description: 'Initial purchase',
+        amount: formData.acquisitionDetails.purchasePrice,
+        currency: formData.acquisitionDetails.currency,
+        ngnAmount: formData.acquisitionDetails.purchasePrice * 850, // Mock conversion rate
+        exchangeRate: 850,
+        createdAt: new Date(),
+      },
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+  
+  // Update the vehicle ID in the cost entry
+  newVehicle.costs[0].vehicleId = newVehicle.id;
+  
+  // Add to mock data (in production, this would be handled by the API)
+  mockVehicles.push(newVehicle);
+  
+  return newVehicle;
 };
 
 export default function useVehiclesData(filters?: VehicleFilters) {
