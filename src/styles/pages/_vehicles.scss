@@ -59,7 +59,7 @@
     
     .add-vehicle-btn {
       background-color: var(--primary-color, #3b82f6);
-      color: white;
+      color: white !important;
       padding: 8px 16px;
       border: none;
       border-radius: 6px;
@@ -69,6 +69,11 @@
       
       &:hover {
         background-color: var(--primary-dark, #1d4ed8);
+        color: white !important;
+      }
+      
+      &:focus {
+        color: white !important;
       }
     }
   }
@@ -603,6 +608,21 @@
     
     p {
       color: #dc2626;
+      font-size: 14px;
+      font-weight: 500;
+      margin: 0;
+    }
+  }
+  
+  .success-banner {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    
+    p {
+      color: #166534;
       font-size: 14px;
       font-weight: 500;
       margin: 0;

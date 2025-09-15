@@ -207,6 +207,19 @@ export default function VehicleForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Mark all fields as touched to show validation errors
+    const allFields = [
+      'vin', 'make', 'model', 'year', 'color', 'trim', 'mileage',
+      'sourceChannel', 'purchaseDate', 'purchasePrice', 'currency'
+    ];
+    
+    const touchedFields = allFields.reduce((acc, field) => {
+      acc[field] = true;
+      return acc;
+    }, {} as Record<string, boolean>);
+    
+    setTouched(touchedFields);
+    
     if (validateForm()) {
       onSubmit(formData);
     }

@@ -10,18 +10,24 @@ import { createVehicle } from '@/hooks/useVehiclesData';
 export default function NewVehiclePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (formData: VehicleFormData) => {
     setIsSubmitting(true);
     setError(null);
+    setSuccess(null);
 
     try {
       const newVehicle = await createVehicle(formData);
       console.log('Vehicle created successfully:', newVehicle);
       
-      // Redirect to the new vehicle's detail page
-      router.push(`/vehicles/${newVehicle.id}`);
+      setSuccess('Vehicle created successfully! Redirecting...');
+      
+      // Redirect to the new vehicle's detail page after a short delay
+      setTimeout(() => {
+        router.push(`/vehicles/${newVehicle.id}`);
+      }, 1500);
     } catch (err) {
       setError('Failed to create vehicle. Please try again.');
       console.error('Error creating vehicle:', err);
@@ -64,6 +70,12 @@ export default function NewVehiclePage() {
       {error && (
         <div className="error-banner">
           <p>{error}</p>
+        </div>
+      )}
+
+      {success && (
+        <div className="success-banner">
+          <p>{success}</p>
         </div>
       )}
 
