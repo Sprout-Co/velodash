@@ -85,6 +85,28 @@ const convertDatesToTimestamps = (data: any): any => {
   return converted;
 };
 
+// Helper function to clean undefined values for Firestore
+const cleanUndefinedValues = (data: any): any => {
+  if (!data) return data;
+  
+  if (Array.isArray(data)) {
+    return data.map(item => cleanUndefinedValues(item));
+  }
+  
+  if (typeof data === 'object') {
+    const cleaned: any = {};
+    Object.keys(data).forEach(key => {
+      const value = data[key];
+      if (value !== undefined) {
+        cleaned[key] = cleanUndefinedValues(value);
+      }
+    });
+    return cleaned;
+  }
+  
+  return data;
+};
+
 // ==================== VEHICLE OPERATIONS ====================
 
 export const vehicleService = {
@@ -209,14 +231,14 @@ export const vehicleService = {
         trim: formData.trim,
         mileage: formData.mileage,
         status: 'sourced' as const,
-        acquisitionDetails: {
-          sourceChannel: formData.acquisitionDetails.sourceChannel,
-          purchaseDate: new Date(formData.acquisitionDetails.purchaseDate),
-          purchasePrice: formData.acquisitionDetails.purchasePrice,
-          currency: formData.acquisitionDetails.currency,
-          auctionLot: formData.acquisitionDetails.auctionLot || undefined,
-          listingUrl: formData.acquisitionDetails.listingUrl || undefined,
-        },
+      acquisitionDetails: {
+        sourceChannel: formData.acquisitionDetails.sourceChannel,
+        purchaseDate: new Date(formData.acquisitionDetails.purchaseDate),
+        purchasePrice: formData.acquisitionDetails.purchasePrice,
+        currency: formData.acquisitionDetails.currency,
+        auctionLot: formData.acquisitionDetails.auctionLot?.trim() || undefined,
+        listingUrl: formData.acquisitionDetails.listingUrl?.trim() || undefined,
+      },
         media: {
           photos: [],
           videos: [],
@@ -229,10 +251,11 @@ export const vehicleService = {
         updatedAt: now,
       };
 
-      // Convert dates to timestamps for Firestore
+      // Convert dates to timestamps and clean undefined values for Firestore
       const vehicleDataWithTimestamps = convertDatesToTimestamps(vehicleData);
+      const cleanedVehicleData = cleanUndefinedValues(vehicleDataWithTimestamps);
       
-      const docRef = await addDoc(collection(db, COLLECTIONS.VEHICLES), vehicleDataWithTimestamps);
+      const docRef = await addDoc(collection(db, COLLECTIONS.VEHICLES), cleanedVehicleData);
       
       // Create initial cost entry for purchase price
       const costData: CostFormData = {
@@ -277,19 +300,20 @@ export const vehicleService = {
         color: formData.color,
         trim: formData.trim,
         mileage: formData.mileage,
-        acquisitionDetails: {
-          sourceChannel: formData.acquisitionDetails.sourceChannel,
-          purchaseDate: new Date(formData.acquisitionDetails.purchaseDate),
-          purchasePrice: formData.acquisitionDetails.purchasePrice,
-          currency: formData.acquisitionDetails.currency,
-          auctionLot: formData.acquisitionDetails.auctionLot || undefined,
-          listingUrl: formData.acquisitionDetails.listingUrl || undefined,
-        },
+      acquisitionDetails: {
+        sourceChannel: formData.acquisitionDetails.sourceChannel,
+        purchaseDate: new Date(formData.acquisitionDetails.purchaseDate),
+        purchasePrice: formData.acquisitionDetails.purchasePrice,
+        currency: formData.acquisitionDetails.currency,
+        auctionLot: formData.acquisitionDetails.auctionLot?.trim() || undefined,
+        listingUrl: formData.acquisitionDetails.listingUrl?.trim() || undefined,
+      },
         updatedAt: now,
       };
 
       const updateDataWithTimestamps = convertDatesToTimestamps(updateData);
-      await updateDoc(docRef, updateDataWithTimestamps);
+      const cleanedUpdateData = cleanUndefinedValues(updateDataWithTimestamps);
+      await updateDoc(docRef, cleanedUpdateData);
       
       // Log activity
       await activityService.logActivity({
@@ -446,7 +470,8 @@ export const costService = {
       };
 
       const costDataWithTimestamps = convertDatesToTimestamps(costData);
-      const docRef = await addDoc(collection(db, COLLECTIONS.COSTS), costDataWithTimestamps);
+      const cleanedCostData = cleanUndefinedValues(costDataWithTimestamps);
+      const docRef = await addDoc(collection(db, COLLECTIONS.COSTS), cleanedCostData);
       
       // Log activity
       await activityService.logActivity({
@@ -502,7 +527,8 @@ export const costService = {
       };
 
       const updateDataWithTimestamps = convertDatesToTimestamps(updateData);
-      await updateDoc(docRef, updateDataWithTimestamps);
+      const cleanedUpdateData = cleanUndefinedValues(updateDataWithTimestamps);
+      await updateDoc(docRef, cleanedUpdateData);
       
       // Get the updated cost entry
       const updatedDoc = await getDoc(docRef);
@@ -678,7 +704,8 @@ export const activityService = {
         timestamp: Timestamp.fromDate(activity.timestamp),
       };
       
-      await addDoc(collection(db, COLLECTIONS.ACTIVITIES), activityData);
+      const cleanedActivityData = cleanUndefinedValues(activityData);
+      await addDoc(collection(db, COLLECTIONS.ACTIVITIES), cleanedActivityData);
     } catch (error) {
       console.error('Error logging activity:', error);
       // Don't throw error for activity logging to avoid breaking main operations
