@@ -1,0 +1,177 @@
+// VelocityDash Mixins
+// Reusable SCSS mixins for consistent styling
+
+// Flexbox utilities
+@mixin flex {
+  display: flex;
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Button styles
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-sm;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border: none;
+  text-decoration: none;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: $accent-green;
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background-color: darken($accent-green, 10%);
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background-color: transparent;
+  color: $accent-blue;
+  border: 1px solid $accent-blue;
+  
+  &:hover:not(:disabled) {
+    background-color: $accent-blue;
+    color: white;
+  }
+}
+
+@mixin button-danger {
+  @include button-base;
+  background-color: $error;
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background-color: darken($error, 10%);
+  }
+}
+
+// Card styles
+@mixin card {
+  background-color: $secondary-bg;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-sm;
+  border: 1px solid rgba($text-secondary, 0.1);
+}
+
+@mixin card-hover {
+  @include card;
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+    border-color: rgba($accent-green, 0.3);
+  }
+}
+
+// Form styles
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  background-color: $secondary-bg;
+  border: 1px solid rgba($text-secondary, 0.2);
+  border-radius: $border-radius-md;
+  color: $text-primary;
+  font-size: $font-size-sm;
+  transition: all 0.2s ease-in-out;
+  
+  &:focus {
+    outline: none;
+    border-color: $accent-blue;
+    box-shadow: 0 0 0 3px rgba($accent-blue, 0.1);
+  }
+  
+  &::placeholder {
+    color: $text-secondary;
+  }
+}
+
+// Responsive breakpoints
+@mixin mobile {
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-sm}) and (max-width: #{$breakpoint-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}
+
+// Text truncation
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Status indicators
+@mixin status-indicator($color) {
+  display: inline-flex;
+  align-items: center;
+  padding: $spacing-xs $spacing-sm;
+  background-color: rgba($color, 0.1);
+  color: $color;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// Loading states
+@mixin loading-skeleton {
+  background: linear-gradient(90deg, $secondary-bg 25%, rgba($text-secondary, 0.1) 50%, $secondary-bg 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

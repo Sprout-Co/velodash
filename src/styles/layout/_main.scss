@@ -1,0 +1,160 @@
+// Main Layout Styles
+// Main content area and layout structure
+
+.main {
+  min-height: 100vh;
+  background-color: $primary-bg;
+}
+
+.main-content {
+  padding: $spacing-lg;
+  max-width: 1400px;
+  margin: 0 auto;
+  
+  @include mobile {
+    padding: $spacing-md;
+  }
+}
+
+.page-header {
+  margin-bottom: $spacing-xl;
+  
+  .page-title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+    
+    @include mobile {
+      font-size: $font-size-2xl;
+    }
+  }
+  
+  .page-subtitle {
+    font-size: $font-size-lg;
+    color: $text-secondary;
+    margin-bottom: 0;
+  }
+  
+  .page-actions {
+    @include flex;
+    gap: $spacing-md;
+    margin-top: $spacing-lg;
+    
+    @include mobile {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}
+
+.content-section {
+  margin-bottom: $spacing-xl;
+  
+  .section-header {
+    @include flex-between;
+    margin-bottom: $spacing-lg;
+    
+    @include mobile {
+      flex-direction: column;
+      align-items: stretch;
+      gap: $spacing-md;
+    }
+  }
+  
+  .section-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+  }
+  
+  .section-actions {
+    @include flex;
+    gap: $spacing-sm;
+  }
+}
+
+.content-grid {
+  display: grid;
+  gap: $spacing-lg;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+  }
+}
+
+.content-sidebar {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: $spacing-xl;
+  
+  @include tablet {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+  
+  .content-main {
+    min-width: 0; // Prevents grid overflow
+  }
+  
+  .content-sidebar-panel {
+    @include card;
+    height: fit-content;
+    position: sticky;
+    top: $spacing-lg;
+  }
+}
+
+// Loading states
+.loading-container {
+  @include flex-center;
+  min-height: 200px;
+  color: $text-secondary;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba($text-secondary, 0.2);
+  border-top: 3px solid $accent-green;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: $spacing-md;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Empty states
+.empty-state {
+  @include flex-center;
+  @include flex-column;
+  padding: $spacing-3xl $spacing-lg;
+  text-align: center;
+  color: $text-secondary;
+  
+  .empty-state__icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: $spacing-lg;
+    opacity: 0.5;
+  }
+  
+  .empty-state__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+  }
+  
+  .empty-state__description {
+    font-size: $font-size-base;
+    margin-bottom: $spacing-lg;
+    max-width: 400px;
+  }
+}

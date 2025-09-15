@@ -1,0 +1,172 @@
+// Card Component Styles
+// Card containers and content blocks
+
+.card {
+  @include card;
+  
+  &.card--hover {
+    @include card-hover;
+  }
+  
+  .card__header {
+    @include flex-between;
+    margin-bottom: $spacing-lg;
+    padding-bottom: $spacing-md;
+    border-bottom: 1px solid rgba($text-secondary, 0.1);
+  }
+  
+  .card__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+  }
+  
+  .card__actions {
+    @include flex;
+    gap: $spacing-sm;
+  }
+  
+  .card__body {
+    margin-bottom: $spacing-lg;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .card__footer {
+    padding-top: $spacing-md;
+    border-top: 1px solid rgba($text-secondary, 0.1);
+    @include flex-between;
+  }
+}
+
+// KPI Cards for Dashboard
+.kpi-card {
+  @include card;
+  text-align: center;
+  
+  .kpi-card__value {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+    line-height: 1;
+    
+    @include mobile {
+      font-size: $font-size-3xl;
+    }
+    
+    &.kpi-card__value--positive {
+      color: $accent-green;
+    }
+    
+    &.kpi-card__value--negative {
+      color: $error;
+    }
+  }
+  
+  .kpi-card__label {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: $font-weight-medium;
+  }
+  
+  .kpi-card__change {
+    font-size: $font-size-xs;
+    margin-top: $spacing-xs;
+    
+    &.kpi-card__change--positive {
+      color: $accent-green;
+    }
+    
+    &.kpi-card__change--negative {
+      color: $error;
+    }
+  }
+}
+
+// Status Cards
+.status-card {
+  @include card;
+  border-left: 4px solid $accent-green;
+  
+  &.status-card--warning {
+    border-left-color: $warning;
+  }
+  
+  &.status-card--error {
+    border-left-color: $error;
+  }
+  
+  &.status-card--info {
+    border-left-color: $accent-blue;
+  }
+  
+  .status-card__icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: $spacing-sm;
+  }
+  
+  .status-card__title {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $spacing-xs;
+  }
+  
+  .status-card__description {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+// Vehicle Cards
+.vehicle-card {
+  @include card-hover;
+  cursor: pointer;
+  
+  .vehicle-card__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: $border-radius-md;
+    margin-bottom: $spacing-md;
+  }
+  
+  .vehicle-card__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $spacing-xs;
+  }
+  
+  .vehicle-card__subtitle {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin-bottom: $spacing-md;
+  }
+  
+  .vehicle-card__status {
+    @include status-indicator($accent-green);
+    margin-bottom: $spacing-md;
+  }
+  
+  .vehicle-card__price {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $accent-green;
+    margin-bottom: $spacing-sm;
+  }
+  
+  .vehicle-card__details {
+    @include flex-between;
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+}

@@ -1,0 +1,164 @@
+// Form Component Styles
+// Form elements and input styling
+
+.form {
+  .form__group {
+    margin-bottom: $spacing-lg;
+  }
+  
+  .form__label {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+  }
+  
+  .form__label--required::after {
+    content: ' *';
+    color: $error;
+  }
+  
+  .form__input {
+    @include input-base;
+    
+    &.form__input--error {
+      border-color: $error;
+      
+      &:focus {
+        border-color: $error;
+        box-shadow: 0 0 0 3px rgba($error, 0.1);
+      }
+    }
+  }
+  
+  .form__textarea {
+    @include input-base;
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  .form__select {
+    @include input-base;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 32px;
+  }
+  
+  .form__checkbox {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: $accent-green;
+    }
+    
+    .form__checkbox-label {
+      font-size: $font-size-sm;
+      color: $text-primary;
+      margin: 0;
+    }
+  }
+  
+  .form__radio-group {
+    display: flex;
+    gap: $spacing-lg;
+    
+    .form__radio {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      
+      input[type="radio"] {
+        width: 16px;
+        height: 16px;
+        accent-color: $accent-green;
+      }
+      
+      .form__radio-label {
+        font-size: $font-size-sm;
+        color: $text-primary;
+        margin: 0;
+      }
+    }
+  }
+  
+  .form__error {
+    font-size: $font-size-xs;
+    color: $error;
+    margin-top: $spacing-xs;
+  }
+  
+  .form__help {
+    font-size: $font-size-xs;
+    color: $text-secondary;
+    margin-top: $spacing-xs;
+  }
+  
+  .form__actions {
+    @include flex;
+    gap: $spacing-md;
+    justify-content: flex-end;
+    margin-top: $spacing-xl;
+    
+    @include mobile {
+      flex-direction: column;
+    }
+  }
+}
+
+// Search form
+.search-form {
+  position: relative;
+  
+  .search-form__input {
+    @include input-base;
+    padding-left: 40px;
+  }
+  
+  .search-form__icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: $text-secondary;
+  }
+}
+
+// Filter form
+.filter-form {
+  @include card;
+  
+  .filter-form__header {
+    @include flex-between;
+    margin-bottom: $spacing-lg;
+  }
+  
+  .filter-form__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+  }
+  
+  .filter-form__body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: $spacing-md;
+  }
+  
+  .filter-form__actions {
+    @include flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-lg;
+    padding-top: $spacing-md;
+    border-top: 1px solid rgba($text-secondary, 0.1);
+  }
+}

@@ -1,0 +1,182 @@
+// Table Component Styles
+// Data tables and list views
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: $secondary-bg;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  
+  .table__header {
+    background-color: rgba($text-secondary, 0.05);
+  }
+  
+  .table__header-cell {
+    padding: $spacing-md $spacing-lg;
+    text-align: left;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba($text-secondary, 0.1);
+    
+    &.table__header-cell--sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease-in-out;
+      
+      &:hover {
+        color: $text-primary;
+      }
+      
+      &.table__header-cell--sorted {
+        color: $accent-green;
+      }
+    }
+  }
+  
+  .table__body {
+    .table__row {
+      border-bottom: 1px solid rgba($text-secondary, 0.1);
+      transition: background-color 0.2s ease-in-out;
+      
+      &:hover {
+        background-color: rgba($accent-green, 0.05);
+      }
+      
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    
+    .table__cell {
+      padding: $spacing-md $spacing-lg;
+      font-size: $font-size-sm;
+      color: $text-primary;
+      vertical-align: middle;
+      
+      &.table__cell--numeric {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      
+      &.table__cell--center {
+        text-align: center;
+      }
+    }
+  }
+}
+
+// Status indicators in tables
+.table-status {
+  @include status-indicator($accent-green);
+  
+  &.table-status--sourced {
+    @include status-indicator($accent-blue);
+  }
+  
+  &.table-status--in-transit {
+    @include status-indicator($warning);
+  }
+  
+  &.table-status--in-customs {
+    @include status-indicator($warning);
+  }
+  
+  &.table-status--in-workshop {
+    @include status-indicator($accent-blue);
+  }
+  
+  &.table-status--for-sale {
+    @include status-indicator($accent-green);
+  }
+  
+  &.table-status--sale-pending {
+    @include status-indicator($warning);
+  }
+  
+  &.table-status--sold {
+    @include status-indicator($text-secondary);
+  }
+  
+  &.table-status--archived {
+    @include status-indicator($text-secondary);
+  }
+}
+
+// Table actions
+.table-actions {
+  @include flex;
+  gap: $spacing-xs;
+  
+  .table-actions__button {
+    @include button-base;
+    padding: $spacing-xs;
+    background-color: transparent;
+    color: $text-secondary;
+    border-radius: $border-radius-sm;
+    
+    &:hover {
+      background-color: rgba($accent-green, 0.1);
+      color: $accent-green;
+    }
+  }
+}
+
+// Responsive table
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  
+  .table {
+    min-width: 600px;
+  }
+}
+
+// Table pagination
+.table-pagination {
+  @include flex-between;
+  padding: $spacing-md $spacing-lg;
+  background-color: $secondary-bg;
+  border-top: 1px solid rgba($text-secondary, 0.1);
+  
+  .table-pagination__info {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+  
+  .table-pagination__controls {
+    @include flex;
+    gap: $spacing-sm;
+    align-items: center;
+  }
+  
+  .table-pagination__button {
+    @include button-base;
+    padding: $spacing-xs $spacing-sm;
+    background-color: transparent;
+    color: $text-secondary;
+    border: 1px solid rgba($text-secondary, 0.2);
+    border-radius: $border-radius-sm;
+    
+    &:hover:not(:disabled) {
+      background-color: rgba($accent-green, 0.1);
+      color: $accent-green;
+      border-color: $accent-green;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+  .table-pagination__page-info {
+    font-size: $font-size-sm;
+    color: $text-primary;
+    margin: 0 $spacing-md;
+  }
+}

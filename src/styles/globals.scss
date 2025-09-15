@@ -1,0 +1,28 @@
+// Global styles for VelocityDash
+// This file imports all other SCSS files in the correct order
+
+// 1. Abstracts (variables, mixins, functions)
+@import 'abstracts/variables';
+@import 'abstracts/mixins';
+@import 'abstracts/functions';
+
+// 2. Base (reset, typography, base styles)
+@import 'base/reset';
+@import 'base/typography';
+@import 'base/base';
+
+// 3. Layout (layout-related styles)
+@import 'layout/header';
+@import 'layout/sidebar';
+@import 'layout/main';
+
+// 4. Components (component-specific styles)
+@import 'components/buttons';
+@import 'components/cards';
+@import 'components/forms';
+@import 'components/tables';
+
+// 5. Pages (page-specific styles)
+@import 'pages/dashboard';
+@import 'pages/vehicles';
+@import 'pages/reports';

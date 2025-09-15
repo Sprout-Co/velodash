@@ -1,0 +1,115 @@
+// Sidebar Layout Styles
+// Sidebar navigation component styles
+
+.sidebar {
+  background-color: $secondary-bg;
+  border-right: 1px solid rgba($text-secondary, 0.1);
+  width: 280px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: $z-fixed;
+  overflow-y: auto;
+  
+  @include mobile {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    
+    &.sidebar--open {
+      transform: translateX(0);
+    }
+  }
+  
+  .sidebar__header {
+    padding: $spacing-lg;
+    border-bottom: 1px solid rgba($text-secondary, 0.1);
+  }
+  
+  .sidebar__logo {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $accent-green;
+    text-decoration: none;
+  }
+  
+  .sidebar__nav {
+    padding: $spacing-md 0;
+  }
+  
+  .sidebar__nav-section {
+    margin-bottom: $spacing-lg;
+  }
+  
+  .sidebar__nav-title {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0 $spacing-lg $spacing-sm;
+  }
+  
+  .sidebar__nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar__nav-item {
+    margin: 0;
+  }
+  
+  .sidebar__nav-link {
+    display: flex;
+    align-items: center;
+    padding: $spacing-sm $spacing-lg;
+    color: $text-secondary;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    border-left: 3px solid transparent;
+    
+    &:hover {
+      background-color: rgba($accent-green, 0.1);
+      color: $text-primary;
+    }
+    
+    &.active {
+      background-color: rgba($accent-green, 0.1);
+      color: $accent-green;
+      border-left-color: $accent-green;
+    }
+  }
+  
+  .sidebar__nav-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: $spacing-sm;
+    flex-shrink: 0;
+  }
+  
+  .sidebar__nav-text {
+    font-weight: $font-weight-medium;
+  }
+  
+  .sidebar__nav-badge {
+    margin-left: auto;
+    background-color: $accent-green;
+    color: white;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    padding: 2px 6px;
+    border-radius: $border-radius-sm;
+    min-width: 18px;
+    text-align: center;
+  }
+}
+
+// Main content area adjustment for sidebar
+.main-content {
+  margin-left: 280px;
+  
+  @include mobile {
+    margin-left: 0;
+  }
+}

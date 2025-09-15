@@ -1,0 +1,255 @@
+// Vehicles Page Styles
+// Vehicle management and profile pages
+
+.vehicles {
+  .vehicles__header {
+    @include flex-between;
+    margin-bottom: $spacing-xl;
+    
+    @include mobile {
+      flex-direction: column;
+      align-items: stretch;
+      gap: $spacing-md;
+    }
+  }
+  
+  .vehicles__title {
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0;
+  }
+  
+  .vehicles__actions {
+    @include flex;
+    gap: $spacing-md;
+  }
+}
+
+// Vehicle Grid
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: $spacing-lg;
+  
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Vehicle Profile Page
+.vehicle-profile {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: $spacing-xl;
+  
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
+  
+  .vehicle-profile__main {
+    .vehicle-profile__header {
+      margin-bottom: $spacing-xl;
+      
+      .vehicle-profile__title {
+        font-size: $font-size-3xl;
+        font-weight: $font-weight-bold;
+        color: $text-primary;
+        margin-bottom: $spacing-sm;
+      }
+      
+      .vehicle-profile__subtitle {
+        font-size: $font-size-lg;
+        color: $text-secondary;
+        margin-bottom: $spacing-lg;
+      }
+      
+      .vehicle-profile__status {
+        @include status-indicator($accent-green);
+        font-size: $font-size-sm;
+      }
+    }
+    
+    .vehicle-profile__gallery {
+      margin-bottom: $spacing-xl;
+      
+      .vehicle-profile__main-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: $border-radius-lg;
+        margin-bottom: $spacing-md;
+      }
+      
+      .vehicle-profile__thumbnails {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: $spacing-sm;
+      }
+      
+      .vehicle-profile__thumbnail {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        border-radius: $border-radius-md;
+        cursor: pointer;
+        transition: opacity 0.2s ease-in-out;
+        
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+    
+    .vehicle-profile__details {
+      @include card;
+      margin-bottom: $spacing-xl;
+      
+      .vehicle-profile__section {
+        margin-bottom: $spacing-lg;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      
+      .vehicle-profile__section-title {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-semibold;
+        color: $text-primary;
+        margin-bottom: $spacing-md;
+      }
+      
+      .vehicle-profile__detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: $spacing-md;
+      }
+      
+      .vehicle-profile__detail {
+        .vehicle-profile__detail-label {
+          font-size: $font-size-xs;
+          color: $text-secondary;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: $spacing-xs;
+        }
+        
+        .vehicle-profile__detail-value {
+          font-size: $font-size-sm;
+          color: $text-primary;
+          font-weight: $font-weight-medium;
+        }
+      }
+    }
+    
+    .vehicle-profile__documents {
+      @include card;
+      
+      .vehicle-profile__document-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: $spacing-md;
+      }
+      
+      .vehicle-profile__document {
+        @include flex;
+        align-items: center;
+        gap: $spacing-sm;
+        padding: $spacing-md;
+        background-color: rgba($text-secondary, 0.05);
+        border-radius: $border-radius-md;
+        text-decoration: none;
+        color: $text-primary;
+        transition: background-color 0.2s ease-in-out;
+        
+        &:hover {
+          background-color: rgba($accent-green, 0.1);
+        }
+      }
+      
+      .vehicle-profile__document-icon {
+        width: 20px;
+        height: 20px;
+        color: $accent-blue;
+      }
+      
+      .vehicle-profile__document-name {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+  
+  .vehicle-profile__sidebar {
+    .vehicle-profile__cost-engine {
+      @include card;
+      margin-bottom: $spacing-lg;
+      
+      .vehicle-profile__cost-summary {
+        margin-bottom: $spacing-lg;
+        
+        .vehicle-profile__cost-total {
+          font-size: $font-size-2xl;
+          font-weight: $font-weight-bold;
+          color: $text-primary;
+          margin-bottom: $spacing-sm;
+        }
+        
+        .vehicle-profile__cost-label {
+          font-size: $font-size-sm;
+          color: $text-secondary;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+      }
+      
+      .vehicle-profile__add-cost {
+        width: 100%;
+        margin-bottom: $spacing-lg;
+      }
+      
+      .vehicle-profile__cost-list {
+        .vehicle-profile__cost-item {
+          @include flex-between;
+          padding: $spacing-sm 0;
+          border-bottom: 1px solid rgba($text-secondary, 0.1);
+          
+          &:last-child {
+            border-bottom: none;
+          }
+          
+          .vehicle-profile__cost-details {
+            .vehicle-profile__cost-category {
+              font-size: $font-size-sm;
+              font-weight: $font-weight-medium;
+              color: $text-primary;
+              margin-bottom: $spacing-xs;
+            }
+            
+            .vehicle-profile__cost-description {
+              font-size: $font-size-xs;
+              color: $text-secondary;
+            }
+          }
+          
+          .vehicle-profile__cost-amount {
+            font-size: $font-size-sm;
+            font-weight: $font-weight-semibold;
+            color: $accent-green;
+          }
+        }
+      }
+    }
+    
+    .vehicle-profile__sale-details {
+      @include card;
+      
+      .vehicle-profile__sale-form {
+        .form__group {
+          margin-bottom: $spacing-md;
+        }
+      }
+    }
+  }
+}

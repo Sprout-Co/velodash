@@ -1,0 +1,63 @@
+// Header Layout Styles
+// Navigation and header component styles
+
+.header {
+  background-color: $secondary-bg;
+  border-bottom: 1px solid rgba($text-secondary, 0.1);
+  padding: $spacing-md $spacing-lg;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  
+  @include flex-between;
+  
+  .header__logo {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $accent-green;
+    text-decoration: none;
+    
+    &:hover {
+      color: lighten($accent-green, 10%);
+    }
+  }
+  
+  .header__nav {
+    @include flex;
+    gap: $spacing-lg;
+    
+    @include mobile {
+      display: none;
+    }
+  }
+  
+  .header__nav-item {
+    color: $text-secondary;
+    text-decoration: none;
+    font-weight: $font-weight-medium;
+    transition: color 0.2s ease-in-out;
+    
+    &:hover,
+    &.active {
+      color: $text-primary;
+    }
+  }
+  
+  .header__actions {
+    @include flex;
+    gap: $spacing-md;
+    align-items: center;
+  }
+  
+  .header__user-menu {
+    position: relative;
+  }
+  
+  .header__mobile-menu {
+    display: none;
+    
+    @include mobile {
+      display: block;
+    }
+  }
+}
