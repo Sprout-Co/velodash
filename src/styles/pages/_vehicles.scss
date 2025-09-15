@@ -1,254 +1,178 @@
-// Vehicles Page Styles
-// Vehicle management and profile pages
+// Vehicle Management Styles
+@import '../abstracts/variables';
+@import '../abstracts/mixins';
 
-.vehicles {
-  .vehicles__header {
-    @include flex-between;
-    margin-bottom: $spacing-xl;
-    
-    @include mobile {
-      flex-direction: column;
-      align-items: stretch;
-      gap: $spacing-md;
+// ==========================================================================
+// Vehicle Inventory Page
+// ==========================================================================
+
+.vehicles-inventory-container {
+  .vehicle-filters {
+    input[type="checkbox"] {
+      @apply rounded text-primary focus:ring-primary;
+    }
+
+    input[type="number"],
+    input[type="text"] {
+      @apply w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
     }
   }
-  
-  .vehicles__title {
-    font-size: $font-size-3xl;
-    font-weight: $font-weight-bold;
-    color: $text-primary;
-    margin: 0;
-  }
-  
-  .vehicles__actions {
-    @include flex;
-    gap: $spacing-md;
+
+  .vehicles-table {
+    th {
+      @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer;
+      
+      &:hover {
+        @apply text-primary;
+      }
+    }
+    
+    td {
+      @apply px-6 py-4 whitespace-nowrap text-sm;
+    }
+    
+    tr {
+      @apply hover:bg-gray-50 cursor-pointer;
+      
+      &:hover {
+        td {
+          @apply text-primary-dark;
+        }
+      }
+    }
   }
 }
 
-// Vehicle Grid
-.vehicle-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: $spacing-lg;
+// ==========================================================================
+// Vehicle Detail Page
+// ==========================================================================
+
+.vehicle-detail-container {
+  .vehicle-identification,
+  .vehicle-acquisition,
+  .vehicle-media-hub,
+  .vehicle-document-vault {
+    @apply bg-white rounded-lg shadow p-6 mb-6;
+    
+    h2 {
+      @apply text-xl font-semibold text-gray-800 mb-4;
+    }
+  }
   
-  @include mobile {
-    grid-template-columns: 1fr;
+  // Identification & Acquisition sections
+  .identification-field,
+  .acquisition-field {
+    label {
+      @apply text-sm text-gray-500 block;
+    }
+    
+    p {
+      @apply font-medium;
+    }
+  }
+  
+  // Status Dropdown
+  .vehicle-status-dropdown {
+    button {
+      @apply transition-colors duration-200;
+    }
+  }
+  
+  // Media Hub
+  .vehicle-media-hub {
+    .media-tabs {
+      @apply flex border-b mb-4;
+      
+      button {
+        @apply py-2 px-4;
+        
+        &.active {
+          @apply text-primary border-b-2 border-primary;
+        }
+        
+        &:not(.active) {
+          @apply text-gray-500 hover:text-gray-700;
+        }
+      }
+    }
+    
+    .upload-area {
+      @apply border-2 border-dashed rounded-lg p-6 mb-4 text-center transition-colors duration-200;
+      
+      &.dragging {
+        @apply border-primary bg-primary/5;
+      }
+      
+      &:not(.dragging) {
+        @apply border-gray-300;
+      }
+    }
+  }
+  
+  // Document Vault
+  .vehicle-document-vault {
+    ul {
+      @apply space-y-4;
+      
+      li {
+        @apply border rounded-lg overflow-hidden;
+        
+        .document-header {
+          @apply flex items-center justify-between p-3 bg-gray-50;
+        }
+        
+        .document-content {
+          @apply p-3;
+        }
+      }
+    }
   }
 }
 
-// Vehicle Profile Page
-.vehicle-profile {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: $spacing-xl;
-  
-  @include tablet {
-    grid-template-columns: 1fr;
-  }
-  
-  .vehicle-profile__main {
-    .vehicle-profile__header {
-      margin-bottom: $spacing-xl;
-      
-      .vehicle-profile__title {
-        font-size: $font-size-3xl;
-        font-weight: $font-weight-bold;
-        color: $text-primary;
-        margin-bottom: $spacing-sm;
-      }
-      
-      .vehicle-profile__subtitle {
-        font-size: $font-size-lg;
-        color: $text-secondary;
-        margin-bottom: $spacing-lg;
-      }
-      
-      .vehicle-profile__status {
-        @include status-indicator($accent-green);
-        font-size: $font-size-sm;
-      }
-    }
+// ==========================================================================
+// Vehicle Form Pages (New/Edit)
+// ==========================================================================
+
+.vehicle-form-container {
+  .form-section {
+    @apply bg-white rounded-lg shadow p-6 mb-6;
     
-    .vehicle-profile__gallery {
-      margin-bottom: $spacing-xl;
-      
-      .vehicle-profile__main-image {
-        width: 100%;
-        height: 400px;
-        object-fit: cover;
-        border-radius: $border-radius-lg;
-        margin-bottom: $spacing-md;
-      }
-      
-      .vehicle-profile__thumbnails {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: $spacing-sm;
-      }
-      
-      .vehicle-profile__thumbnail {
-        width: 100%;
-        height: 80px;
-        object-fit: cover;
-        border-radius: $border-radius-md;
-        cursor: pointer;
-        transition: opacity 0.2s ease-in-out;
-        
-        &:hover {
-          opacity: 0.8;
-        }
-      }
-    }
-    
-    .vehicle-profile__details {
-      @include card;
-      margin-bottom: $spacing-xl;
-      
-      .vehicle-profile__section {
-        margin-bottom: $spacing-lg;
-        
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
-      
-      .vehicle-profile__section-title {
-        font-size: $font-size-lg;
-        font-weight: $font-weight-semibold;
-        color: $text-primary;
-        margin-bottom: $spacing-md;
-      }
-      
-      .vehicle-profile__detail-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: $spacing-md;
-      }
-      
-      .vehicle-profile__detail {
-        .vehicle-profile__detail-label {
-          font-size: $font-size-xs;
-          color: $text-secondary;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          margin-bottom: $spacing-xs;
-        }
-        
-        .vehicle-profile__detail-value {
-          font-size: $font-size-sm;
-          color: $text-primary;
-          font-weight: $font-weight-medium;
-        }
-      }
-    }
-    
-    .vehicle-profile__documents {
-      @include card;
-      
-      .vehicle-profile__document-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: $spacing-md;
-      }
-      
-      .vehicle-profile__document {
-        @include flex;
-        align-items: center;
-        gap: $spacing-sm;
-        padding: $spacing-md;
-        background-color: rgba($text-secondary, 0.05);
-        border-radius: $border-radius-md;
-        text-decoration: none;
-        color: $text-primary;
-        transition: background-color 0.2s ease-in-out;
-        
-        &:hover {
-          background-color: rgba($accent-green, 0.1);
-        }
-      }
-      
-      .vehicle-profile__document-icon {
-        width: 20px;
-        height: 20px;
-        color: $accent-blue;
-      }
-      
-      .vehicle-profile__document-name {
-        font-size: $font-size-sm;
-        font-weight: $font-weight-medium;
-      }
+    h2 {
+      @apply text-xl font-semibold text-gray-800 mb-4;
     }
   }
   
-  .vehicle-profile__sidebar {
-    .vehicle-profile__cost-engine {
-      @include card;
-      margin-bottom: $spacing-lg;
-      
-      .vehicle-profile__cost-summary {
-        margin-bottom: $spacing-lg;
-        
-        .vehicle-profile__cost-total {
-          font-size: $font-size-2xl;
-          font-weight: $font-weight-bold;
-          color: $text-primary;
-          margin-bottom: $spacing-sm;
-        }
-        
-        .vehicle-profile__cost-label {
-          font-size: $font-size-sm;
-          color: $text-secondary;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-      }
-      
-      .vehicle-profile__add-cost {
-        width: 100%;
-        margin-bottom: $spacing-lg;
-      }
-      
-      .vehicle-profile__cost-list {
-        .vehicle-profile__cost-item {
-          @include flex-between;
-          padding: $spacing-sm 0;
-          border-bottom: 1px solid rgba($text-secondary, 0.1);
-          
-          &:last-child {
-            border-bottom: none;
-          }
-          
-          .vehicle-profile__cost-details {
-            .vehicle-profile__cost-category {
-              font-size: $font-size-sm;
-              font-weight: $font-weight-medium;
-              color: $text-primary;
-              margin-bottom: $spacing-xs;
-            }
-            
-            .vehicle-profile__cost-description {
-              font-size: $font-size-xs;
-              color: $text-secondary;
-            }
-          }
-          
-          .vehicle-profile__cost-amount {
-            font-size: $font-size-sm;
-            font-weight: $font-weight-semibold;
-            color: $accent-green;
-          }
-        }
-      }
+  .form-group {
+    @apply mb-4;
+    
+    label {
+      @apply block text-sm font-medium text-gray-700 mb-1;
     }
     
-    .vehicle-profile__sale-details {
-      @include card;
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50;
+    }
+    
+    .error-message {
+      @apply mt-1 text-sm text-red-600;
+    }
+  }
+  
+  .form-buttons {
+    @apply flex justify-end space-x-4 mt-6;
+    
+    button {
+      @apply px-4 py-2 rounded-md;
       
-      .vehicle-profile__sale-form {
-        .form__group {
-          margin-bottom: $spacing-md;
-        }
+      &.primary {
+        @apply bg-primary text-white hover:bg-primary-dark;
+      }
+      
+      &.secondary {
+        @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
       }
     }
   }
