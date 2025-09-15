@@ -162,7 +162,13 @@ function VehicleDetailsContent({ id }: { id: string }) {
           <div className="grid grid-cols-1 gap-6">
             <VehicleIdentification vehicle={vehicle} />
             <VehicleAcquisition acquisitionDetails={vehicle.acquisitionDetails} />
-            <VehicleMediaHub media={vehicle.media} vehicleId={vehicle.id} />
+            <VehicleMediaHub 
+              media={vehicle.media} 
+              vehicleId={vehicle.id}
+              onMediaUpdate={(updatedMedia) => {
+                setVehicle(prev => prev ? { ...prev, media: updatedMedia } : null);
+              }}
+            />
           </div>
         </div>
         
