@@ -93,23 +93,23 @@
     &--kpis {
       padding-bottom: 0.5rem;
       border-top: 4px solid var(--color-blue-500);
-      background: linear-gradient(to bottom, rgba(59, 130, 246, 0.05), transparent 15%);
+      background-color: rgba(59, 130, 246, 0.02);
     }
 
     &--funnel {
       margin-bottom: 2rem;
       border-top: 4px solid var(--color-purple-500);
-      background: linear-gradient(to bottom, rgba(139, 92, 246, 0.05), transparent 15%);
+      background-color: rgba(139, 92, 246, 0.02);
     }
 
     &--actions {
       border-top: 4px solid var(--color-red-500);
-      background: linear-gradient(to bottom, rgba(239, 68, 68, 0.05), transparent 15%);
+      background-color: rgba(239, 68, 68, 0.02);
     }
 
     &--activity {
       border-top: 4px solid var(--color-green-500);
-      background: linear-gradient(to bottom, rgba(16, 185, 129, 0.05), transparent 15%);
+      background-color: rgba(16, 185, 129, 0.02);
       height: 100%;
     }
   }
@@ -225,7 +225,10 @@
   border: 1px solid var(--color-border);
   transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     transform: translateY(-2px);
@@ -239,22 +242,22 @@
 
   &--blue {
     border-left: 4px solid var(--color-blue-500);
-    background: linear-gradient(to right, rgba(59, 130, 246, 0.05), transparent 15%);
+    background-color: rgba(59, 130, 246, 0.05);
   }
 
   &--green {
     border-left: 4px solid var(--color-green-500);
-    background: linear-gradient(to right, rgba(16, 185, 129, 0.05), transparent 15%);
+    background-color: rgba(16, 185, 129, 0.05);
   }
 
   &--purple {
     border-left: 4px solid var(--color-purple-500);
-    background: linear-gradient(to right, rgba(139, 92, 246, 0.05), transparent 15%);
+    background-color: rgba(139, 92, 246, 0.05);
   }
 
   &--emerald {
     border-left: 4px solid var(--color-emerald-500);
-    background: linear-gradient(to right, rgba(5, 150, 105, 0.05), transparent 15%);
+    background-color: rgba(5, 150, 105, 0.05);
   }
 
   &__skeleton {
@@ -319,6 +322,9 @@
 
   &__content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   &__title {
@@ -331,17 +337,21 @@
   }
 
   &__value {
-    font-size: 2rem;
+    font-size: 1.5rem !important;
     font-weight: 700;
     color: var(--color-text-primary);
     margin: 0 0 0.5rem 0;
-    line-height: 1;
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   &__description {
     font-size: 0.875rem;
     color: var(--color-text-secondary);
     margin: 0;
+    line-height: 1.4;
+    flex: 1;
   }
 }
 
@@ -522,17 +532,17 @@
 
     &--high {
       border-left: 4px solid var(--color-red-500);
-      background: linear-gradient(to right, rgba(239, 68, 68, 0.05), transparent 15%);
+      background-color: rgba(239, 68, 68, 0.05);
     }
 
     &--medium {
       border-left: 4px solid var(--color-yellow-500);
-      background: linear-gradient(to right, rgba(245, 158, 11, 0.05), transparent 15%);
+      background-color: rgba(245, 158, 11, 0.05);
     }
 
     &--low {
       border-left: 4px solid var(--color-blue-500);
-      background: linear-gradient(to right, rgba(59, 130, 246, 0.05), transparent 15%);
+      background-color: rgba(59, 130, 246, 0.05);
     }
 
     &-skeleton {
@@ -741,7 +751,7 @@
     border-radius: 8px;
     transition: all 0.2s ease;
     border: 1px solid var(--color-border);
-    background: linear-gradient(to right, rgba(16, 185, 129, 0.02), transparent 20%);
+    background-color: rgba(16, 185, 129, 0.02);
 
     &:hover {
       background: var(--color-background);
@@ -900,9 +910,10 @@
 
   .kpi-card {
     padding: 1rem;
+    min-height: 120px;
 
     &__value {
-      font-size: 1.5rem;
+      font-size: 0.75rem;
     }
   }
 }

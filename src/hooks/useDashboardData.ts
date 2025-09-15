@@ -31,9 +31,9 @@ export function useDashboardData() {
         const mockData: DashboardData = {
           kpis: {
             liveInventoryCount: 28,
-            capitalDeployed: 125000000, // 125M NGN
-            readyForSaleValue: 180000000, // 180M NGN
-            thirtyDayGrossProfit: 45000000, // 45M NGN
+            capitalDeployed: 25000000, // 125M NGN
+            readyForSaleValue: 80000000, // 180M NGN
+            thirtyDayGrossProfit: 5000000, // 45M NGN
           },
           funnelData: {
             sourced: 5,
