@@ -33,6 +33,12 @@ export function formatPercentage(value: number, decimals: number = 1): string {
 // Date formatting
 export function formatDate(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if the date is valid
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+  
   return new Intl.DateTimeFormat('en-NG', {
     year: 'numeric',
     month: 'short',
@@ -43,6 +49,12 @@ export function formatDate(date: Date | string): string {
 // Date and time formatting
 export function formatDateTime(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if the date is valid
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+  
   return new Intl.DateTimeFormat('en-NG', {
     year: 'numeric',
     month: 'short',
@@ -55,6 +67,12 @@ export function formatDateTime(date: Date | string): string {
 // Relative time formatting
 export function formatRelativeTime(date: Date | string): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if the date is valid
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+  
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
   
@@ -118,6 +136,12 @@ export function generateId(): string {
 // Calculate age in days
 export function calculateAgeInDays(date: Date | string): number {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if the date is valid
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return 0;
+  }
+  
   const now = new Date();
   const diffInTime = now.getTime() - dateObj.getTime();
   return Math.floor(diffInTime / (1000 * 3600 * 24));

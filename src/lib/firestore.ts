@@ -58,10 +58,26 @@ const convertTimestamps = (data: any): any => {
   
   // Convert Firestore Timestamps to Date objects
   Object.keys(converted).forEach(key => {
-    if (converted[key] instanceof Timestamp) {
-      converted[key] = converted[key].toDate();
-    } else if (typeof converted[key] === 'object' && converted[key] !== null) {
-      converted[key] = convertTimestamps(converted[key]);
+    const value = converted[key];
+    
+    // Handle Timestamp objects
+    if (value instanceof Timestamp) {
+      converted[key] = safeDateConversion(value);
+    }
+    // Handle nested objects
+    else if (value && typeof value === 'object' && value.constructor === Object) {
+      converted[key] = convertTimestamps(value);
+    }
+    // Handle arrays
+    else if (Array.isArray(value)) {
+      converted[key] = value.map(item => convertTimestamps(item));
+    }
+    // Handle date-like strings
+    else if (typeof value === 'string' && (key.includes('date') || key.includes('Date') || key.includes('time') || key.includes('Time'))) {
+      const convertedDate = safeDateConversion(value);
+      if (convertedDate) {
+        converted[key] = convertedDate;
+      }
     }
   });
   
@@ -105,6 +121,31 @@ const cleanUndefinedValues = (data: any): any => {
   }
   
   return data;
+};
+
+// Helper function to safely convert dates
+const safeDateConversion = (date: any): Date | null => {
+  if (!date) return null;
+  
+  if (date instanceof Date) {
+    return isNaN(date.getTime()) ? null : date;
+  }
+  
+  if (date instanceof Timestamp) {
+    return date.toDate();
+  }
+  
+  if (typeof date === 'string') {
+    const parsed = new Date(date);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  
+  if (typeof date === 'number') {
+    const parsed = new Date(date);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  
+  return null;
 };
 
 // ==================== VEHICLE OPERATIONS ====================
