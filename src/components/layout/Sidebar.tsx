@@ -8,13 +8,15 @@ import {
   TruckIcon, 
   ChartBarIcon, 
   CogIcon,
-  UserGroupIcon
+  UserGroupIcon,
+  WrenchScrewdriverIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
   { name: 'Vehicles', href: '/vehicles', icon: TruckIcon },
   { name: 'Reports', href: '/reports', icon: ChartBarIcon },
+  { name: 'Admin', href: '/admin', icon: WrenchScrewdriverIcon },
   { name: 'Settings', href: '/settings', icon: CogIcon },
   { name: 'Users', href: '/users', icon: UserGroupIcon },
 ];
