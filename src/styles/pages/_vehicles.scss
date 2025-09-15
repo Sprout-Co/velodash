@@ -53,7 +53,7 @@
     h1 {
       font-size: 24px;
       font-weight: 700;
-      color: var(--text-primary, #1f2937);
+      color: white;
       margin: 0;
     }
     
@@ -74,7 +74,7 @@
   }
   
   .page-content {
-    display: grid;
+  display: grid;
     grid-template-columns: 1fr;
     gap: 24px;
     
@@ -105,7 +105,7 @@
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 16px;
-      color: var(--text-primary, #1f2937);
+      color: black;
     }
     
     .search-input-container {
@@ -143,7 +143,7 @@
         font-size: 14px;
         font-weight: 500;
         margin-bottom: 8px;
-        color: var(--text-primary, #1f2937);
+        color: black;
       }
       
       .filter-options {
@@ -162,6 +162,7 @@
           gap: 8px;
           font-size: 14px;
           cursor: pointer;
+          color: black;
           
           input[type="checkbox"] {
             border-radius: 4px;
@@ -186,7 +187,7 @@
           
           label {
             font-size: 12px;
-            color: #6b7280;
+            color: black;
             margin-bottom: 4px;
           }
           
@@ -209,7 +210,7 @@
     .reset-button {
       width: 100%;
       background-color: #f3f4f6;
-      color: #1f2937;
+      color: black;
       padding: 8px 16px;
       border: none;
       border-radius: 6px;
@@ -369,8 +370,8 @@
         
         &:not(.active) {
           color: #6b7280;
-          
-          &:hover {
+        
+        &:hover {
             color: #374151;
           }
         }
