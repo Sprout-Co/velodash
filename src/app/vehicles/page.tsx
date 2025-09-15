@@ -94,7 +94,15 @@ function VehiclesContent() {
 
   // Calculate total costs for each vehicle
   const vehiclesWithCosts = filteredVehicles.map(vehicle => {
-    const totalCost = vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0);
+    const totalCost = Array.isArray(vehicle.costs) 
+      ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+      : 0;
+    
+    // Debug date conversion if needed
+    if (process.env.NODE_ENV === 'development' && vehicle.createdAt) {
+      console.log('Vehicle createdAt:', vehicle.createdAt, 'Type:', typeof vehicle.createdAt);
+    }
+    
     const daysInInventory = calculateDaysInInventory(vehicle.createdAt);
     return { ...vehicle, totalCost, daysInInventory };
   });

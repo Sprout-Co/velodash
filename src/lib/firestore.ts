@@ -192,10 +192,23 @@ export const vehicleService = {
       }
       
       const snapshot = await getDocs(q);
-      const vehicles = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return convertTimestamps({ id: doc.id, ...data }) as Vehicle;
-      });
+      const vehicles = await Promise.all(
+        snapshot.docs.map(async (doc) => {
+          const data = doc.data();
+          const vehicle = convertTimestamps({ id: doc.id, ...data }) as Vehicle;
+          
+          // Load costs for this vehicle
+          try {
+            const costs = await costService.getCostsByVehicle(vehicle.id);
+            vehicle.costs = costs;
+          } catch (error) {
+            console.warn(`Failed to load costs for vehicle ${vehicle.id}:`, error);
+            vehicle.costs = [];
+          }
+          
+          return vehicle;
+        })
+      );
       
       // Apply client-side filters that can't be done in Firestore
       let filteredVehicles = vehicles;
@@ -249,7 +262,18 @@ export const vehicleService = {
       
       if (docSnap.exists()) {
         const data = docSnap.data();
-        return convertTimestamps({ id: docSnap.id, ...data }) as Vehicle;
+        const vehicle = convertTimestamps({ id: docSnap.id, ...data }) as Vehicle;
+        
+        // Load costs for this vehicle
+        try {
+          const costs = await costService.getCostsByVehicle(vehicle.id);
+          vehicle.costs = costs;
+        } catch (error) {
+          console.warn(`Failed to load costs for vehicle ${vehicle.id}:`, error);
+          vehicle.costs = [];
+        }
+        
+        return vehicle;
       }
       
       return null;
@@ -616,7 +640,9 @@ export const dashboardService = {
       let readyForSaleValue = 0;
       
       for (const vehicle of vehicles) {
-        const totalCost = vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0);
+        const totalCost = Array.isArray(vehicle.costs) 
+          ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+          : 0;
         capitalDeployed += totalCost;
         
         if (vehicle.status === 'for-sale' && vehicle.saleDetails?.listingPrice) {
@@ -635,7 +661,9 @@ export const dashboardService = {
       
       const thirtyDayGrossProfit = recentSales.reduce((sum, vehicle) => {
         if (vehicle.saleDetails) {
-          const totalCost = vehicle.costs.reduce((costSum, cost) => costSum + cost.ngnAmount, 0);
+          const totalCost = Array.isArray(vehicle.costs) 
+            ? vehicle.costs.reduce((costSum, cost) => costSum + cost.ngnAmount, 0)
+            : 0;
           return sum + (vehicle.saleDetails.finalSalePrice - totalCost);
         }
         return sum;
@@ -793,7 +821,9 @@ export const reportService = {
       );
 
       const reportVehicles = soldVehicles.map(vehicle => {
-        const totalCost = vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0);
+        const totalCost = Array.isArray(vehicle.costs) 
+          ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+          : 0;
         const grossProfit = vehicle.saleDetails!.finalSalePrice - totalCost;
         const profitMargin = (grossProfit / vehicle.saleDetails!.finalSalePrice) * 100;
         const roi = (grossProfit / totalCost) * 100;
@@ -847,7 +877,9 @@ export const reportService = {
         .filter(v => v.status !== 'sold' && v.status !== 'archived')
         .map(vehicle => {
           const daysInInventory = Math.floor((now.getTime() - vehicle.createdAt.getTime()) / (1000 * 60 * 60 * 24));
-          const totalCost = vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0);
+          const totalCost = Array.isArray(vehicle.costs) 
+          ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+          : 0;
 
           return {
             vehicleId: vehicle.id,
