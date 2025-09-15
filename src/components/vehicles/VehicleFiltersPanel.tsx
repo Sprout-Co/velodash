@@ -84,33 +84,31 @@ export default function VehicleFiltersPanel({
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow vehicle-filters">
-      <h2 className="font-semibold text-lg mb-4">Filters</h2>
+    <div className="vehicle-filters">
+      <h2>Filters</h2>
       
-      <form onSubmit={handleSearchSubmit} className="mb-4">
-        <div className="relative">
+      <form onSubmit={handleSearchSubmit}>
+        <div className="search-input-container">
           <input
             type="text"
             placeholder="Search VIN, Make, Model..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
-          <Search className="h-4 w-4 text-gray-400 absolute left-3 top-3" />
+          <Search className="search-icon" />
         </div>
         <button type="submit" className="sr-only">Search</button>
       </form>
       
-      <div className="mb-6">
-        <h3 className="font-medium mb-2">Status</h3>
-        <div className="space-y-1">
+      <div className="filter-section">
+        <h3>Status</h3>
+        <div className="filter-options">
           {statusOptions.map(option => (
-            <label key={option.value} className="flex items-center space-x-2">
+            <label key={option.value}>
               <input
                 type="checkbox"
                 checked={filters.status?.includes(option.value) || false}
                 onChange={() => handleStatusChange(option.value)}
-                className="rounded text-primary focus:ring-primary"
               />
               <span>{option.label}</span>
             </label>
@@ -118,16 +116,15 @@ export default function VehicleFiltersPanel({
         </div>
       </div>
       
-      <div className="mb-6">
-        <h3 className="font-medium mb-2">Make</h3>
-        <div className="space-y-1 max-h-40 overflow-y-auto">
+      <div className="filter-section">
+        <h3>Make</h3>
+        <div className="filter-options make-options">
           {availableMakes.map(make => (
-            <label key={make} className="flex items-center space-x-2">
+            <label key={make}>
               <input
                 type="checkbox"
                 checked={filters.make?.includes(make) || false}
                 onChange={() => handleMakeChange(make)}
-                className="rounded text-primary focus:ring-primary"
               />
               <span>{make}</span>
             </label>
@@ -135,62 +132,55 @@ export default function VehicleFiltersPanel({
         </div>
       </div>
       
-      <div className="mb-6">
-        <h3 className="font-medium mb-2">Year</h3>
-        <div className="grid grid-cols-2 gap-2">
+      <div className="filter-section">
+        <h3>Year</h3>
+        <div className="range-inputs">
           <div>
-            <label className="text-xs text-gray-500">Min</label>
+            <label>Min</label>
             <input
               type="number"
               placeholder="Min"
               value={filters.year?.min || ''}
               onChange={(e) => handleYearChange('min', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500">Max</label>
+            <label>Max</label>
             <input
               type="number"
               placeholder="Max"
               value={filters.year?.max || ''}
               onChange={(e) => handleYearChange('max', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
         </div>
       </div>
       
-      <div className="mb-6">
-        <h3 className="font-medium mb-2">Purchase Price</h3>
-        <div className="grid grid-cols-2 gap-2">
+      <div className="filter-section">
+        <h3>Purchase Price</h3>
+        <div className="range-inputs">
           <div>
-            <label className="text-xs text-gray-500">Min</label>
+            <label>Min</label>
             <input
               type="number"
               placeholder="Min"
               value={filters.priceRange?.min || ''}
               onChange={(e) => handlePriceChange('min', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500">Max</label>
+            <label>Max</label>
             <input
               type="number"
               placeholder="Max"
               value={filters.priceRange?.max || ''}
               onChange={(e) => handlePriceChange('max', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
         </div>
       </div>
       
-      <button
-        onClick={handleReset}
-        className="w-full bg-gray-100 text-gray-800 py-2 rounded-md hover:bg-gray-200 transition-colors"
-      >
+      <button onClick={handleReset} className="reset-button">
         Reset Filters
       </button>
     </div>

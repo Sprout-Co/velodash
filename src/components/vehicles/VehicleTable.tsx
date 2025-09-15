@@ -96,75 +96,69 @@ export default function VehicleTable({ vehicles, onRowClick }: VehicleTableProps
   };
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200 vehicles-table">
-        <thead className="bg-gray-50">
+    <div className="table-container">
+      <table className="vehicles-table">
+        <thead>
           <tr>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('vin')}
             >
               VIN {getSortIcon('vin')}
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('make')}
             >
               Make/Model {getSortIcon('make')}
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('status')}
             >
               Status {getSortIcon('status')}
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('daysInInventory')}
             >
               Days in Inventory {getSortIcon('daysInInventory')}
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('totalCost')}
             >
               Total Cost {getSortIcon('totalCost')}
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody>
           {sortedVehicles.length > 0 ? (
             sortedVehicles.map(vehicle => (
               <tr 
                 key={vehicle.id} 
-                className="hover:bg-gray-50 cursor-pointer"
                 onClick={() => onRowClick(vehicle)}
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                <td className="vin-cell">
                   {vehicle.vin}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="vehicle-info">
                   {vehicle.year} {vehicle.make} {vehicle.model}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="status-cell">
                   <StatusBadge status={vehicle.status} />
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="days-cell">
                   {vehicle.daysInInventory}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="cost-cell">
                   {formatCurrency(vehicle.totalCost, 'NGN')}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+              <td colSpan={5} className="no-data">
                 No vehicles found
               </td>
             </tr>

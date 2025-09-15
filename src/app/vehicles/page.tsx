@@ -101,28 +101,26 @@ function VehiclesContent() {
   
   if (loading) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <Loader2 className="h-10 w-10 text-primary animate-spin" />
+      <div className="loading-container">
+        <Loader2 className="loading-spinner" />
       </div>
     );
   }
   
   return (
-    <div className="p-6 vehicles-inventory-container">
-      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Vehicle Inventory</h1>
-        <div className="mt-4 sm:mt-0">
-          <button 
-            className="bg-primary text-white px-4 py-2 rounded-md"
-            onClick={() => router.push('/vehicles/new')}
-          >
-            Add New Vehicle
-          </button>
-        </div>
+    <div className="vehicles-inventory-container">
+      <div className="page-header">
+        <h1>Vehicle Inventory</h1>
+        <button 
+          className="add-vehicle-btn"
+          onClick={() => router.push('/vehicles/new')}
+        >
+          Add New Vehicle
+        </button>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-1">
+      <div className="page-content">
+        <div className="filters-section">
           <VehicleFiltersPanel 
             filters={filters} 
             onFilterChange={handleFilterChange}
@@ -130,7 +128,7 @@ function VehiclesContent() {
           />
         </div>
         
-        <div className="lg:col-span-3">
+        <div className="table-section">
           <VehicleTable 
             vehicles={vehiclesWithCosts}
             onRowClick={(vehicle) => router.push(`/vehicles/${vehicle.id}`)}
@@ -144,8 +142,8 @@ function VehiclesContent() {
 export default function VehiclesPage() {
   return (
     <Suspense fallback={
-      <div className="w-full h-full flex items-center justify-center p-6">
-        <Loader2 className="h-10 w-10 text-primary animate-spin" />
+      <div className="loading-container">
+        <Loader2 className="loading-spinner" />
       </div>
     }>
       <VehiclesContent />
