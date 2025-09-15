@@ -7,7 +7,7 @@ You're getting this error when trying to upload images:
 Access to XMLHttpRequest at 'https://firebasestorage.googleapis.com/...' from origin 'http://localhost:3000' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: It does not have HTTP ok status.
 ```
 
-## 🔧 **Solution Steps**
+## 🔧 **Quick Fix (No Authentication Required)**
 
 ### **Step 1: Update Firebase Storage Security Rules**
 
@@ -20,7 +20,7 @@ Access to XMLHttpRequest at 'https://firebasestorage.googleapis.com/...' from or
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Allow read/write access to all files for development
+    // Allow public read/write access for development
     // ⚠️ WARNING: This is for development only - NOT for production!
     match /{allPaths=**} {
       allow read, write: if true;
@@ -39,18 +39,11 @@ service firebase.storage {
 4. Select a location (choose the closest to your users)
 5. Click **Done**
 
-### **Step 3: Verify Firebase Configuration**
+### **Step 3: Test the Fix**
 
-Check your `.env.local` file has the correct values:
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_actual_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=velocitydash-8be5c.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=velocitydash-8be5c
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=velocitydash-8be5c.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_actual_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_actual_app_id
-```
+1. Go to `/test-storage` in your browser
+2. Upload a test image
+3. Check if it works without CORS errors
 
 ### **Step 4: Restart Your Development Server**
 
@@ -62,20 +55,20 @@ npm run dev
 
 ## 🔍 **What I Fixed in the Code**
 
-### **1. Added Authentication**
-- Created `src/lib/auth.ts` for Firebase authentication
-- Added anonymous sign-in for development
-- Updated storage service to authenticate before uploads
+### **1. Simplified Storage Service**
+- Removed authentication requirements for development
+- Direct upload to Firebase Storage
+- Improved error handling and validation
 
-### **2. Updated Storage Service**
-- Added authentication checks before uploads
-- Improved error handling
-- Added automatic anonymous sign-in
+### **2. Added Firebase Auth Support**
+- Created `src/lib/auth.ts` for future authentication needs
+- Added auth export to `src/lib/firebase.ts`
+- Ready for production authentication when needed
 
-### **3. Added AuthProvider**
-- Created `src/components/AuthProvider.tsx`
-- Automatically signs in users anonymously
-- Wraps the entire app for authentication
+### **3. Created Test Page**
+- Added `/test-storage` page for testing uploads
+- Simple interface to verify storage is working
+- Clear error messages and success feedback
 
 ## 🧪 **Test the Fix**
 

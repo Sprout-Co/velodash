@@ -10,7 +10,6 @@ import {
   getMetadata 
 } from 'firebase/storage';
 import { storage } from './firebase';
-import { authService } from './auth';
 
 // Storage paths
 const STORAGE_PATHS = {
@@ -33,13 +32,6 @@ export const storageService = {
     onProgress?: (progress: number) => void
   ): Promise<string> {
     try {
-      // Ensure user is authenticated
-      let user = authService.getCurrentUser();
-      if (!user) {
-        console.log('No authenticated user, signing in anonymously...');
-        user = await authService.signInAnonymously();
-      }
-      
       // Validate file type
       if (type === 'photos' && !ALLOWED_IMAGE_TYPES.includes(file.type)) {
         throw new Error('Invalid image file type. Please upload JPEG, PNG, or WebP images.');
@@ -110,13 +102,6 @@ export const storageService = {
   // Delete a file
   async deleteFile(downloadURL: string): Promise<void> {
     try {
-      // Ensure user is authenticated
-      let user = authService.getCurrentUser();
-      if (!user) {
-        console.log('No authenticated user, signing in anonymously...');
-        user = await authService.signInAnonymously();
-      }
-      
       // Extract the file path from the download URL
       const url = new URL(downloadURL);
       const pathMatch = url.pathname.match(/\/o\/(.+)\?/);
