@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Vehicle, VehicleStatus } from '@/types';
 import { formatCurrency } from '@/lib/utils';
 
+type ExtendedVehicle = Vehicle & { totalCost: number, daysInInventory: number };
+
 interface VehicleTableProps {
-  vehicles: (Vehicle & { totalCost: number, daysInInventory: number })[];
+  vehicles: ExtendedVehicle[];
   onRowClick: (vehicle: Vehicle) => void;
 }
 
 interface SortConfig {
-  key: keyof Vehicle | 'totalCost' | 'daysInInventory';
+  key: keyof ExtendedVehicle;
   direction: 'asc' | 'desc';
 }
 
@@ -70,11 +72,11 @@ export default function VehicleTable({ vehicles, onRowClick }: VehicleTableProps
     } else {
       // Handle nested properties
       valueA = key.includes('.') 
-        ? key.split('.').reduce((obj, path) => obj?.[path], a)
+        ? key.split('.').reduce((obj: any, path: string) => obj?.[path], a)
         : a[key];
         
       valueB = key.includes('.') 
-        ? key.split('.').reduce((obj, path) => obj?.[path], b)
+        ? key.split('.').reduce((obj: any, path: string) => obj?.[path], b)
         : b[key];
     }
     

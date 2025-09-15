@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { VehicleStatus } from '@/types';
+import type { VehicleStatus as VehicleStatusType } from '@/types';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface VehicleStatusProps {
-  currentStatus: VehicleStatus;
-  onStatusChange: (status: VehicleStatus) => void;
+  currentStatus: VehicleStatusType;
+  onStatusChange: (status: VehicleStatusType) => void;
 }
 
 export default function VehicleStatus({ currentStatus, onStatusChange }: VehicleStatusProps) {
   const [isOpen, setIsOpen] = useState(false);
   
-  const statusOptions: { value: VehicleStatus; label: string }[] = [
+  const statusOptions: { value: VehicleStatusType; label: string }[] = [
     { value: 'sourced', label: 'Sourced' },
     { value: 'in-transit', label: 'In Transit' },
     { value: 'in-customs', label: 'In Customs' },
@@ -21,7 +21,7 @@ export default function VehicleStatus({ currentStatus, onStatusChange }: Vehicle
     { value: 'archived', label: 'Archived' },
   ];
   
-  const statusStyles: Record<VehicleStatus, string> = {
+  const statusStyles: Record<VehicleStatusType, string> = {
     'sourced': 'bg-blue-100 text-blue-800 border-blue-200',
     'in-transit': 'bg-yellow-100 text-yellow-800 border-yellow-200',
     'in-customs': 'bg-purple-100 text-purple-800 border-purple-200',

@@ -1,30 +1,29 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { Vehicle, VehicleStatus } from '@/types';
 import { ChevronLeft, Edit, Trash2 } from 'lucide-react';
 import VehicleIdentification from '@/components/vehicles/VehicleIdentification';
 import VehicleAcquisition from '@/components/vehicles/VehicleAcquisition';
-import VehicleStatus as VehicleStatusComponent from '@/components/vehicles/VehicleStatus';
+import VehicleStatusComponent from '@/components/vehicles/VehicleStatus';
 import VehicleMediaHub from '@/components/vehicles/VehicleMediaHub';
 import VehicleDocumentVault from '@/components/vehicles/VehicleDocumentVault';
 import { Loader2 } from 'lucide-react';
 
 import { getVehicleById } from '@/hooks/useVehiclesData';
 
-export default function VehicleDetailsPage({ params }: { params: { id: string } }) {
+function VehicleDetailsContent({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [error, setError] = useState<string | null>(null);
   
   const router = useRouter();
-  const { id } = params;
   
   useEffect(() => {
     const getVehicleData = async () => {
       try {
-        const data = await fetchVehicleById(id);
+        const data = await getVehicleById(id);
         if (!data) {
           setError('Vehicle not found');
         } else {
@@ -139,5 +138,17 @@ export default function VehicleDetailsPage({ params }: { params: { id: string } 
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VehicleDetailsPage({ params }: { params: { id: string } }) {
+  return (
+    <Suspense fallback={
+      <div className="w-full h-full flex items-center justify-center p-6">
+        <Loader2 className="h-10 w-10 text-primary animate-spin" />
+      </div>
+    }>
+      <VehicleDetailsContent id={params.id} />
+    </Suspense>
   );
 }

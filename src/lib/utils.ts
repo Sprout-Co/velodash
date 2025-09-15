@@ -123,6 +123,11 @@ export function calculateAgeInDays(date: Date | string): number {
   return Math.floor(diffInTime / (1000 * 3600 * 24));
 }
 
+// Calculate days in inventory
+export function calculateDaysInInventory(date: Date | string): number {
+  return calculateAgeInDays(date);
+}
+
 // Calculate profit metrics
 export function calculateProfitMetrics(
   totalCost: number,

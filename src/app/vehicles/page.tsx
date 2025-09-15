@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Vehicle, VehicleStatus, VehicleFilters } from '@/types';
 import { calculateDaysInInventory } from '@/lib/utils';
@@ -11,7 +11,7 @@ import { Loader2 } from 'lucide-react';
 // Mock data - would be replaced by actual API call
 import { getVehiclesData } from '@/hooks/useVehiclesData';
 
-export default function VehiclesPage() {
+function VehiclesContent() {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
@@ -138,5 +138,17 @@ export default function VehiclesPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VehiclesPage() {
+  return (
+    <Suspense fallback={
+      <div className="w-full h-full flex items-center justify-center p-6">
+        <Loader2 className="h-10 w-10 text-primary animate-spin" />
+      </div>
+    }>
+      <VehiclesContent />
+    </Suspense>
   );
 }
