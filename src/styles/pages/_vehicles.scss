@@ -314,6 +314,40 @@
 // ==========================================================================
 
 .vehicle-detail-container {
+  // Header navigation and actions
+  .mb-6 {
+    h1, p, span, button {
+      color: white !important;
+    }
+    
+    button {
+      color: white !important;
+      
+      &:hover {
+        color: #e5e7eb !important;
+      }
+    }
+  }
+  
+  // Vehicle title and VIN
+  .grid h1,
+  .grid p {
+    color: white !important;
+  }
+  
+  // Main page text should be white (outside white containers)
+  > h1, > h2, > h3, > h4, > h5, > h6, > p, > span, > div, > button, > a {
+    color: white !important;
+  }
+  
+  // Override specific Tailwind classes for main page
+  > .text-gray-600,
+  > .text-gray-500,
+  > .text-gray-800,
+  > .text-primary {
+    color: white !important;
+  }
+  
   .vehicle-identification,
   .vehicle-acquisition,
   .vehicle-media-hub,
@@ -323,6 +357,11 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     padding: 24px;
     margin-bottom: 24px;
+    
+    // All text inside white containers should be black
+    h1, h2, h3, h4, h5, h6, p, span, div, button, a, label {
+      color: #1f2937 !important;
+    }
     
     h2 {
       font-size: 20px;
@@ -337,14 +376,14 @@
   .acquisition-field {
     label {
       font-size: 14px;
-      color: #6b7280;
+      color: #6b7280 !important;
       display: block;
       margin-bottom: 4px;
     }
     
     p {
       font-weight: 500;
-      color: #1f2937;
+      color: #1f2937 !important;
     }
   }
   
