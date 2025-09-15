@@ -1,254 +1,156 @@
-// Reports Page Styles
-// Reporting and analytics pages
+// Reports Page Styling
 
-.reports {
-  .reports__header {
-    margin-bottom: $spacing-xl;
-    
-    .reports__title {
-      font-size: $font-size-3xl;
-      font-weight: $font-weight-bold;
-      color: $text-primary;
-      margin-bottom: $spacing-sm;
-    }
-    
-    .reports__subtitle {
-      font-size: $font-size-lg;
-      color: $text-secondary;
+.reports-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+
+  h1 {
+    color: var(--heading-color);
+  }
+
+  .btn-export, .btn-print {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn-export {
+    background-color: var(--primary-color);
+    color: #fff;
+    margin-right: 0.5rem;
+
+    &:hover {
+      background-color: var(--primary-color-dark);
     }
   }
-  
-  .reports__filters {
-    @include card;
-    margin-bottom: $spacing-xl;
-    
-    .reports__filter-form {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: $spacing-md;
-      align-items: end;
+
+  .btn-print {
+    background-color: #f1f5f9;
+    color: #334155;
+
+    &:hover {
+      background-color: #e2e8f0;
     }
   }
-  
-  .reports__content {
-    display: grid;
-    gap: $spacing-xl;
+
+  .report-content {
+    min-height: 500px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// Tabs styling
+.tabs-list {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 1.5rem;
+
+  button {
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+    color: #64748b;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--primary-color);
+    }
+
+    &.active {
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+  }
+}
+
+// Common report components
+.stats-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Filters styling
+.filters {
+  .select-filter, .btn-filter {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+  }
+
+  .btn-filter {
+    &.active {
+      background-color: var(--primary-color);
+      color: #fff;
+      border-color: var(--primary-color);
+    }
   }
 }
 
 // Sales Performance Report
-.sales-report {
-  @include card;
-  
-  .sales-report__header {
-    @include flex-between;
-    margin-bottom: $spacing-lg;
-    
-    @include mobile {
-      flex-direction: column;
-      align-items: stretch;
-      gap: $spacing-md;
-    }
-  }
-  
-  .sales-report__title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-semibold;
-    color: $text-primary;
-    margin: 0;
-  }
-  
-  .sales-report__summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: $spacing-lg;
-    margin-bottom: $spacing-xl;
-    
-    .sales-report__metric {
-      text-align: center;
-      
-      .sales-report__metric-value {
-        font-size: $font-size-2xl;
-        font-weight: $font-weight-bold;
-        color: $text-primary;
-        margin-bottom: $spacing-xs;
-        
-        &.sales-report__metric-value--positive {
-          color: $accent-green;
-        }
-        
-        &.sales-report__metric-value--negative {
-          color: $error;
-        }
-      }
-      
-      .sales-report__metric-label {
-        font-size: $font-size-sm;
-        color: $text-secondary;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-    }
-  }
-  
-  .sales-report__table {
-    .table__cell--profit {
-      &.table__cell--positive {
-        color: $accent-green;
-      }
-      
-      &.table__cell--negative {
-        color: $error;
-      }
+.sales-performance-report {
+  .funnel-step {
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
     }
   }
 }
 
 // Inventory Aging Report
-.aging-report {
-  @include card;
-  
-  .aging-report__header {
-    @include flex-between;
-    margin-bottom: $spacing-lg;
-    
-    @include mobile {
-      flex-direction: column;
-      align-items: stretch;
-      gap: $spacing-md;
-    }
-  }
-  
-  .aging-report__title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-semibold;
-    color: $text-primary;
-    margin: 0;
-  }
-  
-  .aging-report__chart {
-    height: 300px;
-    margin-bottom: $spacing-lg;
-    // Chart styles will be added when implementing charts
-  }
-  
-  .aging-report__legend {
-    display: flex;
-    gap: $spacing-lg;
-    justify-content: center;
-    margin-bottom: $spacing-lg;
-    
-    @include mobile {
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .aging-report__legend-item {
-      @include flex;
-      align-items: center;
-      gap: $spacing-sm;
-      
-      .aging-report__legend-color {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        
-        &.aging-report__legend-color--0-30 {
-          background-color: $accent-green;
-        }
-        
-        &.aging-report__legend-color--31-60 {
-          background-color: $warning;
-        }
-        
-        &.aging-report__legend-color--61-90 {
-          background-color: $error;
-        }
-        
-        &.aging-report__legend-color--90-plus {
-          background-color: darken($error, 20%);
-        }
-      }
-      
-      .aging-report__legend-label {
-        font-size: $font-size-sm;
-        color: $text-secondary;
-      }
+.inventory-aging-report {
+  table {
+    th {
+      font-weight: 600;
+      color: #475569;
     }
   }
 }
 
 // Expense Breakdown Report
-.expense-report {
-  @include card;
-  
-  .expense-report__header {
-    @include flex-between;
-    margin-bottom: $spacing-lg;
-    
-    @include mobile {
-      flex-direction: column;
-      align-items: stretch;
-      gap: $spacing-md;
-    }
-  }
-  
-  .expense-report__title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-semibold;
-    color: $text-primary;
-    margin: 0;
-  }
-  
-  .expense-report__chart {
-    height: 400px;
-    margin-bottom: $spacing-lg;
-    // Chart styles will be added when implementing charts
-  }
-  
-  .expense-report__breakdown {
-    .expense-report__category {
-      @include flex-between;
-      padding: $spacing-md 0;
-      border-bottom: 1px solid rgba($text-secondary, 0.1);
-      
-      &:last-child {
-        border-bottom: none;
-      }
-      
-      .expense-report__category-info {
-        .expense-report__category-name {
-          font-size: $font-size-sm;
-          font-weight: $font-weight-medium;
-          color: $text-primary;
-          margin-bottom: $spacing-xs;
-        }
-        
-        .expense-report__category-percentage {
-          font-size: $font-size-xs;
-          color: $text-secondary;
-        }
-      }
-      
-      .expense-report__category-amount {
-        font-size: $font-size-sm;
-        font-weight: $font-weight-semibold;
-        color: $text-primary;
-      }
+.expense-breakdown-report {
+  table {
+    th {
+      font-weight: 600;
+      color: #475569;
     }
   }
 }
 
-// Report Actions
-.report-actions {
-  @include flex;
-  gap: $spacing-md;
-  justify-content: flex-end;
-  margin-top: $spacing-lg;
-  padding-top: $spacing-lg;
-  border-top: 1px solid rgba($text-secondary, 0.1);
-  
-  @include mobile {
-    flex-direction: column;
+// Dashboard Charts Report
+.dashboard-charts-report {
+  button.text-blue-600 {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: var(--primary-color-dark);
+      text-decoration: underline;
+    }
   }
 }
