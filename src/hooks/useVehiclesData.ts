@@ -243,6 +243,43 @@ export const createVehicle = async (formData: any): Promise<Vehicle> => {
   return newVehicle;
 };
 
+export const updateVehicle = async (id: string, formData: any): Promise<Vehicle> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // This would be an actual API call in production
+  const vehicleIndex = mockVehicles.findIndex(v => v.id === id);
+  
+  if (vehicleIndex === -1) {
+    throw new Error('Vehicle not found');
+  }
+  
+  const updatedVehicle: Vehicle = {
+    ...mockVehicles[vehicleIndex],
+    vin: formData.vin,
+    make: formData.make,
+    model: formData.model,
+    year: formData.year,
+    color: formData.color,
+    trim: formData.trim,
+    mileage: formData.mileage,
+    acquisitionDetails: {
+      sourceChannel: formData.acquisitionDetails.sourceChannel,
+      purchaseDate: new Date(formData.acquisitionDetails.purchaseDate),
+      purchasePrice: formData.acquisitionDetails.purchasePrice,
+      currency: formData.acquisitionDetails.currency,
+      auctionLot: formData.acquisitionDetails.auctionLot || undefined,
+      listingUrl: formData.acquisitionDetails.listingUrl || undefined,
+    },
+    updatedAt: new Date(),
+  };
+  
+  // Update the vehicle in mock data
+  mockVehicles[vehicleIndex] = updatedVehicle;
+  
+  return updatedVehicle;
+};
+
 export default function useVehiclesData(filters?: VehicleFilters) {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);

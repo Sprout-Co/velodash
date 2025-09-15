@@ -41,7 +41,7 @@ export default function VehicleForm({
   submitButtonIcon,
   initialData
 }: VehicleFormProps) {
-  const [formData, setFormData] = useState<VehicleFormData>({
+  const [formData, setFormData] = useState<VehicleFormData>(() => ({
     vin: '',
     make: '',
     model: '',
@@ -58,10 +58,20 @@ export default function VehicleForm({
       listingUrl: ''
     },
     ...initialData
-  });
+  }));
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  // Update form data when initialData changes (for editing)
+  useEffect(() => {
+    if (initialData) {
+      setFormData(prev => ({
+        ...prev,
+        ...initialData
+      }));
+    }
+  }, [initialData]);
 
   // Validation functions
   const validateField = (name: string, value: any): string => {
