@@ -280,6 +280,21 @@ export const updateVehicle = async (id: string, formData: any): Promise<Vehicle>
   return updatedVehicle;
 };
 
+export const deleteVehicle = async (id: string): Promise<void> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  
+  // This would be an actual API call in production
+  const vehicleIndex = mockVehicles.findIndex(v => v.id === id);
+  
+  if (vehicleIndex === -1) {
+    throw new Error('Vehicle not found');
+  }
+  
+  // Remove the vehicle from mock data
+  mockVehicles.splice(vehicleIndex, 1);
+};
+
 export default function useVehiclesData(filters?: VehicleFilters) {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);

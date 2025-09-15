@@ -9,14 +9,17 @@ import VehicleAcquisition from '@/components/vehicles/VehicleAcquisition';
 import VehicleStatusComponent from '@/components/vehicles/VehicleStatus';
 import VehicleMediaHub from '@/components/vehicles/VehicleMediaHub';
 import VehicleDocumentVault from '@/components/vehicles/VehicleDocumentVault';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 import { Loader2 } from 'lucide-react';
 
-import { getVehicleById } from '@/hooks/useVehiclesData';
+import { getVehicleById, deleteVehicle } from '@/hooks/useVehiclesData';
 
 function VehicleDetailsContent({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const router = useRouter();
   
@@ -53,6 +56,34 @@ function VehicleDetailsContent({ id }: { id: string }) {
       console.error('Failed to update vehicle status:', err);
       // Show error notification
     }
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!vehicle) return;
+    
+    setIsDeleting(true);
+    
+    try {
+      await deleteVehicle(vehicle.id);
+      console.log('Vehicle deleted successfully');
+      
+      // Redirect to vehicles list
+      router.push('/vehicles');
+    } catch (err) {
+      console.error('Failed to delete vehicle:', err);
+      setError('Failed to delete vehicle. Please try again.');
+      setShowDeleteDialog(false);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteDialog(false);
   };
   
   if (loading) {
@@ -100,8 +131,10 @@ function VehicleDetailsContent({ id }: { id: string }) {
             <span>Edit</span>
           </button>
           
-          {/* Delete button would have confirmation dialog in real implementation */}
-          <button className="flex items-center text-red-500 hover:text-red-700">
+          <button 
+            className="flex items-center text-red-500 hover:text-red-700"
+            onClick={handleDeleteClick}
+          >
             <Trash2 className="h-5 w-5 mr-1" />
             <span>Delete</span>
           </button>
@@ -137,6 +170,16 @@ function VehicleDetailsContent({ id }: { id: string }) {
           <VehicleDocumentVault documents={vehicle.documents} vehicleId={vehicle.id} />
         </div>
       </div>
+      
+      <DeleteConfirmationDialog
+        isOpen={showDeleteDialog}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Vehicle"
+        message="Are you sure you want to delete this vehicle? This action cannot be undone."
+        itemName={`${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}`}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }
