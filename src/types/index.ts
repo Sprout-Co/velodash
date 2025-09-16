@@ -57,8 +57,8 @@ export interface Vehicle {
   };
   costs: CostEntry[];
   saleDetails?: {
-    listingPrice: number;
-    finalSalePrice: number;
+    listingPrice?: number;
+    finalSalePrice?: number;
     saleDate: Date | string | any; // Flexible date handling for Firestore
     notes?: string;
   };
@@ -209,8 +209,8 @@ export interface CostFormData {
 }
 
 export interface SaleFormData {
-  listingPrice: number;
-  finalSalePrice: number;
+  listingPrice?: number;
+  finalSalePrice?: number;
   saleDate: string;
   notes?: string;
 }
