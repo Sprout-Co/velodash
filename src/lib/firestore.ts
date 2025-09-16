@@ -200,6 +200,7 @@ export const vehicleService = {
           // Load costs for this vehicle
           try {
             const costs = await costService.getCostsByVehicle(vehicle.id);
+            console.log(`Loaded ${costs.length} costs for vehicle ${vehicle.id}:`, costs);
             vehicle.costs = costs;
           } catch (error) {
             console.warn(`Failed to load costs for vehicle ${vehicle.id}:`, error);
@@ -700,12 +701,9 @@ export const dashboardService = {
   // Get dashboard KPIs
   async getKPIs(): Promise<DashboardKPIs> {
     try {
-      // Get all vehicles
-      const vehiclesSnapshot = await getDocs(collection(db, COLLECTIONS.VEHICLES));
-      const vehicles = vehiclesSnapshot.docs.map(doc => {
-        const data = doc.data();
-        return convertTimestamps({ id: doc.id, ...data }) as Vehicle;
-      });
+      // Get all vehicles with costs loaded
+      const vehiclesResponse = await vehicleService.getVehicles();
+      const vehicles = vehiclesResponse.data;
 
       // Calculate KPIs
       const liveInventoryCount = vehicles.filter(v => v.status !== 'sold' && v.status !== 'archived').length;
@@ -713,25 +711,46 @@ export const dashboardService = {
       let capitalDeployed = 0;
       let readyForSaleValue = 0;
       
+      console.log('Calculating KPIs for vehicles:', vehicles.length);
+      
       for (const vehicle of vehicles) {
+        console.log(`Vehicle ${vehicle.id} (${vehicle.make} ${vehicle.model}):`, {
+          costs: vehicle.costs,
+          costsLength: vehicle.costs?.length || 0,
+          costsType: typeof vehicle.costs
+        });
+        
         const totalCost = Array.isArray(vehicle.costs) 
-          ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+          ? vehicle.costs.reduce((sum, cost) => {
+              console.log(`Cost: ${cost.description} - ${cost.ngnAmount} NGN`);
+              return sum + cost.ngnAmount;
+            }, 0)
           : 0;
+        
+        console.log(`Total cost for vehicle ${vehicle.id}: ${totalCost} NGN`);
         capitalDeployed += totalCost;
         
         if (vehicle.status === 'for-sale' && vehicle.saleDetails?.listingPrice) {
           readyForSaleValue += vehicle.saleDetails.listingPrice;
         }
       }
+      
+      console.log('Capital deployed calculation:', {
+        totalVehicles: vehicles.length,
+        capitalDeployed,
+        readyForSaleValue
+      });
 
       // Calculate 30-day gross profit (simplified - would need more complex logic in real app)
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       
-      const recentSales = vehicles.filter(v => 
-        v.saleDetails?.saleDate && 
-        v.saleDetails.saleDate >= thirtyDaysAgo
-      );
+      const recentSales = vehicles.filter(v => {
+        if (!v.saleDetails?.saleDate) return false;
+        
+        const saleDate = safeDateConversion(v.saleDetails.saleDate);
+        return saleDate && saleDate >= thirtyDaysAgo;
+      });
       
       const thirtyDayGrossProfit = recentSales.reduce((sum, vehicle) => {
         if (vehicle.saleDetails) {
@@ -742,6 +761,16 @@ export const dashboardService = {
         }
         return sum;
       }, 0);
+
+      // Debug logging
+      console.log('Dashboard KPIs calculated:', {
+        totalVehicles: vehicles.length,
+        liveInventoryCount,
+        capitalDeployed,
+        readyForSaleValue,
+        thirtyDayGrossProfit,
+        recentSalesCount: recentSales.length
+      });
 
       return {
         liveInventoryCount,

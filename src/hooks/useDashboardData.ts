@@ -42,6 +42,13 @@ export function useDashboardData() {
           recentActivity,
         };
         
+        console.log('Dashboard data fetched:', {
+          kpis,
+          funnelData,
+          actionItemsCount: actionItems.length,
+          recentActivityCount: recentActivity.length
+        });
+        
         setData(dashboardData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch dashboard data');
