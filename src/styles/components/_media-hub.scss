@@ -214,8 +214,8 @@
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
 }
 
-.image-preview-title {
-  color: #e5e7eb;
+.image-preview-overlay .image-preview-modal .image-preview-title {
+  color: #ffffff !important;
   font-weight: 600;
   font-size: 14px;
   flex: 1;
@@ -227,14 +227,14 @@
   gap: 8px;
 }
 
-.image-preview-action-btn {
+.image-preview-overlay .image-preview-modal .image-preview-action-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
   background-color: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.12);
-  color: #ffffff;
+  color: #ffffff !important;
   border-radius: 8px;
   text-decoration: none;
   transition: all 0.2s ease;
@@ -248,11 +248,11 @@
   .icon {
     width: 16px;
     height: 16px;
-    color: #ffffff;
+    color: #ffffff !important;
   }
 }
 
-.image-preview-close {
+.image-preview-overlay .image-preview-modal .image-preview-close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -261,7 +261,7 @@
   background-color: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 8px;
-  color: #ffffff;
+  color: #ffffff !important;
   cursor: pointer;
   transition: all 0.2s ease;
   
@@ -274,7 +274,7 @@
   .icon {
     width: 18px;
     height: 18px;
-    color: #ffffff;
+    color: #ffffff !important;
   }
 }
 
