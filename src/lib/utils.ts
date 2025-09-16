@@ -2,6 +2,7 @@
 // Helper functions for VelocityDash
 
 import { type ClassValue, clsx } from 'clsx';
+import { safeDateConversion } from './dateUtils';
 
 // Class name utility
 export function cn(...inputs: ClassValue[]) {
@@ -218,8 +219,28 @@ export function calculateAgeInDays(date: Date | string | any): number {
 }
 
 // Calculate days in inventory
-export function calculateDaysInInventory(date: Date | string | any): number {
-  return calculateAgeInDays(date);
+export function calculateDaysInInventory(vehicle: any): number {
+  // For sold vehicles, calculate from purchase date to sale date
+  if (vehicle.status === 'sold' && vehicle.saleDetails?.saleDate) {
+    const purchaseDate = safeDateConversion(vehicle.acquisitionDetails?.purchaseDate);
+    const saleDate = safeDateConversion(vehicle.saleDetails.saleDate);
+    
+    if (purchaseDate && saleDate) {
+      const diffInTime = saleDate.getTime() - purchaseDate.getTime();
+      return Math.floor(diffInTime / (1000 * 3600 * 24));
+    }
+  }
+  
+  // For unsold vehicles, calculate from purchase date to current date
+  const purchaseDate = safeDateConversion(vehicle.acquisitionDetails?.purchaseDate);
+  if (purchaseDate) {
+    const now = new Date();
+    const diffInTime = now.getTime() - purchaseDate.getTime();
+    return Math.floor(diffInTime / (1000 * 3600 * 24));
+  }
+  
+  // Fallback to createdAt if purchase date is not available
+  return calculateAgeInDays(vehicle.createdAt);
 }
 
 // Calculate profit metrics

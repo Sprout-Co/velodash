@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { CostEntry, CostCategory, Currency } from '@/types';
 import { costService } from '@/lib/firestore';
 import { formatCurrency } from '@/lib/utils';
@@ -128,25 +128,31 @@ export default function VehicleCostManagement({
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  
+  // Use ref to store the callback to avoid dependency issues
+  const onCostsUpdateRef = useRef(onCostsUpdate);
+  onCostsUpdateRef.current = onCostsUpdate;
 
-  useEffect(() => {
-    loadCosts();
-  }, [vehicleId]);
-
-  const loadCosts = async () => {
+  const loadCosts = useCallback(async () => {
     try {
+      console.log('Loading costs for vehicle:', vehicleId);
       setLoading(true);
       setError(null);
       const costEntries = await costService.getCostsByVehicle(vehicleId);
+      console.log('Loaded costs:', costEntries);
       setCosts(costEntries);
-      onCostsUpdate?.(costEntries);
+      onCostsUpdateRef.current?.(costEntries);
     } catch (err) {
       setError('Failed to load costs');
       console.error('Error loading costs:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [vehicleId]);
+
+  useEffect(() => {
+    loadCosts();
+  }, [loadCosts]);
 
   const handleCurrencyChange = (currency: Currency) => {
     const selectedCurrency = CURRENCY_OPTIONS.find(c => c.value === currency);
@@ -182,6 +188,7 @@ export default function VehicleCostManagement({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     
     if (!validateForm()) return;
 
@@ -189,12 +196,16 @@ export default function VehicleCostManagement({
       setSubmitting(true);
       setError(null);
 
+      console.log('Submitting cost update:', { editingCost: editingCost?.id, formData });
+
       if (editingCost) {
         // Update existing cost
-        await costService.updateCost(editingCost.id, formData);
+        const updatedCost = await costService.updateCost(editingCost.id, formData);
+        console.log('Cost updated successfully:', updatedCost);
       } else {
         // Create new cost
-        await costService.createCost(vehicleId, formData);
+        const newCost = await costService.createCost(vehicleId, formData);
+        console.log('Cost created successfully:', newCost);
       }
 
       // Reload costs

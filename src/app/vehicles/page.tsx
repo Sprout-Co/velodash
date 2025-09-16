@@ -103,7 +103,7 @@ function VehiclesContent() {
       console.log('Vehicle createdAt:', vehicle.createdAt, 'Type:', typeof vehicle.createdAt);
     }
     
-    const daysInInventory = calculateDaysInInventory(vehicle.createdAt);
+    const daysInInventory = calculateDaysInInventory(vehicle);
     return { ...vehicle, totalCost, daysInInventory };
   });
   

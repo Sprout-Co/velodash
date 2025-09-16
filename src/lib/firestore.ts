@@ -23,6 +23,7 @@ import {
   WhereFilterOp,
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { calculateDaysInInventory } from './utils';
 import {
   Vehicle,
   CostEntry,
@@ -752,29 +753,40 @@ export const dashboardService = {
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       
       const recentSales = vehicles.filter(v => {
-        if (!v.saleDetails?.saleDate) {
-          console.log(`Vehicle ${v.id} has no sale date`);
+        // Check if vehicle is sold
+        if (v.status !== 'sold') {
           return false;
         }
         
+        // If no sale date, check if it was updated recently (within 30 days)
+        if (!v.saleDetails?.saleDate) {
+          const updatedDate = safeDateConversion(v.updatedAt);
+          return updatedDate && updatedDate >= thirtyDaysAgo;
+        }
+        
+        // Check if sale date is within last 30 days
         const saleDate = safeDateConversion(v.saleDetails.saleDate);
-        const isRecent = saleDate && saleDate >= thirtyDaysAgo;
-        console.log(`Vehicle ${v.id} sale date: ${saleDate}, is recent: ${isRecent}`);
-        return isRecent;
+        return saleDate && saleDate >= thirtyDaysAgo;
       });
       
       console.log(`Found ${recentSales.length} recent sales out of ${vehicles.length} total vehicles`);
       
       const thirtyDayGrossProfit = recentSales.reduce((sum, vehicle) => {
-        if (vehicle.saleDetails && vehicle.saleDetails.finalSalePrice) {
-          const totalCost = Array.isArray(vehicle.costs) 
-            ? vehicle.costs.reduce((costSum, cost) => costSum + cost.ngnAmount, 0)
-            : 0;
-          const grossProfit = vehicle.saleDetails.finalSalePrice - totalCost;
-          console.log(`Vehicle ${vehicle.id} gross profit: ${vehicle.saleDetails.finalSalePrice} - ${totalCost} = ${grossProfit}`);
-          return sum + grossProfit;
-        }
-        return sum;
+        // Calculate total cost including acquisition cost and additional costs
+        const acquisitionCost = vehicle.acquisitionDetails.purchasePrice * 850;
+        const additionalCosts = Array.isArray(vehicle.costs) 
+          ? vehicle.costs.reduce((costSum, cost) => costSum + cost.ngnAmount, 0)
+          : 0;
+        const totalCost = acquisitionCost + additionalCosts;
+        
+        // Use finalSalePrice if available, otherwise use listingPrice, otherwise use totalCost as fallback
+        const salePrice = vehicle.saleDetails?.finalSalePrice || 
+                         vehicle.saleDetails?.listingPrice || 
+                         totalCost;
+        
+        const grossProfit = salePrice - totalCost;
+        console.log(`Vehicle ${vehicle.id} gross profit: ${salePrice} - ${totalCost} = ${grossProfit}`);
+        return sum + grossProfit;
       }, 0);
 
       // Debug logging
@@ -1024,7 +1036,7 @@ export const reportService = {
       const reportVehicles = vehicles
         .filter(v => v.status !== 'sold' && v.status !== 'archived')
         .map(vehicle => {
-          const daysInInventory = Math.floor((now.getTime() - vehicle.createdAt.getTime()) / (1000 * 60 * 60 * 24));
+          const daysInInventory = calculateDaysInInventory(vehicle);
           const totalCost = Array.isArray(vehicle.costs) 
           ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
           : 0;
