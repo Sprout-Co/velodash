@@ -940,8 +940,8 @@ export const reportService = {
           if (v.saleDetails?.saleDate) {
             return v.saleDetails.saleDate >= startDate && v.saleDetails.saleDate <= endDate;
           }
-          // If no sale date, use the updatedAt date as a fallback
-          return v.updatedAt >= startDate && v.updatedAt <= endDate;
+          // If no sale date, include it regardless of date (sold vehicles should always be included)
+          return true;
         }
         // Check if vehicle has sale details with date in range
         return v.saleDetails?.saleDate && 
@@ -949,20 +949,6 @@ export const reportService = {
                v.saleDetails.saleDate <= endDate;
       });
 
-      console.log('Sales Performance Report Debug:', {
-        totalVehicles: vehicles.length,
-        soldVehicles: soldVehicles.length,
-        dateRange: { start: startDate, end: endDate },
-        soldVehicleDetails: soldVehicles.map(v => ({
-          id: v.id,
-          name: `${v.year} ${v.make} ${v.model}`,
-          status: v.status,
-          hasSaleDetails: !!v.saleDetails,
-          salePrice: v.saleDetails?.finalSalePrice || v.saleDetails?.listingPrice,
-          saleDate: v.saleDetails?.saleDate,
-          updatedAt: v.updatedAt
-        }))
-      });
 
       const reportVehicles = soldVehicles.map(vehicle => {
         const totalCost = Array.isArray(vehicle.costs) 

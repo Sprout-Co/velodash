@@ -15,7 +15,6 @@ import {
 } from 'recharts';
 import { useSalesPerformanceData } from '@/hooks/useReportsData';
 import { formatCurrency } from '@/lib/utils';
-import { debugSalesData } from '@/lib/debugSales';
 
 const SalesPerformanceReport: React.FC = () => {
   const [timeframe, setTimeframe] = useState('monthly');
@@ -50,18 +49,6 @@ const SalesPerformanceReport: React.FC = () => {
   }, [timeframe]);
   const { data: reportData, isLoading, error } = useSalesPerformanceData(startDate, endDate);
 
-  // Debug function
-  const handleDebugSales = async () => {
-    try {
-      const debugInfo = await debugSalesData();
-      console.log('Debug info:', debugInfo);
-      alert(`Found ${debugInfo.soldVehicles} sold vehicles and ${debugInfo.vehiclesWithSaleDetails} vehicles with sale details. Check console for details.`);
-    } catch (err) {
-      console.error('Debug failed:', err);
-      alert('Debug failed. Check console for details.');
-    }
-  };
-
   // Transform data for charts
   const monthlySalesData = useMemo(() => {
     if (!reportData) return [];
@@ -74,10 +61,13 @@ const SalesPerformanceReport: React.FC = () => {
         monthlyData[month] = { new: 0, used: 0, total: 0 };
       }
       
+      // Use actual sale price instead of counting vehicles
+      const saleAmount = vehicle.salePrice || 0;
+      
       // For now, we'll categorize as "used" since we don't have that data
       // In a real app, this would come from vehicle data
-      monthlyData[month].used += 1;
-      monthlyData[month].total += 1;
+      monthlyData[month].used += saleAmount;
+      monthlyData[month].total += saleAmount;
     });
 
     return Object.entries(monthlyData)
@@ -156,13 +146,6 @@ const SalesPerformanceReport: React.FC = () => {
             <option value="new">New Vehicles</option>
             <option value="used">Used Vehicles</option>
           </select>
-          
-          <button 
-            onClick={handleDebugSales}
-            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm"
-          >
-            Debug Sales
-          </button>
         </div>
       </div>
       
@@ -189,8 +172,8 @@ const SalesPerformanceReport: React.FC = () => {
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
+            <YAxis tickFormatter={(value) => formatCurrency(Number(value), 'NGN')} />
+            <Tooltip formatter={(value) => [formatCurrency(Number(value), 'NGN'), '']} />
             <Legend />
             <Bar dataKey="new" name="New Vehicles" fill="#3B82F6" />
             <Bar dataKey="used" name="Used Vehicles" fill="#10B981" />
@@ -215,8 +198,8 @@ const SalesPerformanceReport: React.FC = () => {
               {salesByRepData.map((rep, index) => (
                 <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                   <td className="px-4 py-3">{rep.name}</td>
-                  <td className="px-4 py-3">${rep.sales.toLocaleString()}</td>
-                  <td className="px-4 py-3">${rep.target.toLocaleString()}</td>
+                  <td className="px-4 py-3">{formatCurrency(rep.sales, 'NGN')}</td>
+                  <td className="px-4 py-3">{formatCurrency(rep.target, 'NGN')}</td>
                   <td className="px-4 py-3">{rep.units}</td>
                   <td className="px-4 py-3">
                     <div className="w-full bg-gray-200 rounded-full h-2.5">
