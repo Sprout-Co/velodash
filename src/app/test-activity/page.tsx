@@ -82,7 +82,7 @@ export default function TestActivityPage() {
               <li>• Date object (1 hour ago)</li>
               <li>• ISO string format</li>
               <li>• Timestamp number (1 day ago)</li>
-              <li>• Invalid/null date (should show "Unknown time")</li>
+              <li>• Invalid/null date (should show &quot;Unknown time&quot;)</li>
             </ul>
           </div>
 
@@ -97,7 +97,7 @@ export default function TestActivityPage() {
             <ul className="text-sm text-green-700 space-y-1">
               <li>• All activities should display without errors</li>
               <li>• Time ago should be calculated correctly</li>
-              <li>• Invalid dates should show "Unknown time"</li>
+              <li>• Invalid dates should show &quot;Unknown time&quot;</li>
               <li>• No console errors should appear</li>
             </ul>
           </div>

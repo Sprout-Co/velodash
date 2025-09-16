@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Vehicle } from '@/types';
-import { Upload, X, ImageIcon, Film, Loader2, AlertCircle } from 'lucide-react';
+import { Vehicle, FileReference } from '@/types';
+import { Upload, X, ImageIcon, Film, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
-import { storageService, generateThumbnail } from '@/lib/storage';
+import { storageService } from '@/lib/storage';
+// Removed generateThumbnail import as Cloudinary handles thumbnails automatically
 import { vehicleService } from '@/lib/firestore';
 
 interface VehicleMediaHubProps {
@@ -18,6 +19,37 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
   const [uploadProgress, setUploadProgress] = useState<{ [key: number]: number }>({});
   const [error, setError] = useState<string | null>(null);
   const [localMedia, setLocalMedia] = useState<Vehicle['media']>(media);
+
+  // Helper functions to get URLs for both Google Drive and Cloudinary files
+  const getImageUrl = (file: FileReference): string => {
+    if ('url' in file) {
+      // Cloudinary file reference
+      return file.url;
+    } else {
+      // Google Drive file reference
+      return file.webViewLink;
+    }
+  };
+
+  const getVideoUrl = (file: FileReference): string => {
+    if ('url' in file) {
+      // Cloudinary file reference
+      return file.url;
+    } else {
+      // Google Drive file reference
+      return file.webContentLink;
+    }
+  };
+
+  const getViewUrl = (file: FileReference): string => {
+    if ('url' in file) {
+      // Cloudinary file reference
+      return file.url;
+    } else {
+      // Google Drive file reference
+      return file.webViewLink;
+    }
+  };
   
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -61,7 +93,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       }
       
       // Upload files
-      const downloadURLs = await storageService.uploadMultipleFiles(
+      const uploadedFiles = await storageService.uploadMultipleFiles(
         files,
         vehicleId,
         activeTab,
@@ -73,7 +105,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       // Update local media state
       const updatedMedia = {
         ...localMedia,
-        [activeTab]: [...localMedia[activeTab], ...downloadURLs]
+        [activeTab]: [...localMedia[activeTab], ...uploadedFiles]
       };
       
       setLocalMedia(updatedMedia);
@@ -100,10 +132,16 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
   const removeMedia = async (index: number) => {
     try {
       const mediaArray = localMedia[activeTab];
-      const urlToRemove = mediaArray[index];
+      const fileToRemove = mediaArray[index];
       
       // Delete from storage
-      await storageService.deleteFile(urlToRemove);
+      // Check if it's a Cloudinary file reference
+      if ('publicId' in fileToRemove) {
+        await storageService.deleteFile(fileToRemove.publicId, fileToRemove.resourceType);
+      } else {
+        // Legacy Google Drive file reference
+        await storageService.deleteFile(fileToRemove.id);
+      }
       
       // Update local state
       const updatedArray = mediaArray.filter((_, i) => i !== index);
@@ -226,19 +264,31 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {localMedia.photos.length > 0 ? (
             localMedia.photos.map((photo, index) => (
-              <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
+              <div key={photo.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
                 <Image
-                  src={photo}
+                  src={getImageUrl(photo)}
                   alt={`Vehicle photo ${index + 1}`}
                   fill
                   className="object-cover"
                 />
-                <button 
-                  onClick={() => removeMedia(index)}
-                  className="absolute top-1 right-1 bg-white rounded-full p-1 shadow hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X className="h-4 w-4 text-gray-600" />
-                </button>
+                <div className="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a
+                    href={getViewUrl(photo)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="View in Google Drive"
+                  >
+                    <ExternalLink className="h-4 w-4 text-gray-600" />
+                  </a>
+                  <button 
+                    onClick={() => removeMedia(index)}
+                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="Delete photo"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
+                </div>
               </div>
             ))
           ) : (
@@ -252,18 +302,30 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {localMedia.videos.length > 0 ? (
             localMedia.videos.map((video, index) => (
-              <div key={index} className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 group">
+              <div key={video.id} className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 group">
                 <video
-                  src={video}
+                  src={getVideoUrl(video)}
                   controls
                   className="w-full h-full object-cover"
                 />
-                <button 
-                  onClick={() => removeMedia(index)}
-                  className="absolute top-1 right-1 bg-white rounded-full p-1 shadow hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X className="h-4 w-4 text-gray-600" />
-                </button>
+                <div className="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a
+                    href={getViewUrl(video)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="View in Google Drive"
+                  >
+                    <ExternalLink className="h-4 w-4 text-gray-600" />
+                  </a>
+                  <button 
+                    onClick={() => removeMedia(index)}
+                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="Delete video"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
+                </div>
               </div>
             ))
           ) : (

@@ -88,6 +88,8 @@ export function useDashboardDataDebug() {
       liveInventoryCount: 0,
       capitalDeployed: 0,
       readyForSaleValue: 0,
+      grossProfit: 0,
+      netProfit30Days: 0,
     },
     funnelData: data?.funnelData || {
       sourced: 0,
@@ -95,6 +97,7 @@ export function useDashboardDataDebug() {
       inCustoms: 0,
       inWorkshop: 0,
       forSale: 0,
+      sold: 0,
     },
     actionItems: data?.actionItems || [],
     recentActivity: data?.recentActivity || [],

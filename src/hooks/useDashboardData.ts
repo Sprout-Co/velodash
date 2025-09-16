@@ -75,6 +75,7 @@ export function useDashboardData() {
       inCustoms: 0,
       inWorkshop: 0,
       forSale: 0,
+      sold: 0,
     },
     actionItems: data?.actionItems || [],
     recentActivity: data?.recentActivity || [],

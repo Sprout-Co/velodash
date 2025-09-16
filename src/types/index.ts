@@ -27,6 +27,37 @@ export type CostCategory =
 
 export type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'NGN';
 
+export interface GoogleDriveFileReference {
+  id: string;
+  name: string;
+  webViewLink: string;
+  webContentLink: string;
+  mimeType: string;
+  size: string;
+  createdTime: string;
+  modifiedTime: string;
+}
+
+export interface CloudinaryFileReference {
+  id: string;
+  publicId: string;
+  name: string;
+  url: string;
+  format: string;
+  resourceType: 'image' | 'video' | 'raw';
+  size: number;
+  width?: number;
+  height?: number;
+  createdAt: string;
+  vehicleId: string;
+  type: 'photos' | 'videos' | 'documents';
+  thumbnailUrl: string;
+  downloadUrl: string;
+}
+
+// Union type for file references (supports both Google Drive and Cloudinary)
+export type FileReference = GoogleDriveFileReference | CloudinaryFileReference;
+
 export interface Vehicle {
   id: string;
   vin: string;
@@ -45,15 +76,15 @@ export interface Vehicle {
     listingUrl?: string;
   };
   media: {
-    photos: string[];
-    videos: string[];
+    photos: FileReference[];
+    videos: FileReference[];
   };
   documents: {
-    billOfLading?: string;
-    customsDeclaration?: string;
-    title?: string;
-    purchaseInvoice?: string;
-    repairReceipts: string[];
+    billOfLading?: FileReference;
+    customsDeclaration?: FileReference;
+    title?: FileReference;
+    purchaseInvoice?: FileReference;
+    repairReceipts: FileReference[];
   };
   costs: CostEntry[];
   saleDetails?: {

@@ -505,6 +505,42 @@ export const vehicleService = {
     }
   },
 
+  // Update vehicle documents
+  async updateVehicleDocuments(id: string, documents: Vehicle['documents']): Promise<Vehicle> {
+    try {
+      const docRef = doc(db, COLLECTIONS.VEHICLES, id);
+      const now = new Date();
+      
+      const updateData = {
+        documents,
+        updatedAt: Timestamp.fromDate(now),
+      };
+
+      const cleanedUpdateData = cleanUndefinedValues(updateData);
+      await updateDoc(docRef, cleanedUpdateData);
+      
+      // Log activity
+      await activityService.logActivity({
+        userId: 'system',
+        userName: 'System',
+        action: 'updated vehicle documents',
+        vehicleId: id,
+        timestamp: now,
+      });
+      
+      // Return updated vehicle
+      const updatedVehicle = await this.getVehicleById(id);
+      if (!updatedVehicle) {
+        throw new Error('Vehicle not found after update');
+      }
+      
+      return updatedVehicle;
+    } catch (error) {
+      console.error('Error updating vehicle documents:', error);
+      throw new Error('Failed to update vehicle documents');
+    }
+  },
+
   // Delete a vehicle
   async deleteVehicle(id: string): Promise<void> {
     try {
