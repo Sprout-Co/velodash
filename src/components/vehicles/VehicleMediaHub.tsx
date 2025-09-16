@@ -447,6 +447,21 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
                   <span>Open in new tab</span>
                 </a>
                 <button
+                  className="image-preview-action-btn image-preview-delete-btn"
+                  onClick={() => {
+                    const photoIndex = (localMedia.photos || []).findIndex(photo => photo.id === selectedPhoto.id);
+                    if (photoIndex !== -1) {
+                      removeMedia(photoIndex);
+                      setIsImageModalOpen(false);
+                      setSelectedPhoto(null);
+                    }
+                  }}
+                  aria-label="Delete image"
+                >
+                  <X className="icon" />
+                  <span>Delete</span>
+                </button>
+                <button
                   className="image-preview-close"
                   onClick={() => { setIsImageModalOpen(false); setSelectedPhoto(null); }}
                   aria-label="Close preview"
