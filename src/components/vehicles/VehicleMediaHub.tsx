@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Vehicle } from '@/types';
-import { Upload, X, ImageIcon, Film, Loader2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Vehicle, FileReference } from '@/types';
+import { Upload, X, ImageIcon, Film, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
-import { storageService, generateThumbnail } from '@/lib/storage';
+import { storageService } from '@/lib/storage';
+// Removed generateThumbnail import as Cloudinary handles thumbnails automatically
 import { vehicleService } from '@/lib/firestore';
 
 interface VehicleMediaHubProps {
@@ -17,7 +18,68 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ [key: number]: number }>({});
   const [error, setError] = useState<string | null>(null);
-  const [localMedia, setLocalMedia] = useState<Vehicle['media']>(media);
+  const [localMedia, setLocalMedia] = useState<Vehicle['media']>({
+    photos: media?.photos || [],
+    videos: media?.videos || []
+  });
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<FileReference | null>(null);
+
+  // Sync localMedia when media prop changes
+  useEffect(() => {
+    console.log('VehicleMediaHub: media prop changed:', media);
+    setLocalMedia({
+      photos: media?.photos || [],
+      videos: media?.videos || []
+    });
+  }, [media]);
+
+  // Close preview on Escape key
+  useEffect(() => {
+    if (!isImageModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsImageModalOpen(false);
+        setSelectedPhoto(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isImageModalOpen]);
+
+  // Helper functions to get URLs for both Google Drive and Cloudinary files
+  const getImageUrl = (file: FileReference): string => {
+    console.log('getImageUrl called with file:', file);
+    if ('url' in file) {
+      // Cloudinary file reference
+      console.log('Using Cloudinary URL:', file.url);
+      return file.url;
+    } else {
+      // Google Drive file reference
+      console.log('Using Google Drive URL:', file.webViewLink);
+      return file.webViewLink;
+    }
+  };
+
+  const getVideoUrl = (file: FileReference): string => {
+    if ('url' in file) {
+      // Cloudinary file reference
+      return file.url;
+    } else {
+      // Google Drive file reference
+      return file.webContentLink;
+    }
+  };
+
+  const getViewUrl = (file: FileReference): string => {
+    if ('url' in file) {
+      // Cloudinary file reference
+      return file.url;
+    } else {
+      // Google Drive file reference
+      return file.webViewLink;
+    }
+  };
   
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -61,7 +123,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       }
       
       // Upload files
-      const downloadURLs = await storageService.uploadMultipleFiles(
+      const uploadedFiles = await storageService.uploadMultipleFiles(
         files,
         vehicleId,
         activeTab,
@@ -70,10 +132,25 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
         }
       );
       
+      console.log('Uploaded files result:', uploadedFiles);
+      
       // Update local media state
+      // Ensure we have a valid array for the current tab
+      const currentMediaArray = Array.isArray(localMedia[activeTab]) 
+        ? localMedia[activeTab] 
+        : [];
+      
+      console.log('Upload debug:', {
+        activeTab,
+        localMedia,
+        currentMediaArray,
+        uploadedFiles,
+        isArray: Array.isArray(currentMediaArray)
+      });
+      
       const updatedMedia = {
         ...localMedia,
-        [activeTab]: [...localMedia[activeTab], ...downloadURLs]
+        [activeTab]: [...currentMediaArray, ...uploadedFiles]
       };
       
       setLocalMedia(updatedMedia);
@@ -83,7 +160,10 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       
       // Notify parent component
       if (onMediaUpdate) {
+        console.log('Calling onMediaUpdate with:', updatedMedia);
         onMediaUpdate(updatedMedia);
+      } else {
+        console.warn('onMediaUpdate callback not provided');
       }
       
       // Clear progress
@@ -99,11 +179,21 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
 
   const removeMedia = async (index: number) => {
     try {
-      const mediaArray = localMedia[activeTab];
-      const urlToRemove = mediaArray[index];
+      const mediaArray = localMedia[activeTab] || [];
+      const fileToRemove = mediaArray[index];
+      
+      if (!fileToRemove) {
+        throw new Error('File not found');
+      }
       
       // Delete from storage
-      await storageService.deleteFile(urlToRemove);
+      // Check if it's a Cloudinary file reference
+      if ('publicId' in fileToRemove) {
+        await storageService.deleteFile(fileToRemove.publicId, fileToRemove.resourceType);
+      } else {
+        // Legacy Google Drive file reference
+        await storageService.deleteFile(fileToRemove.id);
+      }
       
       // Update local state
       const updatedArray = mediaArray.filter((_, i) => i !== index);
@@ -141,7 +231,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
           }`}
           onClick={() => setActiveTab('photos')}
         >
-          Photos ({localMedia.photos.length})
+          Photos ({(localMedia.photos || []).length})
         </button>
         <button
           className={`py-2 px-4 ${
@@ -151,7 +241,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
           }`}
           onClick={() => setActiveTab('videos')}
         >
-          Videos ({localMedia.videos.length})
+          Videos ({(localMedia.videos || []).length})
         </button>
       </div>
       
@@ -224,46 +314,103 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       {/* Media Display */}
       {activeTab === 'photos' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {localMedia.photos.length > 0 ? (
-            localMedia.photos.map((photo, index) => (
-              <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
-                <Image
-                  src={photo}
+          {(() => {
+            console.log('Rendering photos, localMedia.photos:', localMedia.photos);
+            console.log('Photos array length:', (localMedia.photos || []).length);
+            console.log(' ===>Photos array:', localMedia.photos);
+            const hasPhotos = (localMedia.photos || []).length > 0;
+            console.log('Has photos:', hasPhotos);
+            return hasPhotos;
+          })() ? (
+            (localMedia.photos || []).map((photo, index) => (
+              <div
+                key={photo.id}
+                className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group cursor-zoom-in"
+                onClick={() => {
+                  setSelectedPhoto(photo);
+                  setIsImageModalOpen(true);
+                }}
+              >
+                {/* Temporary debug info */}
+                <div className="absolute top-0 left-0 bg-black bg-opacity-75 text-white text-xs p-1 z-10">
+                  {photo.name}
+                </div>
+                <img
+                  src={getImageUrl(photo)}
                   alt={`Vehicle photo ${index + 1}`}
-                  fill
                   className="object-cover"
                 />
-                <button 
-                  onClick={() => removeMedia(index)}
-                  className="absolute top-1 right-1 bg-white rounded-full p-1 shadow hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X className="h-4 w-4 text-gray-600" />
-                </button>
+              
+                {/* Fallback img tag for debugging */}
+                <img
+                  src={getImageUrl(photo)}
+                  alt={`Fallback ${index + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover opacity-0"
+                  onError={(e) => {
+                    console.error('Fallback img failed to load:', e);
+                  }}
+                  onLoad={() => {
+                    console.log('Fallback img loaded successfully:', getImageUrl(photo));
+                  }}
+                />
+                <div className="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a
+                    href={getViewUrl(photo)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="View in Google Drive"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <ExternalLink className="h-4 w-4 text-gray-600" />
+                  </a>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); removeMedia(index); }}
+                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="Delete photo"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
+                </div>
               </div>
             ))
           ) : (
             <div className="col-span-full text-center py-8 text-gray-500">
               <ImageIcon className="h-12 w-12 mx-auto mb-2" />
               <p>No photos uploaded yet</p>
+              <p className="text-xs mt-2">Debug: localMedia.photos = {JSON.stringify(localMedia.photos)}</p>
             </div>
           )}
         </div>
+        
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {localMedia.videos.length > 0 ? (
-            localMedia.videos.map((video, index) => (
-              <div key={index} className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 group">
+          {(localMedia.videos || []).length > 0 ? (
+            (localMedia.videos || []).map((video, index) => (
+              <div key={video.id} className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 group">
                 <video
-                  src={video}
+                  src={getVideoUrl(video)}
                   controls
                   className="w-full h-full object-cover"
                 />
-                <button 
-                  onClick={() => removeMedia(index)}
-                  className="absolute top-1 right-1 bg-white rounded-full p-1 shadow hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X className="h-4 w-4 text-gray-600" />
-                </button>
+                <div className="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a
+                    href={getViewUrl(video)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="View in Google Drive"
+                  >
+                    <ExternalLink className="h-4 w-4 text-gray-600" />
+                  </a>
+                  <button 
+                    onClick={() => removeMedia(index)}
+                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    title="Delete video"
+                  >
+                    <X className="h-4 w-4 text-gray-600" />
+                  </button>
+                </div>
               </div>
             ))
           ) : (
@@ -272,6 +419,50 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
               <p>No videos uploaded yet</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Image Preview Modal */}
+      {isImageModalOpen && selectedPhoto && (
+        <div
+          className="image-preview-overlay"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsImageModalOpen(false);
+              setSelectedPhoto(null);
+            }
+          }}
+        >
+          <div className="image-preview-modal">
+            <div className="image-preview-header">
+              <div className="image-preview-title">{('name' in selectedPhoto && selectedPhoto.name) ? selectedPhoto.name : 'Preview'}</div>
+              <div className="image-preview-actions">
+                <a
+                  href={getViewUrl(selectedPhoto)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="image-preview-action-btn"
+                >
+                  <ExternalLink className="icon" />
+                  <span>Open in new tab</span>
+                </a>
+                <button
+                  className="image-preview-close"
+                  onClick={() => { setIsImageModalOpen(false); setSelectedPhoto(null); }}
+                  aria-label="Close preview"
+                >
+                  <X className="icon" />
+                </button>
+              </div>
+            </div>
+            <div className="image-preview-content">
+              <img
+                src={getImageUrl(selectedPhoto)}
+                alt={('name' in selectedPhoto && selectedPhoto.name) ? selectedPhoto.name : 'Vehicle photo preview'}
+                className="image-preview-img"
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>

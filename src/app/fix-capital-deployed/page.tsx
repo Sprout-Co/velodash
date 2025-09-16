@@ -195,11 +195,11 @@ export default function FixCapitalDeployedPage() {
         
         <div style={{ marginBottom: '30px', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
           <h2>Issue Description</h2>
-          <p>The "Capital Deployed" metric shows ₦0 because vehicles don't have cost entries in the database.</p>
+          <p>The &quot;Capital Deployed&quot; metric shows ₦0 because vehicles don&apos;t have cost entries in the database.</p>
           <p>This tool will:</p>
           <ul>
             <li>Check all vehicles for existing cost entries</li>
-            <li>Create cost entries for vehicles that don't have them (using their purchase price)</li>
+            <li>Create cost entries for vehicles that don&apos;t have them (using their purchase price)</li>
             <li>Use appropriate exchange rates to convert to NGN</li>
             <li>Update the Capital Deployed calculation</li>
           </ul>

@@ -227,7 +227,12 @@ function VehicleDetailsContent({ id }: { id: string }) {
           media={vehicle.media} 
           vehicleId={vehicle.id}
           onMediaUpdate={(updatedMedia) => {
-            setVehicle(prev => prev ? { ...prev, media: updatedMedia } : null);
+            console.log('Vehicle details page received media update:', updatedMedia);
+            setVehicle(prev => {
+              const updated = prev ? { ...prev, media: updatedMedia } : null;
+              console.log('Updated vehicle state:', updated);
+              return updated;
+            });
           }}
         />
         <VehicleDocumentVault documents={vehicle.documents} vehicleId={vehicle.id} />
