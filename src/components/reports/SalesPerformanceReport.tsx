@@ -15,13 +15,14 @@ import {
 } from 'recharts';
 import { useSalesPerformanceData } from '@/hooks/useReportsData';
 import { formatCurrency } from '@/lib/utils';
+import { debugSalesData } from '@/lib/debugSales';
 
 const SalesPerformanceReport: React.FC = () => {
   const [timeframe, setTimeframe] = useState('monthly');
   const [vehicleType, setVehicleType] = useState('all');
   
-  // Calculate date range based on timeframe
-  const getDateRange = () => {
+  // Calculate date range based on timeframe - memoized to prevent re-renders
+  const { startDate, endDate } = useMemo(() => {
     const endDate = new Date();
     const startDate = new Date();
     
@@ -46,10 +47,20 @@ const SalesPerformanceReport: React.FC = () => {
     }
     
     return { startDate, endDate };
-  };
-
-  const { startDate, endDate } = getDateRange();
+  }, [timeframe]);
   const { data: reportData, isLoading, error } = useSalesPerformanceData(startDate, endDate);
+
+  // Debug function
+  const handleDebugSales = async () => {
+    try {
+      const debugInfo = await debugSalesData();
+      console.log('Debug info:', debugInfo);
+      alert(`Found ${debugInfo.soldVehicles} sold vehicles and ${debugInfo.vehiclesWithSaleDetails} vehicles with sale details. Check console for details.`);
+    } catch (err) {
+      console.error('Debug failed:', err);
+      alert('Debug failed. Check console for details.');
+    }
+  };
 
   // Transform data for charts
   const monthlySalesData = useMemo(() => {
@@ -145,6 +156,13 @@ const SalesPerformanceReport: React.FC = () => {
             <option value="new">New Vehicles</option>
             <option value="used">Used Vehicles</option>
           </select>
+          
+          <button 
+            onClick={handleDebugSales}
+            className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm"
+          >
+            Debug Sales
+          </button>
         </div>
       </div>
       

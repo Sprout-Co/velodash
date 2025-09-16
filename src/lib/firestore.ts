@@ -932,29 +932,64 @@ export const reportService = {
         return convertTimestamps({ id: doc.id, ...data }) as Vehicle;
       });
 
-      const soldVehicles = vehicles.filter(v => 
-        v.saleDetails?.saleDate && 
-        v.saleDetails.saleDate >= startDate && 
-        v.saleDetails.saleDate <= endDate
-      );
+      // Get vehicles that are sold, either by status or by having sale details
+      const soldVehicles = vehicles.filter(v => {
+        // Check if vehicle is marked as sold by status
+        if (v.status === 'sold') {
+          // If it has sale details with a date, check the date range
+          if (v.saleDetails?.saleDate) {
+            return v.saleDetails.saleDate >= startDate && v.saleDetails.saleDate <= endDate;
+          }
+          // If no sale date, use the updatedAt date as a fallback
+          return v.updatedAt >= startDate && v.updatedAt <= endDate;
+        }
+        // Check if vehicle has sale details with date in range
+        return v.saleDetails?.saleDate && 
+               v.saleDetails.saleDate >= startDate && 
+               v.saleDetails.saleDate <= endDate;
+      });
+
+      console.log('Sales Performance Report Debug:', {
+        totalVehicles: vehicles.length,
+        soldVehicles: soldVehicles.length,
+        dateRange: { start: startDate, end: endDate },
+        soldVehicleDetails: soldVehicles.map(v => ({
+          id: v.id,
+          name: `${v.year} ${v.make} ${v.model}`,
+          status: v.status,
+          hasSaleDetails: !!v.saleDetails,
+          salePrice: v.saleDetails?.finalSalePrice || v.saleDetails?.listingPrice,
+          saleDate: v.saleDetails?.saleDate,
+          updatedAt: v.updatedAt
+        }))
+      });
 
       const reportVehicles = soldVehicles.map(vehicle => {
         const totalCost = Array.isArray(vehicle.costs) 
           ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
           : 0;
-        const grossProfit = vehicle.saleDetails!.finalSalePrice - totalCost;
-        const profitMargin = (grossProfit / vehicle.saleDetails!.finalSalePrice) * 100;
-        const roi = (grossProfit / totalCost) * 100;
+        
+        // Use sale details if available, otherwise use listing price or total cost as fallback
+        const salePrice = vehicle.saleDetails?.finalSalePrice || 
+                         vehicle.saleDetails?.listingPrice || 
+                         totalCost; // Fallback to cost if no sale price
+        
+        const grossProfit = salePrice - totalCost;
+        const profitMargin = salePrice > 0 ? (grossProfit / salePrice) * 100 : 0;
+        const roi = totalCost > 0 ? (grossProfit / totalCost) * 100 : 0;
+        
+        // Use sale date if available, otherwise use updatedAt as fallback
+        const saleDate = vehicle.saleDetails?.saleDate || vehicle.updatedAt;
 
         return {
           vehicleId: vehicle.id,
           vehicleName: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
           totalCost,
-          salePrice: vehicle.saleDetails!.finalSalePrice,
+          salePrice,
           grossProfit,
           profitMargin,
           roi,
-          saleDate: vehicle.saleDetails!.saleDate,
+          saleDate,
         };
       });
 

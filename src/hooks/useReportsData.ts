@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { reportService } from '@/lib/firestore';
 import { 
   SalesPerformanceReport, 
@@ -13,19 +13,31 @@ export function useSalesPerformanceData(startDate: Date, endDate: Date) {
   const [data, setData] = useState<SalesPerformanceReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
+    // Prevent multiple simultaneous fetches
+    if (isFetchingRef.current) return;
+    
     const fetchData = async () => {
       try {
+        isFetchingRef.current = true;
         setIsLoading(true);
         setError(null);
-        const reportData = await reportService.getSalesPerformanceReport(startDate, endDate);
+        
+        // Add minimum loading time to prevent flickering
+        const [reportData] = await Promise.all([
+          reportService.getSalesPerformanceReport(startDate, endDate),
+          new Promise(resolve => setTimeout(resolve, 300)) // Minimum 300ms loading
+        ]);
+        
         setData(reportData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch sales performance data');
         console.error('Sales performance data fetch error:', err);
       } finally {
         setIsLoading(false);
+        isFetchingRef.current = false;
       }
     };
 
@@ -40,19 +52,31 @@ export function useInventoryAgingData() {
   const [data, setData] = useState<InventoryAgingReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
+    // Prevent multiple simultaneous fetches
+    if (isFetchingRef.current) return;
+    
     const fetchData = async () => {
       try {
+        isFetchingRef.current = true;
         setIsLoading(true);
         setError(null);
-        const reportData = await reportService.getInventoryAgingReport();
+        
+        // Add minimum loading time to prevent flickering
+        const [reportData] = await Promise.all([
+          reportService.getInventoryAgingReport(),
+          new Promise(resolve => setTimeout(resolve, 300)) // Minimum 300ms loading
+        ]);
+        
         setData(reportData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch inventory aging data');
         console.error('Inventory aging data fetch error:', err);
       } finally {
         setIsLoading(false);
+        isFetchingRef.current = false;
       }
     };
 
@@ -67,19 +91,31 @@ export function useExpenseBreakdownData(startDate: Date, endDate: Date) {
   const [data, setData] = useState<ExpenseBreakdownReport | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
+    // Prevent multiple simultaneous fetches
+    if (isFetchingRef.current) return;
+    
     const fetchData = async () => {
       try {
+        isFetchingRef.current = true;
         setIsLoading(true);
         setError(null);
-        const reportData = await reportService.getExpenseBreakdownReport(startDate, endDate);
+        
+        // Add minimum loading time to prevent flickering
+        const [reportData] = await Promise.all([
+          reportService.getExpenseBreakdownReport(startDate, endDate),
+          new Promise(resolve => setTimeout(resolve, 300)) // Minimum 300ms loading
+        ]);
+        
         setData(reportData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch expense breakdown data');
         console.error('Expense breakdown data fetch error:', err);
       } finally {
         setIsLoading(false);
+        isFetchingRef.current = false;
       }
     };
 
@@ -96,10 +132,15 @@ export function useDashboardChartsData() {
   const [expenseData, setExpenseData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
+    // Prevent multiple simultaneous fetches
+    if (isFetchingRef.current) return;
+    
     const fetchData = async () => {
       try {
+        isFetchingRef.current = true;
         setIsLoading(true);
         setError(null);
 
@@ -131,6 +172,7 @@ export function useDashboardChartsData() {
         console.error('Dashboard charts data fetch error:', err);
       } finally {
         setIsLoading(false);
+        isFetchingRef.current = false;
       }
     };
 

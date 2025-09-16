@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { 
   PieChart, 
   Pie, 
@@ -23,8 +23,8 @@ const ExpenseBreakdownReport: React.FC = () => {
   const [timeframe, setTimeframe] = useState('yearly');
   const [expenseType, setExpenseType] = useState('all');
   
-  // Calculate date range based on timeframe
-  const getDateRange = () => {
+  // Calculate date range based on timeframe - memoized to prevent re-renders
+  const { startDate, endDate } = useMemo(() => {
     const endDate = new Date();
     const startDate = new Date();
     
@@ -43,9 +43,7 @@ const ExpenseBreakdownReport: React.FC = () => {
     }
     
     return { startDate, endDate };
-  };
-
-  const { startDate, endDate } = getDateRange();
+  }, [timeframe]);
   const { data: reportData, isLoading, error } = useExpenseBreakdownData(startDate, endDate);
 
   // Transform data for charts
