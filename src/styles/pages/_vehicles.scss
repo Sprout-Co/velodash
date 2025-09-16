@@ -348,6 +348,26 @@
     color: white !important;
   }
   
+  // Override white text for vehicle sale component
+  .vehicle-sale {
+    input, textarea, p, span, div, label {
+      color: #000000 !important;
+    }
+    
+    .vehicle-sale__form-input,
+    .vehicle-sale__form-textarea {
+      color: #000000 !important;
+    }
+    
+    .vehicle-sale__detail-value {
+      color: #111827 !important;
+    }
+    
+    .vehicle-sale__detail-label {
+      color: #6b7280 !important;
+    }
+  }
+  
   .vehicle-identification,
   .vehicle-acquisition,
   .vehicle-media-hub,
