@@ -3,6 +3,7 @@
 import React from 'react';
 import { RecentActivity } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
+import { safeDateConversion } from '@/lib/dateUtils';
 import { 
   PlusIcon,
   PencilIcon,
@@ -67,7 +68,8 @@ export function RecentActivityFeed({ activities, isLoading }: RecentActivityFeed
       <div className="activity-feed__count">{activities.length} activities</div>
       {activities.map((activity) => {
         const IconComponent = getActivityIcon(activity.action);
-        const timeAgo = formatDistanceToNow(activity.timestamp, { addSuffix: true });
+        const dateObj = safeDateConversion(activity.timestamp);
+        const timeAgo = dateObj ? formatDistanceToNow(dateObj, { addSuffix: true }) : 'Unknown time';
         
         return (
           <div key={activity.id} className="activity-feed__item">
