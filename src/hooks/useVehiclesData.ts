@@ -32,6 +32,10 @@ export const updateVehicleSaleDetails = async (id: string, saleDetails: Vehicle[
   return await vehicleService.updateVehicleSaleDetails(id, saleDetails);
 };
 
+export const bulkDeleteVehicles = async (vehicleIds: string[]): Promise<void> => {
+  return await vehicleService.bulkDeleteVehicles(vehicleIds);
+};
+
 export default function useVehiclesData(filters?: VehicleFilters) {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);

@@ -550,6 +550,58 @@ export const vehicleService = {
     }
   },
 
+  // Bulk delete vehicles
+  async bulkDeleteVehicles(vehicleIds: string[]): Promise<void> {
+    try {
+      if (vehicleIds.length === 0) {
+        return;
+      }
+
+      // Get all vehicles to log activities
+      const vehicles = await Promise.all(
+        vehicleIds.map(id => this.getVehicleById(id))
+      );
+
+      const batch = writeBatch(db);
+      
+      // Delete all associated costs for each vehicle
+      for (const vehicleId of vehicleIds) {
+        const costsQuery = query(
+          collection(db, COLLECTIONS.COSTS),
+          where('vehicleId', '==', vehicleId)
+        );
+        const costsSnapshot = await getDocs(costsQuery);
+        
+        costsSnapshot.docs.forEach(doc => {
+          batch.delete(doc.ref);
+        });
+        
+        // Delete the vehicle
+        const vehicleRef = doc(db, COLLECTIONS.VEHICLES, vehicleId);
+        batch.delete(vehicleRef);
+      }
+      
+      await batch.commit();
+      
+      // Log activities for each deleted vehicle
+      for (const vehicle of vehicles) {
+        if (vehicle) {
+          await activityService.logActivity({
+            userId: 'system',
+            userName: 'System',
+            action: 'bulk deleted vehicle',
+            vehicleId: vehicle.id,
+            vehicleName: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+            timestamp: new Date(),
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error bulk deleting vehicles:', error);
+      throw new Error('Failed to bulk delete vehicles');
+    }
+  },
+
   // Get vehicles by status for dashboard funnel
   async getVehiclesByStatus(): Promise<InventoryStatusFunnel> {
     try {

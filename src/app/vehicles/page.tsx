@@ -6,16 +6,20 @@ import { Vehicle, VehicleStatus, VehicleFilters } from '@/types';
 import { calculateDaysInInventory } from '@/lib/utils';
 import VehicleTable from '@/components/vehicles/VehicleTable';
 import VehicleFiltersPanel from '@/components/vehicles/VehicleFiltersPanel';
-import { Loader2 } from 'lucide-react';
+import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
+import { Loader2, Trash2 } from 'lucide-react';
 
 // Mock data - would be replaced by actual API call
-import { getVehiclesData } from '@/hooks/useVehiclesData';
+import { getVehiclesData, bulkDeleteVehicles } from '@/hooks/useVehiclesData';
 
 function VehiclesContent() {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [filters, setFilters] = useState<VehicleFilters>({});
+  const [selectedVehicles, setSelectedVehicles] = useState<string[]>([]);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -92,6 +96,30 @@ function VehiclesContent() {
     setFilters(prev => ({ ...prev, search: searchTerm }));
   };
 
+  const handleSelectionChange = (selectedIds: string[]) => {
+    setSelectedVehicles(selectedIds);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedVehicles.length === 0) return;
+    
+    setIsDeleting(true);
+    try {
+      await bulkDeleteVehicles(selectedVehicles);
+      
+      // Remove deleted vehicles from state
+      setVehicles(prev => prev.filter(v => !selectedVehicles.includes(v.id)));
+      setFilteredVehicles(prev => prev.filter(v => !selectedVehicles.includes(v.id)));
+      setSelectedVehicles([]);
+      setShowDeleteDialog(false);
+    } catch (error) {
+      console.error('Error deleting vehicles:', error);
+      // You might want to show an error message to the user here
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   // Calculate total costs for each vehicle
   const vehiclesWithCosts = filteredVehicles.map(vehicle => {
     const totalCost = Array.isArray(vehicle.costs) 
@@ -119,12 +147,23 @@ function VehiclesContent() {
     <div className="vehicles-inventory-container">
       <div className="page-header">
         <h1>Vehicle Inventory</h1>
-        <button 
-          className="add-vehicle-btn"
-          onClick={() => router.push('/vehicles/new')}
-        >
-          Add New Vehicle
-        </button>
+        <div className="header-actions">
+          {selectedVehicles.length > 0 && (
+            <button 
+              className="bulk-delete-btn"
+              onClick={() => setShowDeleteDialog(true)}
+            >
+              <Trash2 className="icon" />
+              Delete Selected ({selectedVehicles.length})
+            </button>
+          )}
+          <button 
+            className="add-vehicle-btn"
+            onClick={() => router.push('/vehicles/new')}
+          >
+            Add New Vehicle
+          </button>
+        </div>
       </div>
       
       <div className="page-content">
@@ -140,9 +179,21 @@ function VehiclesContent() {
           <VehicleTable 
             vehicles={vehiclesWithCosts}
             onRowClick={(vehicle) => router.push(`/vehicles/${vehicle.id}`)}
+            selectedVehicles={selectedVehicles}
+            onSelectionChange={handleSelectionChange}
           />
         </div>
       </div>
+
+      <DeleteConfirmationDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleBulkDelete}
+        title="Delete Selected Vehicles"
+        message={`Are you sure you want to delete ${selectedVehicles.length} vehicle${selectedVehicles.length > 1 ? 's' : ''}? This action cannot be undone.`}
+        itemName={`${selectedVehicles.length} vehicle${selectedVehicles.length > 1 ? 's' : ''}`}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }
