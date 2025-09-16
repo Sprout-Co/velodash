@@ -33,7 +33,7 @@ export default function FixCapitalDeployedPage() {
         if (costs.length > 0) {
           vehiclesWithCosts++;
           totalCostEntries += costs.length;
-          totalCalculatedCost += costs.reduce((sum, cost) => sum + (cost.ngnAmount || 0), 0);
+          totalCalculatedCost += costs.reduce((sum, cost) => sum + (cost.amount || 0), 0);
         } else {
           vehiclesWithoutCosts++;
         }
@@ -130,7 +130,6 @@ export default function FixCapitalDeployedPage() {
             amount: purchasePrice,
             currency,
             exchangeRate,
-            ngnAmount: purchasePrice * exchangeRate
           });
           
           await costService.createCost(vehicle.id, costData);
@@ -142,7 +141,6 @@ export default function FixCapitalDeployedPage() {
             action: 'fixed',
             amount: purchasePrice,
             currency,
-            ngnAmount: purchasePrice * exchangeRate
           });
           
           console.log(`Successfully created cost entry for vehicle ${vehicle.id}`);
@@ -302,7 +300,7 @@ export default function FixCapitalDeployedPage() {
                             </td>
                             <td style={{ padding: '8px', border: '1px solid #ddd' }}>
                               {result.action === 'fixed' && (
-                                `${result.amount} ${result.currency} → ₦${result.ngnAmount.toLocaleString()}`
+                                `${result.amount} ${result.currency}`
                               )}
                               {result.action === 'skipped' && result.reason}
                               {result.action === 'error' && result.error}

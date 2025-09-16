@@ -123,7 +123,7 @@ function VehiclesContent() {
   // Calculate total costs for each vehicle
   const vehiclesWithCosts = filteredVehicles.map(vehicle => {
     const totalCost = Array.isArray(vehicle.costs) 
-      ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+      ? vehicle.costs.reduce((sum, cost) => sum + (cost.amount || 0), 0)
       : 0;
     
     // Debug date conversion if needed

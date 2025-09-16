@@ -232,8 +232,6 @@ interface CostEntry {
   description: string;
   amount: number;
   currency: Currency;
-  ngnAmount: number;
-  exchangeRate: number;
   createdAt: Date;
 }
 ```
