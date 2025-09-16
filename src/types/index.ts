@@ -39,7 +39,7 @@ export interface Vehicle {
   status: VehicleStatus;
   acquisitionDetails: {
     sourceChannel: string;
-    purchaseDate: Date;
+    purchaseDate: Date | string | any; // Flexible date handling for Firestore
     purchasePrice: number;
     currency: Currency;
     auctionLot?: string;
@@ -60,24 +60,24 @@ export interface Vehicle {
   saleDetails?: {
     listingPrice: number;
     finalSalePrice: number;
-    saleDate: Date;
+    saleDate: Date | string | any; // Flexible date handling for Firestore
     notes?: string;
   };
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string | any; // Flexible date handling for Firestore
+  updatedAt: Date | string | any; // Flexible date handling for Firestore
 }
 
 export interface CostEntry {
   id: string;
   vehicleId: string;
-  date: Date;
+  date: Date | string | any; // Flexible date handling for Firestore
   category: CostCategory;
   description: string;
   amount: number;
   currency: Currency;
   ngnAmount: number; // Converted amount
   exchangeRate: number;
-  createdAt: Date;
+  createdAt: Date | string | any; // Flexible date handling for Firestore
 }
 
 export interface User {
@@ -85,8 +85,8 @@ export interface User {
   email: string;
   name: string;
   role: 'admin' | 'standard';
-  createdAt: Date;
-  lastLoginAt?: Date;
+  createdAt: Date | string | any; // Flexible date handling for Firestore
+  lastLoginAt?: Date | string | any; // Flexible date handling for Firestore
 }
 
 export interface DashboardKPIs {
@@ -121,13 +121,13 @@ export interface RecentActivity {
   action: string;
   vehicleId?: string;
   vehicleName?: string;
-  timestamp: Date;
+  timestamp: Date | string | any; // Flexible date handling for Firestore
 }
 
 export interface SalesPerformanceReport {
   period: {
-    start: Date;
-    end: Date;
+    start: Date | string | any; // Flexible date handling for Firestore
+    end: Date | string | any; // Flexible date handling for Firestore
   };
   vehicles: Array<{
     vehicleId: string;
@@ -137,7 +137,7 @@ export interface SalesPerformanceReport {
     grossProfit: number;
     profitMargin: number;
     roi: number;
-    saleDate: Date;
+    saleDate: Date | string | any; // Flexible date handling for Firestore
   }>;
   summary: {
     totalRevenue: number;
@@ -150,8 +150,8 @@ export interface SalesPerformanceReport {
 
 export interface InventoryAgingReport {
   period: {
-    start: Date;
-    end: Date;
+    start: Date | string | any; // Flexible date handling for Firestore
+    end: Date | string | any; // Flexible date handling for Firestore
   };
   vehicles: Array<{
     vehicleId: string;
@@ -170,8 +170,8 @@ export interface InventoryAgingReport {
 
 export interface ExpenseBreakdownReport {
   period: {
-    start: Date;
-    end: Date;
+    start: Date | string | any; // Flexible date handling for Firestore
+    end: Date | string | any; // Flexible date handling for Firestore
   };
   categories: Array<{
     category: CostCategory;
@@ -254,8 +254,8 @@ export interface VehicleFilters {
 }
 
 export interface DateRange {
-  start: Date;
-  end: Date;
+  start: Date | string | any; // Flexible date handling for Firestore
+  end: Date | string | any; // Flexible date handling for Firestore
 }
 
 // Chart data types
@@ -276,6 +276,6 @@ export interface Notification {
   type: 'info' | 'success' | 'warning' | 'error';
   title: string;
   message: string;
-  timestamp: Date;
+  timestamp: Date | string | any; // Flexible date handling for Firestore
   read: boolean;
 }

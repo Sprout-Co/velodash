@@ -7,6 +7,7 @@ import VehicleForm from '@/components/forms/VehicleForm';
 import { VehicleFormData, Vehicle } from '@/types';
 import { getVehicleById, updateVehicle } from '@/hooks/useVehiclesData';
 import { Loader2 } from 'lucide-react';
+import { safeDateToISOString } from '@/lib/dateUtils';
 
 function EditVehicleContent({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
@@ -77,7 +78,7 @@ function EditVehicleContent({ id }: { id: string }) {
       mileage: vehicle.mileage,
       acquisitionDetails: {
         sourceChannel: vehicle.acquisitionDetails.sourceChannel,
-        purchaseDate: vehicle.acquisitionDetails.purchaseDate.toISOString().split('T')[0],
+        purchaseDate: safeDateToISOString(vehicle.acquisitionDetails.purchaseDate),
         purchasePrice: vehicle.acquisitionDetails.purchasePrice,
         currency: vehicle.acquisitionDetails.currency,
         auctionLot: vehicle.acquisitionDetails.auctionLot || '',
