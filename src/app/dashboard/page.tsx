@@ -6,7 +6,6 @@ import { KPICards } from '@/components/dashboard/KPICards';
 import { InventoryFunnel } from '@/components/dashboard/InventoryFunnel';
 import { ActionRequiredList } from '@/components/dashboard/ActionRequiredList';
 import { RecentActivityFeed } from '@/components/dashboard/RecentActivityFeed';
-import { LastUpdated } from '@/components/dashboard/LastUpdated';
 import { useDashboardData } from '@/hooks/useDashboardData';
 
 export default function DashboardPage() {
@@ -38,7 +37,9 @@ export default function DashboardPage() {
               <p className="dashboard__subtitle">Real-time business overview</p>
             </div>
             <div className="dashboard__header-actions">
-              <LastUpdated />
+              <div className="dashboard__last-updated">
+                Last updated: {new Date().toLocaleTimeString()}
+              </div>
             </div>
           </div>
         </header>

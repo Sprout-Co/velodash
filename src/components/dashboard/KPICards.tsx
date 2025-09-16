@@ -3,7 +3,6 @@
 import React from 'react';
 import { DashboardKPIs } from '@/types';
 import { formatCurrency } from '@/lib/utils';
-import { GrossProfitCard } from './GrossProfitCard';
 
 interface KPICardsProps {
   data: DashboardKPIs;
@@ -33,6 +32,14 @@ const kpiConfig = [
     description: 'Total listing value',
     icon: '🏷️',
     color: 'purple',
+    format: (value: number) => formatCurrency(value, 'NGN'),
+  },
+  {
+    key: 'grossProfit' as keyof DashboardKPIs,
+    title: 'Gross Profit',
+    description: 'Total profit from sales',
+    icon: '📈',
+    color: 'orange',
     format: (value: number) => formatCurrency(value, 'NGN'),
   },
 ];
@@ -76,10 +83,6 @@ export function KPICards({ data, isLoading }: KPICardsProps) {
           </div>
         );
       })}
-      <GrossProfitCard 
-        totalGrossProfit={data.grossProfit} 
-        isLoading={isLoading} 
-      />
     </div>
   );
 }

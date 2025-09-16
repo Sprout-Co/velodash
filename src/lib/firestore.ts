@@ -746,15 +746,14 @@ export const dashboardService = {
         if (vehicle.status === 'sold' && vehicle.saleDetails?.finalSalePrice) {
           const profit = vehicle.saleDetails.finalSalePrice - totalCost;
           grossProfit += profit;
-          console.log(`Gross profit for vehicle ${vehicle.id}: ${profit} NGN (Sale: ${vehicle.saleDetails.finalSalePrice}, Cost: ${totalCost})`);
+          console.log(`Vehicle ${vehicle.id} sold for ${vehicle.saleDetails.finalSalePrice} NGN, cost ${totalCost} NGN, profit: ${profit} NGN`);
         }
       }
       
       console.log('Capital deployed calculation:', {
         totalVehicles: vehicles.length,
         capitalDeployed,
-        readyForSaleValue,
-        grossProfit
+        readyForSaleValue
       });
 
       // Debug logging

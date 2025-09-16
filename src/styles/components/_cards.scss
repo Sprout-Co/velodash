@@ -47,47 +47,21 @@
   @include card;
   text-align: center;
   
-  .kpi-card__header {
-    @include flex-between;
-    align-items: flex-start;
-    margin-bottom: $spacing-md;
+  // Color variants
+  &.kpi-card--blue {
+    border-left: 4px solid $accent-blue;
   }
   
-  .kpi-card__title {
-    font-size: $font-size-lg;
-    font-weight: $font-weight-semibold;
-    color: $text-primary;
-    margin: 0;
+  &.kpi-card--green {
+    border-left: 4px solid $accent-green;
   }
   
-  .kpi-card__filter {
-    margin-left: $spacing-sm;
+  &.kpi-card--purple {
+    border-left: 4px solid #9F7AEA; // Purple color
   }
   
-  .kpi-card__month-select {
-    font-size: $font-size-xs;
-    padding: $spacing-xs $spacing-sm;
-    border: 1px solid rgba($text-secondary, 0.2);
-    border-radius: $border-radius-sm;
-    background: $primary-bg;
-    color: $text-secondary;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      border-color: rgba($text-secondary, 0.4);
-    }
-    
-    &:focus {
-      outline: none;
-      border-color: $accent-blue;
-      box-shadow: 0 0 0 2px rgba($accent-blue, 0.1);
-    }
-    
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+  &.kpi-card--orange {
+    border-left: 4px solid $warning;
   }
   
   .kpi-card__value {
@@ -128,15 +102,6 @@
     
     &.kpi-card__change--negative {
       color: $error;
-    }
-  }
-  
-  // Color variants
-  &.kpi-card--orange {
-    border-left: 4px solid #f97316;
-    
-    .kpi-card__value {
-      color: #f97316;
     }
   }
 }
