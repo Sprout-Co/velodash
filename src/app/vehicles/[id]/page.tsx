@@ -215,29 +215,22 @@ function VehicleDetailsContent({ id }: { id: string }) {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <div className="grid grid-cols-1 gap-6">
-            <VehicleIdentification vehicle={vehicle} />
-            <VehicleAcquisition acquisitionDetails={vehicle.acquisitionDetails} />
-            <VehicleSale 
-              saleDetails={vehicle.saleDetails} 
-              vehicleId={vehicle.id}
-              onSaleUpdate={handleSaleUpdate}
-            />
-            <VehicleMediaHub 
-              media={vehicle.media} 
-              vehicleId={vehicle.id}
-              onMediaUpdate={(updatedMedia) => {
-                setVehicle(prev => prev ? { ...prev, media: updatedMedia } : null);
-              }}
-            />
-          </div>
-        </div>
-        
-        <div className="lg:col-span-1">
-          <VehicleDocumentVault documents={vehicle.documents} vehicleId={vehicle.id} />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <VehicleIdentification vehicle={vehicle} />
+        <VehicleAcquisition acquisitionDetails={vehicle.acquisitionDetails} />
+        <VehicleSale 
+          saleDetails={vehicle.saleDetails} 
+          vehicleId={vehicle.id}
+          onSaleUpdate={handleSaleUpdate}
+        />
+        <VehicleMediaHub 
+          media={vehicle.media} 
+          vehicleId={vehicle.id}
+          onMediaUpdate={(updatedMedia) => {
+            setVehicle(prev => prev ? { ...prev, media: updatedMedia } : null);
+          }}
+        />
+        <VehicleDocumentVault documents={vehicle.documents} vehicleId={vehicle.id} />
       </div>
       
       <div className="mt-6">
