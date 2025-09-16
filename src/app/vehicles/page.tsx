@@ -146,7 +146,14 @@ function VehiclesContent() {
   return (
     <div className="vehicles-inventory-container">
       <div className="page-header">
-        <h1>Vehicle Inventory</h1>
+        <h1>
+          <button 
+            onClick={() => router.push('/dashboard')}
+            className="dashboard-link"
+          >
+            Vehicle Inventory
+          </button>
+        </h1>
         <div className="header-actions">
           {selectedVehicles.length > 0 && (
             <button 
