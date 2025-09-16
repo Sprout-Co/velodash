@@ -74,8 +74,6 @@ export interface CostEntry {
   description: string;
   amount: number;
   currency: Currency;
-  ngnAmount: number; // Converted amount
-  exchangeRate: number;
   createdAt: Date | string | any; // Flexible date handling for Firestore
 }
 
@@ -207,7 +205,6 @@ export interface CostFormData {
   description: string;
   amount: number;
   currency: Currency;
-  exchangeRate: number;
 }
 
 export interface SaleFormData {

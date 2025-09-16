@@ -18,7 +18,6 @@ interface CostFormData {
   description: string;
   amount: number;
   currency: Currency;
-  exchangeRate: number;
 }
 
 const COST_CATEGORIES: { value: CostCategory; label: string }[] = [
@@ -36,12 +35,8 @@ const COST_CATEGORIES: { value: CostCategory; label: string }[] = [
   { value: 'overhead-allocation', label: 'Overhead Allocation' },
 ];
 
-const CURRENCY_OPTIONS: { value: Currency; label: string; rate: number }[] = [
-  { value: 'NGN', label: 'Nigerian Naira (NGN)', rate: 1 },
-  { value: 'USD', label: 'US Dollar (USD)', rate: 850 },
-  { value: 'EUR', label: 'Euro (EUR)', rate: 900 },
-  { value: 'GBP', label: 'British Pound (GBP)', rate: 1050 },
-  { value: 'CAD', label: 'Canadian Dollar (CAD)', rate: 650 },
+const CURRENCY_OPTIONS: { value: Currency; label: string }[] = [
+  { value: 'NGN', label: 'Nigerian Naira (NGN)' },
 ];
 
 // Helper function to safely format dates
@@ -123,8 +118,7 @@ export default function VehicleCostManagement({
     category: 'purchase-price',
     description: '',
     amount: 0,
-    currency: 'USD',
-    exchangeRate: 850,
+    currency: 'NGN',
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -154,14 +148,6 @@ export default function VehicleCostManagement({
     loadCosts();
   }, [loadCosts]);
 
-  const handleCurrencyChange = (currency: Currency) => {
-    const selectedCurrency = CURRENCY_OPTIONS.find(c => c.value === currency);
-    setFormData(prev => ({
-      ...prev,
-      currency,
-      exchangeRate: selectedCurrency?.rate || 1
-    }));
-  };
 
   const handleAmountChange = (amount: number) => {
     setFormData(prev => ({ ...prev, amount: amount || 0 }));
@@ -217,8 +203,7 @@ export default function VehicleCostManagement({
         category: 'purchase-price',
         description: '',
         amount: 0,
-        currency: 'USD',
-        exchangeRate: 850,
+        currency: 'NGN',
       });
       setEditingCost(null);
       setShowForm(false);
@@ -240,7 +225,6 @@ export default function VehicleCostManagement({
       description: cost.description,
       amount: cost.amount,
       currency: cost.currency,
-      exchangeRate: cost.exchangeRate,
     });
     setShowForm(true);
   };
@@ -268,8 +252,7 @@ export default function VehicleCostManagement({
       category: 'purchase-price',
       description: '',
       amount: 0,
-      currency: 'USD',
-      exchangeRate: 850,
+      currency: 'NGN',
     });
     setFormErrors({});
   };
@@ -290,7 +273,7 @@ export default function VehicleCostManagement({
     setShowDetails(prev => !prev);
   };
 
-  const totalCost = costs.reduce((sum, cost) => sum + cost.ngnAmount, 0);
+  const totalCost = costs.reduce((sum, cost) => sum + cost.amount, 0);
 
   if (loading) {
     return (
@@ -400,52 +383,21 @@ export default function VehicleCostManagement({
               {formErrors.description && <span className="error-message">{formErrors.description}</span>}
             </div>
 
-            <div className="cost-form__row">
-              <div className="cost-form__field">
-                <label htmlFor="cost-amount">Amount *</label>
-                <input
-                  type="number"
-                  id="cost-amount"
-                  value={formData.amount || ''}
-                  onChange={(e) => handleAmountChange(parseFloat(e.target.value) || 0)}
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  className={formErrors.amount ? 'error' : ''}
-                />
-                {formErrors.amount && <span className="error-message">{formErrors.amount}</span>}
-              </div>
-
-              <div className="cost-form__field">
-                <label htmlFor="cost-currency">Currency *</label>
-                <select
-                  id="cost-currency"
-                  value={formData.currency}
-                  onChange={(e) => handleCurrencyChange(e.target.value as Currency)}
-                >
-                  {CURRENCY_OPTIONS.map(currency => (
-                    <option key={currency.value} value={currency.value}>
-                      {currency.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="cost-form__field">
+              <label htmlFor="cost-amount">Amount (NGN) *</label>
+              <input
+                type="number"
+                id="cost-amount"
+                value={formData.amount || ''}
+                onChange={(e) => handleAmountChange(parseFloat(e.target.value) || 0)}
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+                className={formErrors.amount ? 'error' : ''}
+              />
+              {formErrors.amount && <span className="error-message">{formErrors.amount}</span>}
             </div>
 
-            <div className="cost-form__conversion">
-              <div className="conversion-display">
-                <span className="conversion__amount">
-                  {formatCurrency(formData.amount, formData.currency)}
-                </span>
-                <span className="conversion__arrow">→</span>
-                <span className="conversion__ngn">
-                  {formatCurrency(formData.amount * formData.exchangeRate, 'NGN')}
-                </span>
-                <span className="conversion__rate">
-                  (Rate: {formData.exchangeRate})
-                </span>
-              </div>
-            </div>
 
             <div className="cost-form__actions">
               <button
@@ -506,12 +458,8 @@ export default function VehicleCostManagement({
                       {cost.description}
                     </div>
                     <div className="cost-item__amounts">
-                      <span className="cost-item__original">
-                        {formatCurrency(cost.amount, cost.currency)}
-                      </span>
-                      <span className="cost-item__arrow">→</span>
                       <span className="cost-item__ngn">
-                        {formatCurrency(cost.ngnAmount, 'NGN')}
+                        {formatCurrency(cost.amount, 'NGN')}
                       </span>
                     </div>
                     
@@ -530,21 +478,9 @@ export default function VehicleCostManagement({
                           </div>
                           <div className="cost-details__row">
                             <div className="cost-details__field">
-                              <label>Original Amount</label>
+                              <label>Amount</label>
                               <span className="cost-details__amount">
-                                {formatCurrency(cost.amount, cost.currency)}
-                              </span>
-                            </div>
-                            <div className="cost-details__field">
-                              <label>Exchange Rate</label>
-                              <span>{cost.exchangeRate.toFixed(2)}</span>
-                            </div>
-                          </div>
-                          <div className="cost-details__row">
-                            <div className="cost-details__field">
-                              <label>NGN Amount</label>
-                              <span className="cost-details__ngn">
-                                {formatCurrency(cost.ngnAmount, 'NGN')}
+                                {formatCurrency(cost.amount, 'NGN')}
                               </span>
                             </div>
                             <div className="cost-details__field">

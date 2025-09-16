@@ -335,7 +335,6 @@ export const vehicleService = {
         description: 'Initial purchase',
         amount: formData.acquisitionDetails.purchasePrice,
         currency: formData.acquisitionDetails.currency,
-        exchangeRate: 850, // Default exchange rate
       };
       
       await costService.createCost(docRef.id, costData);
@@ -660,8 +659,6 @@ export const costService = {
         description: formData.description,
         amount: formData.amount,
         currency: formData.currency,
-        ngnAmount: formData.amount * formData.exchangeRate,
-        exchangeRate: formData.exchangeRate,
         createdAt: now,
       };
 
@@ -673,7 +670,7 @@ export const costService = {
       await activityService.logActivity({
         userId: 'system',
         userName: 'System',
-        action: `added ${formData.category} cost of ₦${(formData.amount * formData.exchangeRate).toLocaleString()} to`,
+        action: `added ${formData.category} cost of ₦${formData.amount.toLocaleString()} to`,
         vehicleId,
         timestamp: now,
       });
@@ -723,8 +720,6 @@ export const costService = {
         description: formData.description,
         amount: formData.amount,
         currency: formData.currency,
-        ngnAmount: formData.amount * formData.exchangeRate,
-        exchangeRate: formData.exchangeRate,
         updatedAt: now,
       };
 
@@ -790,8 +785,8 @@ export const dashboardService = {
         
         const totalCost = Array.isArray(vehicle.costs) 
           ? vehicle.costs.reduce((sum, cost) => {
-              console.log(`Cost: ${cost.description} - ${cost.ngnAmount} NGN`);
-              return sum + cost.ngnAmount;
+              console.log(`Cost: ${cost.description} - ${cost.amount} NGN`);
+              return sum + cost.amount;
             }, 0)
           : 0;
         
@@ -1017,7 +1012,7 @@ export const reportService = {
 
       const reportVehicles = soldVehicles.map(vehicle => {
         const totalCost = Array.isArray(vehicle.costs) 
-          ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+          ? vehicle.costs.reduce((sum, cost) => sum + cost.amount, 0)
           : 0;
         
         // Use sale details if available, otherwise use listing price or total cost as fallback
@@ -1079,7 +1074,7 @@ export const reportService = {
         .map(vehicle => {
           const daysInInventory = calculateDaysInInventory(vehicle);
           const totalCost = Array.isArray(vehicle.costs) 
-          ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+          ? vehicle.costs.reduce((sum, cost) => sum + cost.amount, 0)
           : 0;
 
           return {
@@ -1132,12 +1127,12 @@ export const reportService = {
       
       costs.forEach(cost => {
         const existing = categoryTotals.get(cost.category) || { amount: 0, vehicleIds: new Set() };
-        existing.amount += cost.ngnAmount;
+        existing.amount += cost.amount;
         existing.vehicleIds.add(cost.vehicleId);
         categoryTotals.set(cost.category, existing);
       });
 
-      const totalExpenses = costs.reduce((sum, cost) => sum + cost.ngnAmount, 0);
+      const totalExpenses = costs.reduce((sum, cost) => sum + cost.amount, 0);
       const uniqueVehicles = new Set(costs.map(cost => cost.vehicleId)).size;
 
       const categories = Array.from(categoryTotals.entries()).map(([category, data]) => ({
