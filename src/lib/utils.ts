@@ -2,6 +2,7 @@
 // Helper functions for VelocityDash
 
 import { type ClassValue, clsx } from 'clsx';
+import { safeDateConversion } from './dateUtils';
 
 // Class name utility
 export function cn(...inputs: ClassValue[]) {
@@ -31,8 +32,31 @@ export function formatPercentage(value: number, decimals: number = 1): string {
 }
 
 // Date formatting
-export function formatDate(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+export function formatDate(date: Date | string | any): string {
+  // Handle various date formats
+  let dateObj: Date;
+  
+  if (date instanceof Date) {
+    dateObj = date;
+  } else if (typeof date === 'string') {
+    dateObj = new Date(date);
+  } else if (date && typeof date === 'object' && date.toDate) {
+    // Handle Firestore Timestamp objects
+    dateObj = date.toDate();
+  } else if (date && typeof date === 'object' && date.seconds) {
+    // Handle Firestore Timestamp-like objects
+    dateObj = new Date(date.seconds * 1000);
+  } else if (typeof date === 'number') {
+    dateObj = new Date(date);
+  } else {
+    return 'Invalid Date';
+  }
+  
+  // Check if the date is valid
+  if (!dateObj || !(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+  
   return new Intl.DateTimeFormat('en-NG', {
     year: 'numeric',
     month: 'short',
@@ -41,8 +65,31 @@ export function formatDate(date: Date | string): string {
 }
 
 // Date and time formatting
-export function formatDateTime(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+export function formatDateTime(date: Date | string | any): string {
+  // Handle various date formats
+  let dateObj: Date;
+  
+  if (date instanceof Date) {
+    dateObj = date;
+  } else if (typeof date === 'string') {
+    dateObj = new Date(date);
+  } else if (date && typeof date === 'object' && date.toDate) {
+    // Handle Firestore Timestamp objects
+    dateObj = date.toDate();
+  } else if (date && typeof date === 'object' && date.seconds) {
+    // Handle Firestore Timestamp-like objects
+    dateObj = new Date(date.seconds * 1000);
+  } else if (typeof date === 'number') {
+    dateObj = new Date(date);
+  } else {
+    return 'Invalid Date';
+  }
+  
+  // Check if the date is valid
+  if (!dateObj || !(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+  
   return new Intl.DateTimeFormat('en-NG', {
     year: 'numeric',
     month: 'short',
@@ -53,8 +100,31 @@ export function formatDateTime(date: Date | string): string {
 }
 
 // Relative time formatting
-export function formatRelativeTime(date: Date | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+export function formatRelativeTime(date: Date | string | any): string {
+  // Handle various date formats
+  let dateObj: Date;
+  
+  if (date instanceof Date) {
+    dateObj = date;
+  } else if (typeof date === 'string') {
+    dateObj = new Date(date);
+  } else if (date && typeof date === 'object' && date.toDate) {
+    // Handle Firestore Timestamp objects
+    dateObj = date.toDate();
+  } else if (date && typeof date === 'object' && date.seconds) {
+    // Handle Firestore Timestamp-like objects
+    dateObj = new Date(date.seconds * 1000);
+  } else if (typeof date === 'number') {
+    dateObj = new Date(date);
+  } else {
+    return 'Invalid Date';
+  }
+  
+  // Check if the date is valid
+  if (!dateObj || !(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    return 'Invalid Date';
+  }
+  
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
   
@@ -116,11 +186,61 @@ export function generateId(): string {
 }
 
 // Calculate age in days
-export function calculateAgeInDays(date: Date | string): number {
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+export function calculateAgeInDays(date: Date | string | any): number {
+  // Handle various date formats
+  let dateObj: Date;
+  
+  if (date instanceof Date) {
+    dateObj = date;
+  } else if (typeof date === 'string') {
+    dateObj = new Date(date);
+  } else if (date && typeof date === 'object' && date.toDate) {
+    // Handle Firestore Timestamp objects
+    dateObj = date.toDate();
+  } else if (date && typeof date === 'object' && date.seconds) {
+    // Handle Firestore Timestamp-like objects
+    dateObj = new Date(date.seconds * 1000);
+  } else if (typeof date === 'number') {
+    dateObj = new Date(date);
+  } else {
+    console.warn('Invalid date format in calculateAgeInDays:', date);
+    return 0;
+  }
+  
+  // Check if the date is valid
+  if (!dateObj || !(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    console.warn('Invalid date object in calculateAgeInDays:', dateObj);
+    return 0;
+  }
+  
   const now = new Date();
   const diffInTime = now.getTime() - dateObj.getTime();
   return Math.floor(diffInTime / (1000 * 3600 * 24));
+}
+
+// Calculate days in inventory
+export function calculateDaysInInventory(vehicle: any): number {
+  // For sold vehicles, calculate from purchase date to sale date
+  if (vehicle.status === 'sold' && vehicle.saleDetails?.saleDate) {
+    const purchaseDate = safeDateConversion(vehicle.acquisitionDetails?.purchaseDate);
+    const saleDate = safeDateConversion(vehicle.saleDetails.saleDate);
+    
+    if (purchaseDate && saleDate) {
+      const diffInTime = saleDate.getTime() - purchaseDate.getTime();
+      return Math.floor(diffInTime / (1000 * 3600 * 24));
+    }
+  }
+  
+  // For unsold vehicles, calculate from purchase date to current date
+  const purchaseDate = safeDateConversion(vehicle.acquisitionDetails?.purchaseDate);
+  if (purchaseDate) {
+    const now = new Date();
+    const diffInTime = now.getTime() - purchaseDate.getTime();
+    return Math.floor(diffInTime / (1000 * 3600 * 24));
+  }
+  
+  // Fallback to createdAt if purchase date is not available
+  return calculateAgeInDays(vehicle.createdAt);
 }
 
 // Calculate profit metrics
@@ -128,16 +248,13 @@ export function calculateProfitMetrics(
   totalCost: number,
   salePrice: number
 ): {
-  grossProfit: number;
   profitMargin: number;
   roi: number;
 } {
-  const grossProfit = salePrice - totalCost;
-  const profitMargin = salePrice > 0 ? (grossProfit / salePrice) * 100 : 0;
-  const roi = totalCost > 0 ? (grossProfit / totalCost) * 100 : 0;
+  const profitMargin = salePrice > 0 ? ((salePrice - totalCost) / salePrice) * 100 : 0;
+  const roi = totalCost > 0 ? ((salePrice - totalCost) / totalCost) * 100 : 0;
   
   return {
-    grossProfit,
     profitMargin: Math.round(profitMargin * 100) / 100,
     roi: Math.round(roi * 100) / 100,
   };

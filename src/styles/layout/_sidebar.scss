@@ -1,115 +1,138 @@
-// Sidebar Layout Styles
-// Sidebar navigation component styles
+// Sidebar Styles
+// Navigation sidebar for the dashboard
 
 .sidebar {
-  background-color: $secondary-bg;
-  border-right: 1px solid rgba($text-secondary, 0.1);
-  width: 280px;
+  width: 16rem;
+  background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  z-index: $z-fixed;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
-  
-  @include mobile {
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 1024px) {
+    width: 4rem;
+    
+    .sidebar__subtitle,
+    .sidebar__text {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
     transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s ease;
     
     &.sidebar--open {
       transform: translateX(0);
     }
   }
-  
-  .sidebar__header {
-    padding: $spacing-lg;
-    border-bottom: 1px solid rgba($text-secondary, 0.1);
+
+  &__brand {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+
+    @media (max-width: 1024px) {
+      padding: 1rem 0.5rem;
+    }
   }
-  
-  .sidebar__logo {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: $accent-green;
-    text-decoration: none;
+
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 0.25rem 0;
   }
-  
-  .sidebar__nav {
-    padding: $spacing-md 0;
-  }
-  
-  .sidebar__nav-section {
-    margin-bottom: $spacing-lg;
-  }
-  
-  .sidebar__nav-title {
-    font-size: $font-size-xs;
-    font-weight: $font-weight-semibold;
-    color: $text-secondary;
+
+  &__subtitle {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 0 $spacing-lg $spacing-sm;
   }
-  
-  .sidebar__nav-list {
+
+  &__nav {
+    flex: 1;
+    padding: 1rem 0;
+  }
+
+  &__list {
     list-style: none;
+    margin: 0;
     padding: 0;
+  }
+
+  &__item {
     margin: 0;
   }
-  
-  .sidebar__nav-item {
-    margin: 0;
-  }
-  
-  .sidebar__nav-link {
+
+  &__link {
     display: flex;
     align-items: center;
-    padding: $spacing-sm $spacing-lg;
-    color: $text-secondary;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    transition: all 0.2s ease-in-out;
-    border-left: 3px solid transparent;
-    
+    transition: all 0.2s ease;
+    border-radius: 0;
+    position: relative;
+
     &:hover {
-      background-color: rgba($accent-green, 0.1);
-      color: $text-primary;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
     }
-    
-    &.active {
-      background-color: rgba($accent-green, 0.1);
-      color: $accent-green;
-      border-left-color: $accent-green;
+
+    &--active {
+      background: rgba(59, 130, 246, 0.2);
+      color: white;
+      border-right: 3px solid #3b82f6;
+
+      .sidebar__icon {
+        color: #60a5fa;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      padding: 0.75rem 0.5rem;
+      justify-content: center;
     }
   }
-  
-  .sidebar__nav-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: $spacing-sm;
+
+  &__icon {
+    width: 1.25rem;
+    height: 1.25rem;
     flex-shrink: 0;
+    transition: color 0.2s ease;
+    color: rgba(255, 255, 255, 0.8);
   }
-  
-  .sidebar__nav-text {
-    font-weight: $font-weight-medium;
-  }
-  
-  .sidebar__nav-badge {
-    margin-left: auto;
-    background-color: $accent-green;
-    color: white;
-    font-size: $font-size-xs;
-    font-weight: $font-weight-semibold;
-    padding: 2px 6px;
-    border-radius: $border-radius-sm;
-    min-width: 18px;
-    text-align: center;
+
+  &__text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
   }
 }
 
-// Main content area adjustment for sidebar
-.main-content {
-  margin-left: 280px;
-  
-  @include mobile {
-    margin-left: 0;
+// Mobile sidebar overlay
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+
+  @media (max-width: 768px) {
+    &.sidebar-overlay--open {
+      display: block;
+    }
   }
 }

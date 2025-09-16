@@ -47,6 +47,23 @@
   @include card;
   text-align: center;
   
+  // Color variants
+  &.kpi-card--blue {
+    border-left: 4px solid $accent-blue;
+  }
+  
+  &.kpi-card--green {
+    border-left: 4px solid $accent-green;
+  }
+  
+  &.kpi-card--purple {
+    border-left: 4px solid #9F7AEA; // Purple color
+  }
+  
+  &.kpi-card--orange {
+    border-left: 4px solid $warning;
+  }
+  
   .kpi-card__value {
     font-size: $font-size-4xl;
     font-weight: $font-weight-bold;

@@ -21,8 +21,12 @@
 @import 'components/cards';
 @import 'components/forms';
 @import 'components/tables';
+@import 'components/media-hub';
+@import 'components/vehicle-sale';
+@import 'components/cost-management';
 
 // 5. Pages (page-specific styles)
 @import 'pages/dashboard';
 @import 'pages/vehicles';
 @import 'pages/reports';
+@import 'pages/admin';

@@ -48,8 +48,7 @@ VelocityDash serves as a comprehensive vehicle inventory and financial managemen
 ### Module 1: Dashboard (Mission Control)
 - **Live Inventory Count**: Total vehicles in pipeline
 - **Capital Deployed**: Sum of costs for all inventory
-- **Ready for Sale Value**: Total listing price of "For Sale" vehicles
-- **30-Day Gross Profit**: Rolling profit from recent sales
+- **Ready for Sale Value**: Total listing value of vehicles ready for sale
 - **Inventory Status Funnel**: Visual pipeline representation
 - **Action Required List**: Smart bottleneck identification
 - **Recent Activity Feed**: Real-time user action log
@@ -86,9 +85,8 @@ VelocityDash serves as a comprehensive vehicle inventory and financial managemen
 ### Module 4: Sales & Profitability Analysis
 - **Deal Finalization**: Listing price, final sale price, sale date
 - **Automated Calculations**:
-  - Gross Profit = Final Sale Price - Total Landed & Ready Cost
-  - Profit Margin = (Gross Profit / Final Sale Price) × 100
-  - ROI = (Gross Profit / Total Landed & Ready Cost) × 100
+  - Profit Margin = ((Final Sale Price - Total Landed & Ready Cost) / Final Sale Price) × 100
+  - ROI = ((Final Sale Price - Total Landed & Ready Cost) / Total Landed & Ready Cost) × 100
 
 ### Module 5: Reporting & Business Intelligence
 - **Sales Performance Report**: Date-range sales analysis
