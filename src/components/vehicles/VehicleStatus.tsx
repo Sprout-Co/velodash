@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { VehicleStatus as VehicleStatusType } from '@/types';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface VehicleStatusProps {
   currentStatus: VehicleStatusType;
   onStatusChange: (status: VehicleStatusType) => void;
+  disabled?: boolean;
 }
 
-export default function VehicleStatus({ currentStatus, onStatusChange }: VehicleStatusProps) {
+export default function VehicleStatus({ currentStatus, onStatusChange, disabled = false }: VehicleStatusProps) {
   const [isOpen, setIsOpen] = useState(false);
+  
+  // Close dropdown when disabled
+  useEffect(() => {
+    if (disabled) {
+      setIsOpen(false);
+    }
+  }, [disabled]);
   
   const statusOptions: { value: VehicleStatusType; label: string }[] = [
     { value: 'sourced', label: 'Sourced' },
@@ -37,14 +45,17 @@ export default function VehicleStatus({ currentStatus, onStatusChange }: Vehicle
   return (
     <div className="relative vehicle-status-dropdown">
       <button
-        className={`px-4 py-2 rounded-md border ${statusStyles[currentStatus]} flex items-center justify-between min-w-[180px]`}
-        onClick={() => setIsOpen(!isOpen)}
+        className={`px-4 py-2 rounded-md border ${statusStyles[currentStatus]} flex items-center justify-between min-w-[180px] ${
+          disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-sm'
+        }`}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
       >
         <span className="font-medium">Status: {currentLabel}</span>
         {isOpen ? <ChevronUp className="h-4 w-4 ml-2" /> : <ChevronDown className="h-4 w-4 ml-2" />}
       </button>
       
-      {isOpen && (
+      {isOpen && !disabled && (
         <div className="absolute right-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10">
           <div className="py-1">
             {statusOptions.map(option => (

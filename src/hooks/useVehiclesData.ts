@@ -24,6 +24,10 @@ export const deleteVehicle = async (id: string): Promise<void> => {
   return await vehicleService.deleteVehicle(id);
 };
 
+export const updateVehicleStatus = async (id: string, status: Vehicle['status']): Promise<void> => {
+  return await vehicleService.updateVehicleStatus(id, status);
+};
+
 export default function useVehiclesData(filters?: VehicleFilters) {
   const [loading, setLoading] = useState(true);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);

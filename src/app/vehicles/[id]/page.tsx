@@ -12,7 +12,7 @@ import VehicleDocumentVault from '@/components/vehicles/VehicleDocumentVault';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 import { Loader2 } from 'lucide-react';
 
-import { getVehicleById, deleteVehicle } from '@/hooks/useVehiclesData';
+import { getVehicleById, deleteVehicle, updateVehicleStatus } from '@/hooks/useVehiclesData';
 
 function VehicleDetailsContent({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
@@ -20,6 +20,9 @@ function VehicleDetailsContent({ id }: { id: string }) {
   const [error, setError] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [statusUpdateError, setStatusUpdateError] = useState<string | null>(null);
+  const [statusUpdateSuccess, setStatusUpdateSuccess] = useState<string | null>(null);
   
   const router = useRouter();
   
@@ -46,15 +49,31 @@ function VehicleDetailsContent({ id }: { id: string }) {
   const handleStatusChange = async (newStatus: VehicleStatus) => {
     if (!vehicle) return;
     
+    setIsUpdatingStatus(true);
+    setStatusUpdateError(null);
+    setStatusUpdateSuccess(null);
+    
     try {
-      // This would be an API call in production
-      // await updateVehicleStatus(vehicle.id, newStatus);
+      // Update status in Firestore
+      await updateVehicleStatus(vehicle.id, newStatus);
       
       // Update local state
       setVehicle(prev => prev ? { ...prev, status: newStatus } : null);
+      
+      // Show success message
+      setStatusUpdateSuccess(`Status updated to ${newStatus.replace('-', ' ')}`);
+      
+      // Clear success message after 3 seconds
+      setTimeout(() => setStatusUpdateSuccess(null), 3000);
+      
     } catch (err) {
       console.error('Failed to update vehicle status:', err);
-      // Show error notification
+      setStatusUpdateError('Failed to update vehicle status. Please try again.');
+      
+      // Clear error message after 5 seconds
+      setTimeout(() => setStatusUpdateError(null), 5000);
+    } finally {
+      setIsUpdatingStatus(false);
     }
   };
 
@@ -149,11 +168,32 @@ function VehicleDetailsContent({ id }: { id: string }) {
           <p className="text-gray-500">VIN: {vehicle.vin}</p>
         </div>
         
-        <div className="flex justify-end">
+        <div className="flex flex-col items-end space-y-2">
           <VehicleStatusComponent 
             currentStatus={vehicle.status} 
             onStatusChange={handleStatusChange} 
+            disabled={isUpdatingStatus}
           />
+          
+          {/* Status update feedback */}
+          {statusUpdateSuccess && (
+            <div className="text-sm text-green-600 bg-green-50 px-3 py-1 rounded-md">
+              {statusUpdateSuccess}
+            </div>
+          )}
+          
+          {statusUpdateError && (
+            <div className="text-sm text-red-600 bg-red-50 px-3 py-1 rounded-md">
+              {statusUpdateError}
+            </div>
+          )}
+          
+          {isUpdatingStatus && (
+            <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-md flex items-center">
+              <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              Updating status...
+            </div>
+          )}
         </div>
       </div>
       
