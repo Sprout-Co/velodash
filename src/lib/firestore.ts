@@ -136,6 +136,11 @@ const safeDateConversion = (date: any): Date | null => {
     return date.toDate();
   }
   
+  // Handle Firestore Timestamp objects that come through as plain objects
+  if (date && typeof date === 'object' && date.seconds && typeof date.seconds === 'number') {
+    return new Date(date.seconds * 1000 + (date.nanoseconds || 0) / 1000000);
+  }
+  
   if (typeof date === 'string') {
     const parsed = new Date(date);
     return isNaN(parsed.getTime()) ? null : parsed;
@@ -753,19 +758,20 @@ export const dashboardService = {
           grossProfit += profit;
           console.log(`Vehicle ${vehicle.id} sold for ${vehicle.saleDetails.finalSalePrice} NGN, cost ${totalCost} NGN, profit: ${profit} NGN`);
           
-          // Calculate 30-day net profit
+          // Check if sold within last 30 days for net profit
           if (vehicle.saleDetails?.saleDate) {
+            console.log(`DEBUG: Vehicle ${vehicle.id} - raw saleDate:`, vehicle.saleDetails.saleDate, 'type:', typeof vehicle.saleDetails.saleDate);
             const saleDate = safeDateConversion(vehicle.saleDetails.saleDate);
-            if (saleDate) {
-              // Compare dates by setting time to start of day for accurate comparison
-              const saleDateOnly = new Date(saleDate.getFullYear(), saleDate.getMonth(), saleDate.getDate());
-              const thirtyDaysAgoOnly = new Date(thirtyDaysAgo.getFullYear(), thirtyDaysAgo.getMonth(), thirtyDaysAgo.getDate());
-              
-              if (saleDateOnly >= thirtyDaysAgoOnly) {
-                netProfit30Days += profit;
-                console.log(`Vehicle ${vehicle.id} sold within last 30 days, adding ${profit} NGN to net profit`);
-              }
+            console.log(`DEBUG: Vehicle ${vehicle.id} - converted saleDate:`, saleDate, 'thirtyDaysAgo:', thirtyDaysAgo);
+            console.log(`DEBUG: Vehicle ${vehicle.id} - saleDate >= thirtyDaysAgo:`, saleDate && saleDate >= thirtyDaysAgo);
+            if (saleDate && saleDate >= thirtyDaysAgo) {
+              netProfit30Days += profit;
+              console.log(`===> Vehicle ${vehicle.id} sold within last 30 days (${saleDate.toDateString()}), adding ${profit} NGN to net profit`);
+            } else {
+              console.log(`DEBUG: Vehicle ${vehicle.id} NOT added to net profit - saleDate:`, saleDate, 'thirtyDaysAgo:', thirtyDaysAgo);
             }
+          } else {
+            console.log(`DEBUG: Vehicle ${vehicle.id} has no saleDate`);
           }
         }
       }

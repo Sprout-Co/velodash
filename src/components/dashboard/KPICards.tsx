@@ -35,14 +35,6 @@ const kpiConfig = [
     format: (value: number) => formatCurrency(value, 'NGN'),
   },
   {
-    key: 'grossProfit' as keyof DashboardKPIs,
-    title: 'Gross Profit',
-    description: 'Total profit from sales',
-    icon: '📈',
-    color: 'orange',
-    format: (value: number) => formatCurrency(value, 'NGN'),
-  },
-  {
     key: 'netProfit30Days' as keyof DashboardKPIs,
     title: 'Net Profit (30 Days)',
     description: 'Profit from last 30 days',
