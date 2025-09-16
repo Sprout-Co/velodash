@@ -160,8 +160,9 @@ function generateInventoryAgingReport(vehicles: Vehicle[], dateRange: DateRange)
   });
 
   const totalVehicles = inventoryVehicles.length;
-  const averageAge = totalVehicles > 0 
-    ? inventoryVehicles.reduce((sum, vehicle) => sum + vehicle.daysInInventory, 0) / totalVehicles 
+  const totalDays = inventoryVehicles.reduce((sum, vehicle) => sum + vehicle.daysInInventory, 0);
+  const averageAge = totalVehicles > 0 && totalDays > 0 
+    ? totalDays / totalVehicles 
     : 0;
   const vehiclesOver90Days = inventoryVehicles.filter(vehicle => vehicle.daysInInventory > 90).length;
 
@@ -268,8 +269,29 @@ function generateProfitabilityData(vehicles: Vehicle[], dateRange: DateRange): P
 }
 
 function calculateDaysInInventory(vehicle: Vehicle): number {
+  // Handle flexible date types and validate dates
   const startDate = new Date(vehicle.acquisitionDetails.purchaseDate);
   const endDate = vehicle.saleDetails?.saleDate ? new Date(vehicle.saleDetails.saleDate) : new Date();
+  
+  // Check if dates are valid
+  if (isNaN(startDate.getTime())) {
+    console.warn(`Invalid purchase date for vehicle ${vehicle.id}:`, vehicle.acquisitionDetails.purchaseDate);
+    return 0; // Return 0 for invalid purchase dates
+  }
+  
+  if (isNaN(endDate.getTime())) {
+    console.warn(`Invalid sale date for vehicle ${vehicle.id}:`, vehicle.saleDetails?.saleDate);
+    return 0; // Return 0 for invalid sale dates
+  }
+  
   const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Additional safety check
+  if (isNaN(days) || days < 0) {
+    console.warn(`Invalid days calculation for vehicle ${vehicle.id}`);
+    return 0;
+  }
+  
+  return days;
 }
