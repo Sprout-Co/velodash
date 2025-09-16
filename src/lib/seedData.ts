@@ -190,6 +190,48 @@ export async function seedDatabase() {
       console.log(`✅ Updated ${createdVehicles[1].year} ${createdVehicles[1].make} ${createdVehicles[1].model} to in-workshop`);
     }
     
+    // Add sale details to some vehicles to test gross profit calculation
+    if (createdVehicles.length > 2) {
+      // Mark first vehicle as sold with recent sale date (within 30 days)
+      const recentSaleDate = new Date();
+      recentSaleDate.setDate(recentSaleDate.getDate() - 15); // 15 days ago
+      
+      await vehicleService.updateVehicleSaleDetails(createdVehicles[0].id, {
+        saleDate: recentSaleDate,
+        finalSalePrice: 18000000, // ₦18,000,000
+        listingPrice: 17500000,   // ₦17,500,000
+        notes: 'Sold to local buyer'
+      });
+      await vehicleService.updateVehicleStatus(createdVehicles[0].id, 'sold');
+      console.log(`✅ Marked ${createdVehicles[0].year} ${createdVehicles[0].make} ${createdVehicles[0].model} as sold`);
+      
+      // Mark second vehicle as sold with older sale date (outside 30 days)
+      const olderSaleDate = new Date();
+      olderSaleDate.setDate(olderSaleDate.getDate() - 45); // 45 days ago
+      
+      await vehicleService.updateVehicleSaleDetails(createdVehicles[1].id, {
+        saleDate: olderSaleDate,
+        finalSalePrice: 22000000, // ₦22,000,000
+        listingPrice: 21000000,   // ₦21,000,000
+        notes: 'Sold to corporate buyer'
+      });
+      await vehicleService.updateVehicleStatus(createdVehicles[1].id, 'sold');
+      console.log(`✅ Marked ${createdVehicles[1].year} ${createdVehicles[1].make} ${createdVehicles[1].model} as sold (older sale)`);
+      
+      // Mark third vehicle as sold with very recent sale date (within 30 days)
+      const veryRecentSaleDate = new Date();
+      veryRecentSaleDate.setDate(veryRecentSaleDate.getDate() - 5); // 5 days ago
+      
+      await vehicleService.updateVehicleSaleDetails(createdVehicles[2].id, {
+        saleDate: veryRecentSaleDate,
+        finalSalePrice: 12500000, // ₦12,500,000
+        listingPrice: 12000000,   // ₦12,000,000
+        notes: 'Sold to individual buyer'
+      });
+      await vehicleService.updateVehicleStatus(createdVehicles[2].id, 'sold');
+      console.log(`✅ Marked ${createdVehicles[2].year} ${createdVehicles[2].make} ${createdVehicles[2].model} as sold (recent sale)`);
+    }
+    
     // Add some sample activities
     const sampleActivities = [
       {

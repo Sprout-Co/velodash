@@ -752,18 +752,27 @@ export const dashboardService = {
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       
       const recentSales = vehicles.filter(v => {
-        if (!v.saleDetails?.saleDate) return false;
+        if (!v.saleDetails?.saleDate) {
+          console.log(`Vehicle ${v.id} has no sale date`);
+          return false;
+        }
         
         const saleDate = safeDateConversion(v.saleDetails.saleDate);
-        return saleDate && saleDate >= thirtyDaysAgo;
+        const isRecent = saleDate && saleDate >= thirtyDaysAgo;
+        console.log(`Vehicle ${v.id} sale date: ${saleDate}, is recent: ${isRecent}`);
+        return isRecent;
       });
       
+      console.log(`Found ${recentSales.length} recent sales out of ${vehicles.length} total vehicles`);
+      
       const thirtyDayGrossProfit = recentSales.reduce((sum, vehicle) => {
-        if (vehicle.saleDetails) {
+        if (vehicle.saleDetails && vehicle.saleDetails.finalSalePrice) {
           const totalCost = Array.isArray(vehicle.costs) 
             ? vehicle.costs.reduce((costSum, cost) => costSum + cost.ngnAmount, 0)
             : 0;
-          return sum + (vehicle.saleDetails.finalSalePrice - totalCost);
+          const grossProfit = vehicle.saleDetails.finalSalePrice - totalCost;
+          console.log(`Vehicle ${vehicle.id} gross profit: ${vehicle.saleDetails.finalSalePrice} - ${totalCost} = ${grossProfit}`);
+          return sum + grossProfit;
         }
         return sum;
       }, 0);
