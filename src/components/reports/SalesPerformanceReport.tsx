@@ -147,62 +147,112 @@ export function SalesPerformanceReport({ data, dateRange, isLoading }: SalesPerf
         )}
       </div>
 
-      {/* Detailed Table */}
+      {/* Vehicle Sales Cards */}
       <div className="sales-report__details">
         <h3 className="sales-report__details-title">Sales Details</h3>
-        <div className="sales-report__table-container">
-          <table className="sales-report__table">
-            <thead>
-              <tr>
-                <th>Vehicle</th>
-                <th>Sale Date</th>
-                <th>Total Cost</th>
-                <th>Sale Price</th>
-                <th>Profit</th>
-                <th>Profit Margin</th>
-                <th>ROI</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vehicles.map((vehicle) => (
-                <tr key={vehicle.vehicleId}>
-                  <td className="sales-report__table-vehicle">
-                    {vehicle.vehicleName}
-                  </td>
-                  <td>
-                    {new Date(vehicle.saleDate).toLocaleDateString()}
-                  </td>
-                  <td className="sales-report__table-cost">
-                    {formatCurrency(vehicle.totalCost, 'NGN')}
-                  </td>
-                  <td className="sales-report__table-price">
-                    {formatCurrency(vehicle.salePrice, 'NGN')}
-                  </td>
-                  <td className={`sales-report__table-profit ${
-                    vehicle.salePrice - vehicle.totalCost > 0 
-                      ? 'sales-report__table-profit--positive' 
-                      : 'sales-report__table-profit--negative'
+        <div className="sales-report__cards-grid">
+          {vehicles.map((vehicle) => {
+            const profit = vehicle.salePrice - vehicle.totalCost;
+            const isProfitable = profit > 0;
+            
+            return (
+              <div key={vehicle.vehicleId} className="sales-report__vehicle-card">
+                <div className="sales-report__vehicle-card-header">
+                  <div className="sales-report__vehicle-card-icon">🚗</div>
+                  <div className="sales-report__vehicle-card-info">
+                    <h4 className="sales-report__vehicle-card-name">{vehicle.vehicleName}</h4>
+                    <p className="sales-report__vehicle-card-date">
+                      Sold on {new Date(vehicle.saleDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className={`sales-report__vehicle-card-status ${
+                    isProfitable 
+                      ? 'sales-report__vehicle-card-status--profitable' 
+                      : 'sales-report__vehicle-card-status--loss'
                   }`}>
-                    {formatCurrency(vehicle.salePrice - vehicle.totalCost, 'NGN')}
-                  </td>
-                  <td className={`sales-report__table-margin ${
-                    vehicle.profitMargin > 0 
-                      ? 'sales-report__table-margin--positive' 
-                      : 'sales-report__table-margin--negative'
-                  }`}>
-                    {vehicle.profitMargin.toFixed(1)}%
-                  </td>
-                  <td className={`sales-report__table-roi ${
-                    vehicle.roi > 0 
-                      ? 'sales-report__table-roi--positive' 
-                      : 'sales-report__table-roi--negative'
-                  }`}>
-                    {vehicle.roi.toFixed(1)}%
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    {isProfitable ? '📈' : '📉'}
+                  </div>
+                </div>
+                
+                <div className="sales-report__vehicle-card-content">
+                  <div className="sales-report__vehicle-card-metrics">
+                    <div className="sales-report__vehicle-card-metric">
+                      <span className="sales-report__vehicle-card-metric-label">Total Cost</span>
+                      <span className="sales-report__vehicle-card-metric-value sales-report__vehicle-card-metric-value--cost">
+                        {formatCurrency(vehicle.totalCost, 'NGN')}
+                      </span>
+                    </div>
+                    
+                    <div className="sales-report__vehicle-card-metric">
+                      <span className="sales-report__vehicle-card-metric-label">Sale Price</span>
+                      <span className="sales-report__vehicle-card-metric-value sales-report__vehicle-card-metric-value--price">
+                        {formatCurrency(vehicle.salePrice, 'NGN')}
+                      </span>
+                    </div>
+                    
+                    <div className="sales-report__vehicle-card-metric">
+                      <span className="sales-report__vehicle-card-metric-label">Profit</span>
+                      <span className={`sales-report__vehicle-card-metric-value ${
+                        isProfitable 
+                          ? 'sales-report__vehicle-card-metric-value--positive' 
+                          : 'sales-report__vehicle-card-metric-value--negative'
+                      }`}>
+                        {formatCurrency(profit, 'NGN')}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="sales-report__vehicle-card-percentages">
+                    <div className="sales-report__vehicle-card-percentage">
+                      <span className="sales-report__vehicle-card-percentage-label">Profit Margin</span>
+                      <div className="sales-report__vehicle-card-percentage-content">
+                        <span className={`sales-report__vehicle-card-percentage-value ${
+                          vehicle.profitMargin > 0 
+                            ? 'sales-report__vehicle-card-percentage-value--positive' 
+                            : 'sales-report__vehicle-card-percentage-value--negative'
+                        }`}>
+                          {vehicle.profitMargin.toFixed(1)}%
+                        </span>
+                        <div className="sales-report__vehicle-card-percentage-bar">
+                          <div 
+                            className={`sales-report__vehicle-card-percentage-fill ${
+                              vehicle.profitMargin > 0 
+                                ? 'sales-report__vehicle-card-percentage-fill--positive' 
+                                : 'sales-report__vehicle-card-percentage-fill--negative'
+                            }`}
+                            style={{ width: `${Math.min(Math.abs(vehicle.profitMargin), 100)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="sales-report__vehicle-card-percentage">
+                      <span className="sales-report__vehicle-card-percentage-label">ROI</span>
+                      <div className="sales-report__vehicle-card-percentage-content">
+                        <span className={`sales-report__vehicle-card-percentage-value ${
+                          vehicle.roi > 0 
+                            ? 'sales-report__vehicle-card-percentage-value--positive' 
+                            : 'sales-report__vehicle-card-percentage-value--negative'
+                        }`}>
+                          {vehicle.roi.toFixed(1)}%
+                        </span>
+                        <div className="sales-report__vehicle-card-percentage-bar">
+                          <div 
+                            className={`sales-report__vehicle-card-percentage-fill ${
+                              vehicle.roi > 0 
+                                ? 'sales-report__vehicle-card-percentage-fill--positive' 
+                                : 'sales-report__vehicle-card-percentage-fill--negative'
+                            }`}
+                            style={{ width: `${Math.min(Math.abs(vehicle.roi), 100)}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
