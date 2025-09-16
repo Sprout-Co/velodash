@@ -634,14 +634,20 @@ export const costService = {
     try {
       const q = query(
         collection(db, COLLECTIONS.COSTS),
-        where('vehicleId', '==', vehicleId),
-        orderBy('date', 'desc')
+        where('vehicleId', '==', vehicleId)
       );
       
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => {
+      const costs = snapshot.docs.map(doc => {
         const data = doc.data();
         return convertTimestamps({ id: doc.id, ...data }) as CostEntry;
+      });
+      
+      // Sort by date in descending order (newest first)
+      return costs.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateB.getTime() - dateA.getTime();
       });
     } catch (error) {
       console.error('Error fetching costs:', error);

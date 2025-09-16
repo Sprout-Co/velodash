@@ -10,6 +10,7 @@ import VehicleStatusComponent from '@/components/vehicles/VehicleStatus';
 import VehicleMediaHub from '@/components/vehicles/VehicleMediaHub';
 import VehicleDocumentVault from '@/components/vehicles/VehicleDocumentVault';
 import VehicleSale from '@/components/vehicles/VehicleSale';
+import VehicleCostManagement from '@/components/vehicles/VehicleCostManagement';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 import { Loader2 } from 'lucide-react';
 
@@ -237,6 +238,17 @@ function VehicleDetailsContent({ id }: { id: string }) {
         <div className="lg:col-span-1">
           <VehicleDocumentVault documents={vehicle.documents} vehicleId={vehicle.id} />
         </div>
+      </div>
+      
+      <div className="mt-6">
+        <VehicleCostManagement 
+          vehicleId={vehicle.id}
+          vehicleName={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
+          onCostsUpdate={(costs) => {
+            // Update local vehicle state with new costs
+            setVehicle(prev => prev ? { ...prev, costs } : null);
+          }}
+        />
       </div>
       
       <DeleteConfirmationDialog
