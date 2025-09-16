@@ -18,7 +18,10 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ [key: number]: number }>({});
   const [error, setError] = useState<string | null>(null);
-  const [localMedia, setLocalMedia] = useState<Vehicle['media']>(media);
+  const [localMedia, setLocalMedia] = useState<Vehicle['media']>({
+    photos: media?.photos || [],
+    videos: media?.videos || []
+  });
 
   // Helper functions to get URLs for both Google Drive and Cloudinary files
   const getImageUrl = (file: FileReference): string => {
@@ -103,9 +106,10 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       );
       
       // Update local media state
+      const currentMediaArray = localMedia[activeTab] || [];
       const updatedMedia = {
         ...localMedia,
-        [activeTab]: [...localMedia[activeTab], ...uploadedFiles]
+        [activeTab]: [...currentMediaArray, ...uploadedFiles]
       };
       
       setLocalMedia(updatedMedia);
@@ -131,8 +135,12 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
 
   const removeMedia = async (index: number) => {
     try {
-      const mediaArray = localMedia[activeTab];
+      const mediaArray = localMedia[activeTab] || [];
       const fileToRemove = mediaArray[index];
+      
+      if (!fileToRemove) {
+        throw new Error('File not found');
+      }
       
       // Delete from storage
       // Check if it's a Cloudinary file reference
@@ -179,7 +187,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
           }`}
           onClick={() => setActiveTab('photos')}
         >
-          Photos ({localMedia.photos.length})
+          Photos ({(localMedia.photos || []).length})
         </button>
         <button
           className={`py-2 px-4 ${
@@ -189,7 +197,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
           }`}
           onClick={() => setActiveTab('videos')}
         >
-          Videos ({localMedia.videos.length})
+          Videos ({(localMedia.videos || []).length})
         </button>
       </div>
       
@@ -262,8 +270,8 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       {/* Media Display */}
       {activeTab === 'photos' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {localMedia.photos.length > 0 ? (
-            localMedia.photos.map((photo, index) => (
+          {(localMedia.photos || []).length > 0 ? (
+            (localMedia.photos || []).map((photo, index) => (
               <div key={photo.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
                 <Image
                   src={getImageUrl(photo)}
@@ -300,8 +308,8 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {localMedia.videos.length > 0 ? (
-            localMedia.videos.map((video, index) => (
+          {(localMedia.videos || []).length > 0 ? (
+            (localMedia.videos || []).map((video, index) => (
               <div key={video.id} className="relative aspect-video rounded-lg overflow-hidden bg-gray-100 group">
                 <video
                   src={getVideoUrl(video)}
