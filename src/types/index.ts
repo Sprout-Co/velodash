@@ -94,6 +94,7 @@ export interface DashboardKPIs {
   capitalDeployed: number;
   readyForSaleValue: number;
   grossProfit: number;
+  netProfit30Days: number;
 }
 
 export interface InventoryStatusFunnel {

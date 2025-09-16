@@ -67,6 +67,7 @@ export function useDashboardData() {
       capitalDeployed: 0,
       readyForSaleValue: 0,
       grossProfit: 0,
+      netProfit30Days: 0,
     },
     funnelData: data?.funnelData || {
       sourced: 0,

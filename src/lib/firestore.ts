@@ -61,7 +61,7 @@ const convertTimestamps = (data: any): any => {
   Object.keys(converted).forEach(key => {
     const value = converted[key];
     
-    // Handle Timestamp objects
+    // Handle Timestamp objects first
     if (value instanceof Timestamp) {
       converted[key] = safeDateConversion(value);
     }
@@ -718,6 +718,11 @@ export const dashboardService = {
       let capitalDeployed = 0;
       let readyForSaleValue = 0;
       let grossProfit = 0;
+      let netProfit30Days = 0;
+      
+      // Calculate 30 days ago date
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       
       console.log('Calculating KPIs for vehicles:', vehicles.length);
       
@@ -747,6 +752,21 @@ export const dashboardService = {
           const profit = vehicle.saleDetails.finalSalePrice - totalCost;
           grossProfit += profit;
           console.log(`Vehicle ${vehicle.id} sold for ${vehicle.saleDetails.finalSalePrice} NGN, cost ${totalCost} NGN, profit: ${profit} NGN`);
+          
+          // Calculate 30-day net profit
+          if (vehicle.saleDetails?.saleDate) {
+            const saleDate = safeDateConversion(vehicle.saleDetails.saleDate);
+            if (saleDate) {
+              // Compare dates by setting time to start of day for accurate comparison
+              const saleDateOnly = new Date(saleDate.getFullYear(), saleDate.getMonth(), saleDate.getDate());
+              const thirtyDaysAgoOnly = new Date(thirtyDaysAgo.getFullYear(), thirtyDaysAgo.getMonth(), thirtyDaysAgo.getDate());
+              
+              if (saleDateOnly >= thirtyDaysAgoOnly) {
+                netProfit30Days += profit;
+                console.log(`Vehicle ${vehicle.id} sold within last 30 days, adding ${profit} NGN to net profit`);
+              }
+            }
+          }
         }
       }
       
@@ -763,6 +783,7 @@ export const dashboardService = {
         capitalDeployed,
         readyForSaleValue,
         grossProfit,
+        netProfit30Days,
       });
 
       return {
@@ -770,6 +791,7 @@ export const dashboardService = {
         capitalDeployed,
         readyForSaleValue,
         grossProfit,
+        netProfit30Days,
       };
     } catch (error) {
       console.error('Error fetching KPIs:', error);
