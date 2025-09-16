@@ -428,6 +428,44 @@ export const vehicleService = {
     }
   },
 
+  // Update vehicle sale details
+  async updateVehicleSaleDetails(id: string, saleDetails: Vehicle['saleDetails']): Promise<Vehicle> {
+    try {
+      const docRef = doc(db, COLLECTIONS.VEHICLES, id);
+      const now = new Date();
+      
+      const updateData = {
+        saleDetails: {
+          ...saleDetails,
+          saleDate: saleDetails?.saleDate ? Timestamp.fromDate(new Date(saleDetails.saleDate)) : Timestamp.fromDate(now),
+        },
+        updatedAt: Timestamp.fromDate(now),
+      };
+
+      const cleanedUpdateData = cleanUndefinedValues(updateData);
+      await updateDoc(docRef, cleanedUpdateData);
+
+      // Log activity
+      await activityService.logActivity({
+        userId: 'system',
+        userName: 'System',
+        action: 'updated sale details',
+        vehicleId: id,
+        timestamp: now,
+      });
+
+      const updatedVehicle = await this.getVehicleById(id);
+      if (!updatedVehicle) {
+        throw new Error('Vehicle not found after update');
+      }
+
+      return updatedVehicle;
+    } catch (error) {
+      console.error('Error updating vehicle sale details:', error);
+      throw new Error('Failed to update vehicle sale details');
+    }
+  },
+
   // Update vehicle media
   async updateVehicleMedia(id: string, media: Vehicle['media']): Promise<Vehicle> {
     try {
@@ -734,49 +772,58 @@ export const dashboardService = {
         
         // Check for customs delays
         if (vehicle.status === 'in-customs') {
-          const daysInCustoms = Math.floor((now.getTime() - vehicle.updatedAt.getTime()) / (1000 * 60 * 60 * 24));
-          if (daysInCustoms > 10) {
-            actionItems.push({
-              id: `customs-${vehicle.id}`,
-              type: 'customs-delay',
-              vehicleId: vehicle.id,
-              vehicleName,
-              days: daysInCustoms,
-              description: `Vehicle has been in customs for ${daysInCustoms} days, exceeding the 10-day threshold`,
-              priority: daysInCustoms > 15 ? 'high' : 'medium',
-            });
+          const updatedAt = safeDateConversion(vehicle.updatedAt);
+          if (updatedAt) {
+            const daysInCustoms = Math.floor((now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysInCustoms > 10) {
+              actionItems.push({
+                id: `customs-${vehicle.id}`,
+                type: 'customs-delay',
+                vehicleId: vehicle.id,
+                vehicleName,
+                days: daysInCustoms,
+                description: `Vehicle has been in customs for ${daysInCustoms} days, exceeding the 10-day threshold`,
+                priority: daysInCustoms > 15 ? 'high' : 'medium',
+              });
+            }
           }
         }
 
         // Check for workshop delays
         if (vehicle.status === 'in-workshop') {
-          const daysInWorkshop = Math.floor((now.getTime() - vehicle.updatedAt.getTime()) / (1000 * 60 * 60 * 24));
-          if (daysInWorkshop > 21) {
-            actionItems.push({
-              id: `workshop-${vehicle.id}`,
-              type: 'workshop-delay',
-              vehicleId: vehicle.id,
-              vehicleName,
-              days: daysInWorkshop,
-              description: `Vehicle has been in workshop for ${daysInWorkshop} days, exceeding the 21-day threshold`,
-              priority: daysInWorkshop > 30 ? 'high' : 'medium',
-            });
+          const updatedAt = safeDateConversion(vehicle.updatedAt);
+          if (updatedAt) {
+            const daysInWorkshop = Math.floor((now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysInWorkshop > 21) {
+              actionItems.push({
+                id: `workshop-${vehicle.id}`,
+                type: 'workshop-delay',
+                vehicleId: vehicle.id,
+                vehicleName,
+                days: daysInWorkshop,
+                description: `Vehicle has been in workshop for ${daysInWorkshop} days, exceeding the 21-day threshold`,
+                priority: daysInWorkshop > 30 ? 'high' : 'medium',
+              });
+            }
           }
         }
 
         // Check for unsold aging
         if (vehicle.status === 'for-sale') {
-          const daysForSale = Math.floor((now.getTime() - vehicle.updatedAt.getTime()) / (1000 * 60 * 60 * 24));
-          if (daysForSale > 90) {
-            actionItems.push({
-              id: `aging-${vehicle.id}`,
-              type: 'unsold-aging',
-              vehicleId: vehicle.id,
-              vehicleName,
-              days: daysForSale,
-              description: `Vehicle has been unsold for ${daysForSale} days, exceeding the 90-day threshold`,
-              priority: daysForSale > 120 ? 'high' : 'medium',
-            });
+          const updatedAt = safeDateConversion(vehicle.updatedAt);
+          if (updatedAt) {
+            const daysForSale = Math.floor((now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60 * 24));
+            if (daysForSale > 90) {
+              actionItems.push({
+                id: `aging-${vehicle.id}`,
+                type: 'unsold-aging',
+                vehicleId: vehicle.id,
+                vehicleName,
+                days: daysForSale,
+                description: `Vehicle has been unsold for ${daysForSale} days, exceeding the 90-day threshold`,
+                priority: daysForSale > 120 ? 'high' : 'medium',
+              });
+            }
           }
         }
       }

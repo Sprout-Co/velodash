@@ -9,10 +9,11 @@ import VehicleAcquisition from '@/components/vehicles/VehicleAcquisition';
 import VehicleStatusComponent from '@/components/vehicles/VehicleStatus';
 import VehicleMediaHub from '@/components/vehicles/VehicleMediaHub';
 import VehicleDocumentVault from '@/components/vehicles/VehicleDocumentVault';
+import VehicleSale from '@/components/vehicles/VehicleSale';
 import DeleteConfirmationDialog from '@/components/ui/DeleteConfirmationDialog';
 import { Loader2 } from 'lucide-react';
 
-import { getVehicleById, deleteVehicle, updateVehicleStatus } from '@/hooks/useVehiclesData';
+import { getVehicleById, deleteVehicle, updateVehicleStatus, updateVehicleSaleDetails } from '@/hooks/useVehiclesData';
 
 function VehicleDetailsContent({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
@@ -74,6 +75,22 @@ function VehicleDetailsContent({ id }: { id: string }) {
       setTimeout(() => setStatusUpdateError(null), 5000);
     } finally {
       setIsUpdatingStatus(false);
+    }
+  };
+
+  const handleSaleUpdate = async (saleDetails: Vehicle['saleDetails']) => {
+    if (!vehicle) return;
+    
+    try {
+      // Update sale details in Firestore
+      const updatedVehicle = await updateVehicleSaleDetails(vehicle.id, saleDetails);
+      
+      // Update local state
+      setVehicle(updatedVehicle);
+      
+    } catch (err) {
+      console.error('Failed to update vehicle sale details:', err);
+      throw err; // Let the component handle the error
     }
   };
 
@@ -202,6 +219,11 @@ function VehicleDetailsContent({ id }: { id: string }) {
           <div className="grid grid-cols-1 gap-6">
             <VehicleIdentification vehicle={vehicle} />
             <VehicleAcquisition acquisitionDetails={vehicle.acquisitionDetails} />
+            <VehicleSale 
+              saleDetails={vehicle.saleDetails} 
+              vehicleId={vehicle.id}
+              onSaleUpdate={handleSaleUpdate}
+            />
             <VehicleMediaHub 
               media={vehicle.media} 
               vehicleId={vehicle.id}
