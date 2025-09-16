@@ -66,6 +66,7 @@ export function useDashboardData() {
       liveInventoryCount: 0,
       capitalDeployed: 0,
       readyForSaleValue: 0,
+      grossProfit: 0,
     },
     funnelData: data?.funnelData || {
       sourced: 0,

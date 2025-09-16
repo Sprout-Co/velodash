@@ -93,6 +93,7 @@ export interface DashboardKPIs {
   liveInventoryCount: number;
   capitalDeployed: number;
   readyForSaleValue: number;
+  grossProfit: number;
 }
 
 export interface InventoryStatusFunnel {

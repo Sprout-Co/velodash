@@ -3,6 +3,7 @@
 import React from 'react';
 import { DashboardKPIs } from '@/types';
 import { formatCurrency } from '@/lib/utils';
+import { GrossProfitCard } from './GrossProfitCard';
 
 interface KPICardsProps {
   data: DashboardKPIs;
@@ -75,6 +76,10 @@ export function KPICards({ data, isLoading }: KPICardsProps) {
           </div>
         );
       })}
+      <GrossProfitCard 
+        totalGrossProfit={data.grossProfit} 
+        isLoading={isLoading} 
+      />
     </div>
   );
 }

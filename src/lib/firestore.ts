@@ -717,6 +717,7 @@ export const dashboardService = {
       
       let capitalDeployed = 0;
       let readyForSaleValue = 0;
+      let grossProfit = 0;
       
       console.log('Calculating KPIs for vehicles:', vehicles.length);
       
@@ -740,12 +741,20 @@ export const dashboardService = {
         if (vehicle.status === 'for-sale' && vehicle.saleDetails?.listingPrice) {
           readyForSaleValue += vehicle.saleDetails.listingPrice;
         }
+        
+        // Calculate gross profit for sold vehicles
+        if (vehicle.status === 'sold' && vehicle.saleDetails?.finalSalePrice) {
+          const profit = vehicle.saleDetails.finalSalePrice - totalCost;
+          grossProfit += profit;
+          console.log(`Gross profit for vehicle ${vehicle.id}: ${profit} NGN (Sale: ${vehicle.saleDetails.finalSalePrice}, Cost: ${totalCost})`);
+        }
       }
       
       console.log('Capital deployed calculation:', {
         totalVehicles: vehicles.length,
         capitalDeployed,
-        readyForSaleValue
+        readyForSaleValue,
+        grossProfit
       });
 
       // Debug logging
@@ -754,12 +763,14 @@ export const dashboardService = {
         liveInventoryCount,
         capitalDeployed,
         readyForSaleValue,
+        grossProfit,
       });
 
       return {
         liveInventoryCount,
         capitalDeployed,
         readyForSaleValue,
+        grossProfit,
       };
     } catch (error) {
       console.error('Error fetching KPIs:', error);
