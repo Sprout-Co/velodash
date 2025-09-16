@@ -100,6 +100,7 @@ export interface InventoryStatusFunnel {
   inCustoms: number;
   inWorkshop: number;
   forSale: number;
+  sold: number;
 }
 
 export interface ActionRequired {

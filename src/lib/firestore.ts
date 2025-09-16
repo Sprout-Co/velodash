@@ -602,13 +602,14 @@ export const vehicleService = {
   // Get vehicles by status for dashboard funnel
   async getVehiclesByStatus(): Promise<InventoryStatusFunnel> {
     try {
-      const statuses: Vehicle['status'][] = ['sourced', 'in-transit', 'in-customs', 'in-workshop', 'for-sale'];
+      const statuses: Vehicle['status'][] = ['sourced', 'in-transit', 'in-customs', 'in-workshop', 'for-sale', 'sold'];
       const funnelData: InventoryStatusFunnel = {
         sourced: 0,
         inTransit: 0,
         inCustoms: 0,
         inWorkshop: 0,
         forSale: 0,
+        sold: 0,
       };
 
       for (const status of statuses) {
@@ -633,6 +634,9 @@ export const vehicleService = {
             break;
           case 'for-sale':
             funnelData.forSale = snapshot.size;
+            break;
+          case 'sold':
+            funnelData.sold = snapshot.size;
             break;
         }
       }
