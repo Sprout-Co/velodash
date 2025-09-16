@@ -187,12 +187,23 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       }
       
       // Delete from storage
-      // Check if it's a Cloudinary file reference
-      if ('publicId' in fileToRemove) {
-        await storageService.deleteFile(fileToRemove.publicId, fileToRemove.resourceType);
+      // Check if it's a Cloudinary file reference by checking for publicId property
+      if ('publicId' in fileToRemove && fileToRemove.publicId) {
+        console.log('Deleting Cloudinary file:', fileToRemove.publicId, fileToRemove.resourceType);
+        try {
+          await storageService.deleteFile(fileToRemove.publicId, fileToRemove.resourceType);
+          console.log('Successfully deleted file from Cloudinary');
+        } catch (deleteError) {
+          console.warn('Failed to delete file from Cloudinary, but continuing with UI update:', deleteError);
+          // Continue with UI update even if Cloudinary deletion fails
+        }
+      } else if ('id' in fileToRemove && fileToRemove.id) {
+        // Legacy Google Drive file reference - this might not work with current storage service
+        console.log('Attempting to delete Google Drive file:', fileToRemove.id);
+        // For now, just log a warning since we don't have Google Drive delete implemented
+        console.warn('Google Drive file deletion not implemented, removing from UI only');
       } else {
-        // Legacy Google Drive file reference
-        await storageService.deleteFile(fileToRemove.id);
+        console.warn('Unknown file type, removing from UI only');
       }
       
       // Update local state
@@ -446,6 +457,21 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
                   <ExternalLink className="icon" />
                   <span>Open in new tab</span>
                 </a>
+                <button
+                  className="image-preview-action-btn image-preview-delete-btn"
+                  onClick={() => {
+                    const photoIndex = (localMedia.photos || []).findIndex(photo => photo.id === selectedPhoto.id);
+                    if (photoIndex !== -1) {
+                      removeMedia(photoIndex);
+                      setIsImageModalOpen(false);
+                      setSelectedPhoto(null);
+                    }
+                  }}
+                  aria-label="Delete image"
+                >
+                  <X className="icon" />
+                  <span>Delete</span>
+                </button>
                 <button
                   className="image-preview-close"
                   onClick={() => { setIsImageModalOpen(false); setSelectedPhoto(null); }}

@@ -25,11 +25,18 @@ export async function DELETE(request: NextRequest) {
       resource_type: resourceType
     });
 
-    if (result.result !== 'ok') {
+    console.log('Cloudinary delete result:', result);
+
+    if (result.result !== 'ok' && result.result !== 'not found') {
       return NextResponse.json(
         { error: `Failed to delete file: ${result.result}` },
         { status: 500 }
       );
+    }
+
+    // Handle case where file is already deleted or doesn't exist
+    if (result.result === 'not found') {
+      console.log('File not found in Cloudinary, but treating as successful deletion');
     }
 
     return NextResponse.json({

@@ -254,6 +254,24 @@
   span {
     color: #ffffff !important;
   }
+  
+  &.image-preview-delete-btn {
+    background-color: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    
+    &:hover {
+      background-color: rgba(239, 68, 68, 0.25);
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+    
+    .icon {
+      color: #ef4444 !important;
+    }
+    
+    span {
+      color: #ef4444 !important;
+    }
+  }
 }
 
 .image-preview-overlay .image-preview-modal .image-preview-close {
