@@ -22,6 +22,8 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
     photos: media?.photos || [],
     videos: media?.videos || []
   });
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<FileReference | null>(null);
 
   // Sync localMedia when media prop changes
   useEffect(() => {
@@ -31,6 +33,19 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       videos: media?.videos || []
     });
   }, [media]);
+
+  // Close preview on Escape key
+  useEffect(() => {
+    if (!isImageModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsImageModalOpen(false);
+        setSelectedPhoto(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isImageModalOpen]);
 
   // Helper functions to get URLs for both Google Drive and Cloudinary files
   const getImageUrl = (file: FileReference): string => {
@@ -308,7 +323,14 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
             return hasPhotos;
           })() ? (
             (localMedia.photos || []).map((photo, index) => (
-              <div key={photo.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
+              <div
+                key={photo.id}
+                className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group cursor-zoom-in"
+                onClick={() => {
+                  setSelectedPhoto(photo);
+                  setIsImageModalOpen(true);
+                }}
+              >
                 {/* Temporary debug info */}
                 <div className="absolute top-0 left-0 bg-black bg-opacity-75 text-white text-xs p-1 z-10">
                   {photo.name}
@@ -338,11 +360,12 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
                     rel="noopener noreferrer"
                     className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
                     title="View in Google Drive"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <ExternalLink className="h-4 w-4 text-gray-600" />
                   </a>
                   <button 
-                    onClick={() => removeMedia(index)}
+                    onClick={(e) => { e.stopPropagation(); removeMedia(index); }}
                     className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
                     title="Delete photo"
                   >
@@ -396,6 +419,50 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
               <p>No videos uploaded yet</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Image Preview Modal */}
+      {isImageModalOpen && selectedPhoto && (
+        <div
+          className="image-preview-overlay"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsImageModalOpen(false);
+              setSelectedPhoto(null);
+            }
+          }}
+        >
+          <div className="image-preview-modal">
+            <div className="image-preview-header">
+              <div className="image-preview-title">{('name' in selectedPhoto && selectedPhoto.name) ? selectedPhoto.name : 'Preview'}</div>
+              <div className="image-preview-actions">
+                <a
+                  href={getViewUrl(selectedPhoto)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="image-preview-action-btn"
+                >
+                  <ExternalLink className="icon" />
+                  <span>Open in new tab</span>
+                </a>
+                <button
+                  className="image-preview-close"
+                  onClick={() => { setIsImageModalOpen(false); setSelectedPhoto(null); }}
+                  aria-label="Close preview"
+                >
+                  <X className="icon" />
+                </button>
+              </div>
+            </div>
+            <div className="image-preview-content">
+              <img
+                src={getImageUrl(selectedPhoto)}
+                alt={('name' in selectedPhoto && selectedPhoto.name) ? selectedPhoto.name : 'Vehicle photo preview'}
+                className="image-preview-img"
+              />
+            </div>
+          </div>
         </div>
       )}
     </div>
