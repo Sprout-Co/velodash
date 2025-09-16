@@ -4,7 +4,7 @@ This document explains how the VelocityDash application has been integrated with
 
 ## Overview
 
-The application has been fully migrated from mock data to use Google Firestore as the backend database. All CRUD operations for vehicles, costs, activities, and reports are now handled through Firestore.
+The application has been fully migrated from mock data to use Google Firestore as the backend database. All CRUD operations for vehicles, costs, and activities are now handled through Firestore.
 
 ## Architecture
 
@@ -16,7 +16,6 @@ The Firestore database is organized into the following collections:
 - **`costs`** - Cost entries linked to vehicles
 - **`activities`** - Activity logs and audit trail
 - **`users`** - User management (future implementation)
-- **`reports`** - Generated reports (future implementation)
 
 ### Service Layer
 
@@ -188,7 +187,6 @@ interface Vehicle {
   model: string;
   year: number;
   color: string;
-  trim: string;
   mileage: number;
   status: VehicleStatus;
   acquisitionDetails: {
@@ -233,8 +231,6 @@ interface CostEntry {
   description: string;
   amount: number;
   currency: Currency;
-  ngnAmount: number;
-  exchangeRate: number;
   createdAt: Date;
 }
 ```

@@ -31,7 +31,7 @@ export default function TestCostsPage() {
 
   const totalCapitalDeployed = vehicles.reduce((total, vehicle) => {
     const vehicleCosts = Array.isArray(vehicle.costs) 
-      ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+      ? vehicle.costs.reduce((sum: number, cost: any) => sum + (cost.amount || 0), 0)
       : 0;
     return total + vehicleCosts;
   }, 0);
@@ -93,7 +93,7 @@ export default function TestCostsPage() {
           <div className="space-y-4">
             {vehicles.map((vehicle) => {
               const vehicleCosts = Array.isArray(vehicle.costs) 
-                ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+                ? vehicle.costs.reduce((sum: number, cost: any) => sum + (cost.amount || 0), 0)
                 : 0;
 
               return (
@@ -101,7 +101,7 @@ export default function TestCostsPage() {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h3 className="text-lg font-medium text-gray-900">
-                        {vehicle.year} {vehicle.make} {vehicle.model} {vehicle.trim}
+                        {vehicle.year} {vehicle.make} {vehicle.model}
                       </h3>
                       <p className="text-sm text-gray-500">VIN: {vehicle.vin}</p>
                       <p className="text-sm text-gray-500">Status: {vehicle.status}</p>
@@ -120,13 +120,13 @@ export default function TestCostsPage() {
                     </h4>
                     {vehicle.costs && vehicle.costs.length > 0 ? (
                       <div className="space-y-1">
-                        {vehicle.costs.map((cost, index) => (
+                        {vehicle.costs.map((cost: any, index: number) => (
                           <div key={index} className="flex justify-between items-center text-sm bg-gray-50 px-3 py-2 rounded">
                             <div>
                               <span className="font-medium">{cost.description}</span>
                               <span className="text-gray-500 ml-2">({cost.category})</span>
                             </div>
-                            <div className="font-medium">₦{cost.ngnAmount.toLocaleString()}</div>
+                            <div className="font-medium">₦{(cost.amount || 0).toLocaleString()}</div>
                           </div>
                         ))}
                       </div>

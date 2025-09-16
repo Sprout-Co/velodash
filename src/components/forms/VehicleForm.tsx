@@ -24,7 +24,6 @@ interface FormErrors {
   model?: string;
   year?: string;
   color?: string;
-  trim?: string;
   mileage?: string;
   sourceChannel?: string;
   purchaseDate?: string;
@@ -47,7 +46,6 @@ export default function VehicleForm({
     model: '',
     year: new Date().getFullYear(),
     color: '',
-    trim: '',
     mileage: 0,
     acquisitionDetails: {
       sourceChannel: '',
@@ -101,9 +99,6 @@ export default function VehicleForm({
         if (!value) return 'Color is required';
         return '';
       
-      case 'trim':
-        if (!value) return 'Trim is required';
-        return '';
       
       case 'mileage':
         if (value === '' || value === null) return 'Mileage is required';
@@ -189,7 +184,7 @@ export default function VehicleForm({
     const newErrors: FormErrors = {};
     
     // Validate basic fields
-    const basicFields = ['vin', 'make', 'model', 'year', 'color', 'trim', 'mileage'];
+    const basicFields = ['vin', 'make', 'model', 'year', 'color', 'mileage'];
     basicFields.forEach(field => {
       const value = formData[field as keyof VehicleFormData];
       const error = validateField(field, value);
@@ -219,7 +214,7 @@ export default function VehicleForm({
     
     // Mark all fields as touched to show validation errors
     const allFields = [
-      'vin', 'make', 'model', 'year', 'color', 'trim', 'mileage',
+      'vin', 'make', 'model', 'year', 'color', 'mileage',
       'sourceChannel', 'purchaseDate', 'purchasePrice', 'currency'
     ];
     
@@ -331,21 +326,6 @@ export default function VehicleForm({
             )}
           </div>
           
-          <div className="form-group">
-            <label htmlFor="trim">Trim *</label>
-            <input
-              type="text"
-              id="trim"
-              value={formData.trim}
-              onChange={(e) => handleInputChange('trim', e.target.value)}
-              onBlur={() => handleBlur('trim')}
-              className={errors.trim && touched.trim ? 'error' : ''}
-              placeholder="Enter trim level"
-            />
-            {errors.trim && touched.trim && (
-              <span className="error-message">{errors.trim}</span>
-            )}
-          </div>
         </div>
         
         <div className="form-row">

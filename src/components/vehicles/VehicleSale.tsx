@@ -13,8 +13,8 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
-    listingPrice: saleDetails?.listingPrice || 0,
-    finalSalePrice: saleDetails?.finalSalePrice || 0,
+    listingPrice: saleDetails?.listingPrice || undefined,
+    finalSalePrice: saleDetails?.finalSalePrice || undefined,
     saleDate: saleDetails?.saleDate ? formatDate(saleDetails.saleDate) : '',
     notes: saleDetails?.notes || '',
   });
@@ -30,8 +30,8 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
   const handleCancel = () => {
     setIsEditing(false);
     setFormData({
-      listingPrice: saleDetails?.listingPrice || 0,
-      finalSalePrice: saleDetails?.finalSalePrice || 0,
+      listingPrice: saleDetails?.listingPrice || undefined,
+      finalSalePrice: saleDetails?.finalSalePrice || undefined,
       saleDate: saleDetails?.saleDate ? formatDate(saleDetails.saleDate) : '',
       notes: saleDetails?.notes || '',
     });
@@ -40,18 +40,13 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
   };
 
   const handleSave = async () => {
-    if (formData.listingPrice <= 0 || formData.finalSalePrice <= 0) {
-      setError('Listing price and final sale price must be greater than 0');
-      return;
-    }
-
     setIsSaving(true);
     setError(null);
 
     try {
       const updatedSaleDetails = {
-        listingPrice: formData.listingPrice,
-        finalSalePrice: formData.finalSalePrice,
+        listingPrice: formData.listingPrice || undefined,
+        finalSalePrice: formData.finalSalePrice || undefined,
         saleDate: formData.saleDate ? new Date(formData.saleDate) : new Date(),
         notes: formData.notes,
       };
@@ -79,8 +74,10 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
     }));
   };
 
-  const profit = saleDetails ? saleDetails.finalSalePrice - saleDetails.listingPrice : 0;
-  const profitMargin = saleDetails && saleDetails.listingPrice > 0 
+  const profit = saleDetails && saleDetails.listingPrice && saleDetails.finalSalePrice 
+    ? saleDetails.finalSalePrice - saleDetails.listingPrice 
+    : 0;
+  const profitMargin = saleDetails && saleDetails.listingPrice && saleDetails.finalSalePrice && saleDetails.listingPrice > 0 
     ? ((saleDetails.finalSalePrice - saleDetails.listingPrice) / saleDetails.listingPrice) * 100 
     : 0;
 
@@ -122,7 +119,7 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
               <input
                 type="number"
                 value={formData.listingPrice}
-                onChange={(e) => handleInputChange('listingPrice', parseFloat(e.target.value) || 0)}
+                onChange={(e) => handleInputChange('listingPrice', e.target.value ? parseFloat(e.target.value) : undefined)}
                 className="vehicle-sale__form-input"
                 placeholder="Enter listing price"
                 min="0"
@@ -138,7 +135,7 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
               <input
                 type="number"
                 value={formData.finalSalePrice}
-                onChange={(e) => handleInputChange('finalSalePrice', parseFloat(e.target.value) || 0)}
+                onChange={(e) => handleInputChange('finalSalePrice', e.target.value ? parseFloat(e.target.value) : undefined)}
                 className="vehicle-sale__form-input"
                 placeholder="Enter final sale price"
                 min="0"
@@ -201,14 +198,14 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
                 <div className="vehicle-sale__detail-item">
                   <label className="vehicle-sale__detail-label">Listing Price</label>
                   <p className="vehicle-sale__detail-value">
-                    {formatCurrency(saleDetails.listingPrice, 'NGN')}
+                    {saleDetails.listingPrice ? formatCurrency(saleDetails.listingPrice, 'NGN') : 'Not set'}
                   </p>
                 </div>
 
                 <div className="vehicle-sale__detail-item">
                   <label className="vehicle-sale__detail-label">Final Sale Price</label>
                   <p className="vehicle-sale__detail-value vehicle-sale__detail-value--sale">
-                    {formatCurrency(saleDetails.finalSalePrice, 'NGN')}
+                    {saleDetails.finalSalePrice ? formatCurrency(saleDetails.finalSalePrice, 'NGN') : 'Not set'}
                   </p>
                 </div>
 
@@ -224,7 +221,7 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
                   <p className={`vehicle-sale__detail-value ${
                     profit >= 0 ? 'vehicle-sale__detail-value--profit' : 'vehicle-sale__detail-value--loss'
                   }`}>
-                    {formatCurrency(profit, 'NGN')}
+                    {saleDetails.listingPrice && saleDetails.finalSalePrice ? formatCurrency(profit, 'NGN') : 'N/A'}
                   </p>
                 </div>
 
@@ -233,7 +230,7 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
                   <p className={`vehicle-sale__detail-value ${
                     profitMargin >= 0 ? 'vehicle-sale__detail-value--profit' : 'vehicle-sale__detail-value--loss'
                   }`}>
-                    {profitMargin.toFixed(1)}%
+                    {saleDetails.listingPrice && saleDetails.finalSalePrice ? `${profitMargin.toFixed(1)}%` : 'N/A'}
                   </p>
                 </div>
 

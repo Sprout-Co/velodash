@@ -74,7 +74,6 @@ function EditVehicleContent({ id }: { id: string }) {
       model: vehicle.model,
       year: vehicle.year,
       color: vehicle.color,
-      trim: vehicle.trim,
       mileage: vehicle.mileage,
       acquisitionDetails: {
         sourceChannel: vehicle.acquisitionDetails.sourceChannel,

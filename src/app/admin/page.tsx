@@ -185,7 +185,6 @@ export default function AdminPage() {
             <li><strong>costs</strong> - Cost entries for each vehicle</li>
             <li><strong>activities</strong> - Activity logs and audit trail</li>
             <li><strong>users</strong> - User management (future)</li>
-            <li><strong>reports</strong> - Generated reports (future)</li>
           </ul>
         </div>
       </div>

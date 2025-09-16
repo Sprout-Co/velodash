@@ -34,7 +34,6 @@ export interface Vehicle {
   model: string;
   year: number;
   color: string;
-  trim: string;
   mileage: number;
   status: VehicleStatus;
   acquisitionDetails: {
@@ -58,8 +57,8 @@ export interface Vehicle {
   };
   costs: CostEntry[];
   saleDetails?: {
-    listingPrice: number;
-    finalSalePrice: number;
+    listingPrice?: number;
+    finalSalePrice?: number;
     saleDate: Date | string | any; // Flexible date handling for Firestore
     notes?: string;
   };
@@ -75,8 +74,6 @@ export interface CostEntry {
   description: string;
   amount: number;
   currency: Currency;
-  ngnAmount: number; // Converted amount
-  exchangeRate: number;
   createdAt: Date | string | any; // Flexible date handling for Firestore
 }
 
@@ -103,6 +100,7 @@ export interface InventoryStatusFunnel {
   inCustoms: number;
   inWorkshop: number;
   forSale: number;
+  sold: number;
 }
 
 export interface ActionRequired {
@@ -191,7 +189,6 @@ export interface VehicleFormData {
   model: string;
   year: number;
   color: string;
-  trim: string;
   mileage: number;
   acquisitionDetails: {
     sourceChannel: string;
@@ -209,12 +206,11 @@ export interface CostFormData {
   description: string;
   amount: number;
   currency: Currency;
-  exchangeRate: number;
 }
 
 export interface SaleFormData {
-  listingPrice: number;
-  finalSalePrice: number;
+  listingPrice?: number;
+  finalSalePrice?: number;
   saleDate: string;
   notes?: string;
 }

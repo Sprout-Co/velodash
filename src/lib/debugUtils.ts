@@ -43,7 +43,7 @@ export function validateVehicleData(vehicle: any): string[] {
   }
 
   // Check required fields
-  const requiredFields = ['id', 'vin', 'make', 'model', 'year', 'color', 'trim', 'mileage', 'status'];
+  const requiredFields = ['id', 'vin', 'make', 'model', 'year', 'color', 'mileage', 'status'];
   requiredFields.forEach(field => {
     if (!vehicle[field]) {
       errors.push(`Missing required field: ${field}`);

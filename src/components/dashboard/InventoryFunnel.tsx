@@ -14,6 +14,7 @@ const funnelSteps = [
   { key: 'inCustoms', label: 'In Customs', color: '#F59E0B' },
   { key: 'inWorkshop', label: 'In Workshop', color: '#EF4444' },
   { key: 'forSale', label: 'For Sale', color: '#10B981' },
+  { key: 'sold', label: 'Sold', color: '#6B7280' },
 ] as const;
 
 export function InventoryFunnel({ data, isLoading }: InventoryFunnelProps) {

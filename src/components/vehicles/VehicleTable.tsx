@@ -7,6 +7,8 @@ type ExtendedVehicle = Vehicle & { totalCost: number, daysInInventory: number };
 interface VehicleTableProps {
   vehicles: ExtendedVehicle[];
   onRowClick: (vehicle: Vehicle) => void;
+  selectedVehicles?: string[];
+  onSelectionChange?: (selectedIds: string[]) => void;
 }
 
 interface SortConfig {
@@ -44,7 +46,7 @@ const StatusBadge = ({ status }: { status: VehicleStatus }) => {
   );
 };
 
-export default function VehicleTable({ vehicles, onRowClick }: VehicleTableProps) {
+export default function VehicleTable({ vehicles, onRowClick, selectedVehicles = [], onSelectionChange }: VehicleTableProps) {
   const [sortConfig, setSortConfig] = useState<SortConfig>({ 
     key: 'daysInInventory', 
     direction: 'desc' 
@@ -90,6 +92,25 @@ export default function VehicleTable({ vehicles, onRowClick }: VehicleTableProps
     return 0;
   });
 
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      onSelectionChange?.(sortedVehicles.map(v => v.id));
+    } else {
+      onSelectionChange?.([]);
+    }
+  };
+
+  const handleSelectVehicle = (vehicleId: string, checked: boolean) => {
+    if (checked) {
+      onSelectionChange?.([...selectedVehicles, vehicleId]);
+    } else {
+      onSelectionChange?.(selectedVehicles.filter(id => id !== vehicleId));
+    }
+  };
+
+  const isAllSelected = sortedVehicles.length > 0 && selectedVehicles.length === sortedVehicles.length;
+  const isIndeterminate = selectedVehicles.length > 0 && selectedVehicles.length < sortedVehicles.length;
+
   const getSortIcon = (key: SortConfig['key']) => {
     if (sortConfig.key !== key) return null;
     return sortConfig.direction === 'asc' ? '↑' : '↓';
@@ -100,6 +121,17 @@ export default function VehicleTable({ vehicles, onRowClick }: VehicleTableProps
       <table className="vehicles-table">
         <thead>
           <tr>
+            <th className="select-column">
+              <input
+                type="checkbox"
+                checked={isAllSelected}
+                ref={(input) => {
+                  if (input) input.indeterminate = isIndeterminate;
+                }}
+                onChange={(e) => handleSelectAll(e.target.checked)}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </th>
             <th 
               scope="col" 
               onClick={() => handleSort('vin')}
@@ -138,7 +170,19 @@ export default function VehicleTable({ vehicles, onRowClick }: VehicleTableProps
               <tr 
                 key={vehicle.id} 
                 onClick={() => onRowClick(vehicle)}
+                className={selectedVehicles.includes(vehicle.id) ? 'selected' : ''}
               >
+                <td className="select-cell">
+                  <input
+                    type="checkbox"
+                    checked={selectedVehicles.includes(vehicle.id)}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      handleSelectVehicle(vehicle.id, e.target.checked);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </td>
                 <td className="vin-cell">
                   {vehicle.vin}
                 </td>
@@ -158,7 +202,7 @@ export default function VehicleTable({ vehicles, onRowClick }: VehicleTableProps
             ))
           ) : (
             <tr>
-              <td colSpan={5} className="no-data">
+              <td colSpan={6} className="no-data">
                 No vehicles found
               </td>
             </tr>

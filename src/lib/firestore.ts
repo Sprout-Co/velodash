@@ -48,7 +48,6 @@ const COLLECTIONS = {
   COSTS: 'costs',
   USERS: 'users',
   ACTIVITIES: 'activities',
-  REPORTS: 'reports',
 } as const;
 
 // Helper function to convert Firestore timestamps to Date objects
@@ -300,7 +299,6 @@ export const vehicleService = {
         model: formData.model,
         year: formData.year,
         color: formData.color,
-        trim: formData.trim,
         mileage: formData.mileage,
         status: 'sourced' as const,
       acquisitionDetails: {
@@ -336,7 +334,6 @@ export const vehicleService = {
         description: 'Initial purchase',
         amount: formData.acquisitionDetails.purchasePrice,
         currency: formData.acquisitionDetails.currency,
-        exchangeRate: 850, // Default exchange rate
       };
       
       await costService.createCost(docRef.id, costData);
@@ -370,7 +367,6 @@ export const vehicleService = {
         model: formData.model,
         year: formData.year,
         color: formData.color,
-        trim: formData.trim,
         mileage: formData.mileage,
       acquisitionDetails: {
         sourceChannel: formData.acquisitionDetails.sourceChannel,
@@ -550,16 +546,69 @@ export const vehicleService = {
     }
   },
 
+  // Bulk delete vehicles
+  async bulkDeleteVehicles(vehicleIds: string[]): Promise<void> {
+    try {
+      if (vehicleIds.length === 0) {
+        return;
+      }
+
+      // Get all vehicles to log activities
+      const vehicles = await Promise.all(
+        vehicleIds.map(id => this.getVehicleById(id))
+      );
+
+      const batch = writeBatch(db);
+      
+      // Delete all associated costs for each vehicle
+      for (const vehicleId of vehicleIds) {
+        const costsQuery = query(
+          collection(db, COLLECTIONS.COSTS),
+          where('vehicleId', '==', vehicleId)
+        );
+        const costsSnapshot = await getDocs(costsQuery);
+        
+        costsSnapshot.docs.forEach(doc => {
+          batch.delete(doc.ref);
+        });
+        
+        // Delete the vehicle
+        const vehicleRef = doc(db, COLLECTIONS.VEHICLES, vehicleId);
+        batch.delete(vehicleRef);
+      }
+      
+      await batch.commit();
+      
+      // Log activities for each deleted vehicle
+      for (const vehicle of vehicles) {
+        if (vehicle) {
+          await activityService.logActivity({
+            userId: 'system',
+            userName: 'System',
+            action: 'bulk deleted vehicle',
+            vehicleId: vehicle.id,
+            vehicleName: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+            timestamp: new Date(),
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error bulk deleting vehicles:', error);
+      throw new Error('Failed to bulk delete vehicles');
+    }
+  },
+
   // Get vehicles by status for dashboard funnel
   async getVehiclesByStatus(): Promise<InventoryStatusFunnel> {
     try {
-      const statuses: Vehicle['status'][] = ['sourced', 'in-transit', 'in-customs', 'in-workshop', 'for-sale'];
+      const statuses: Vehicle['status'][] = ['sourced', 'in-transit', 'in-customs', 'in-workshop', 'for-sale', 'sold'];
       const funnelData: InventoryStatusFunnel = {
         sourced: 0,
         inTransit: 0,
         inCustoms: 0,
         inWorkshop: 0,
         forSale: 0,
+        sold: 0,
       };
 
       for (const status of statuses) {
@@ -584,6 +633,9 @@ export const vehicleService = {
             break;
           case 'for-sale':
             funnelData.forSale = snapshot.size;
+            break;
+          case 'sold':
+            funnelData.sold = snapshot.size;
             break;
         }
       }
@@ -610,8 +662,6 @@ export const costService = {
         description: formData.description,
         amount: formData.amount,
         currency: formData.currency,
-        ngnAmount: formData.amount * formData.exchangeRate,
-        exchangeRate: formData.exchangeRate,
         createdAt: now,
       };
 
@@ -623,7 +673,7 @@ export const costService = {
       await activityService.logActivity({
         userId: 'system',
         userName: 'System',
-        action: `added ${formData.category} cost of ₦${(formData.amount * formData.exchangeRate).toLocaleString()} to`,
+        action: `added ${formData.category} cost of ₦${formData.amount.toLocaleString()} to`,
         vehicleId,
         timestamp: now,
       });
@@ -673,8 +723,6 @@ export const costService = {
         description: formData.description,
         amount: formData.amount,
         currency: formData.currency,
-        ngnAmount: formData.amount * formData.exchangeRate,
-        exchangeRate: formData.exchangeRate,
         updatedAt: now,
       };
 
@@ -740,8 +788,8 @@ export const dashboardService = {
         
         const totalCost = Array.isArray(vehicle.costs) 
           ? vehicle.costs.reduce((sum, cost) => {
-              console.log(`Cost: ${cost.description} - ${cost.ngnAmount} NGN`);
-              return sum + cost.ngnAmount;
+              console.log(`Cost: ${cost.description} - ${cost.amount} NGN`);
+              return sum + cost.amount;
             }, 0)
           : 0;
         
@@ -967,7 +1015,7 @@ export const reportService = {
 
       const reportVehicles = soldVehicles.map(vehicle => {
         const totalCost = Array.isArray(vehicle.costs) 
-          ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+          ? vehicle.costs.reduce((sum, cost) => sum + cost.amount, 0)
           : 0;
         
         // Use sale details if available, otherwise use listing price or total cost as fallback
@@ -1029,7 +1077,7 @@ export const reportService = {
         .map(vehicle => {
           const daysInInventory = calculateDaysInInventory(vehicle);
           const totalCost = Array.isArray(vehicle.costs) 
-          ? vehicle.costs.reduce((sum, cost) => sum + cost.ngnAmount, 0)
+          ? vehicle.costs.reduce((sum, cost) => sum + cost.amount, 0)
           : 0;
 
           return {
@@ -1082,12 +1130,12 @@ export const reportService = {
       
       costs.forEach(cost => {
         const existing = categoryTotals.get(cost.category) || { amount: 0, vehicleIds: new Set() };
-        existing.amount += cost.ngnAmount;
+        existing.amount += cost.amount;
         existing.vehicleIds.add(cost.vehicleId);
         categoryTotals.set(cost.category, existing);
       });
 
-      const totalExpenses = costs.reduce((sum, cost) => sum + cost.ngnAmount, 0);
+      const totalExpenses = costs.reduce((sum, cost) => sum + cost.amount, 0);
       const uniqueVehicles = new Set(costs.map(cost => cost.vehicleId)).size;
 
       const categories = Array.from(categoryTotals.entries()).map(([category, data]) => ({

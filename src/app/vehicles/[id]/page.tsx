@@ -181,7 +181,7 @@ function VehicleDetailsContent({ id }: { id: string }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">
-            {vehicle.year} {vehicle.make} {vehicle.model} {vehicle.trim}
+            {vehicle.year} {vehicle.make} {vehicle.model}
           </h1>
           <p className="text-gray-500">VIN: {vehicle.vin}</p>
         </div>
@@ -250,7 +250,7 @@ function VehicleDetailsContent({ id }: { id: string }) {
         onConfirm={handleDeleteConfirm}
         title="Delete Vehicle"
         message="Are you sure you want to delete this vehicle? This action cannot be undone."
-        itemName={`${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}`}
+        itemName={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
         isDeleting={isDeleting}
       />
     </div>

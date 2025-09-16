@@ -16,7 +16,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'Camry',
     year: 2021,
     color: 'Silver',
-    trim: 'XLE',
     mileage: 15000,
     acquisitionDetails: {
       sourceChannel: 'Adesa Auction Canada',
@@ -34,7 +33,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: '3 Series',
     year: 2019,
     color: 'Black',
-    trim: '330i',
     mileage: 35000,
     acquisitionDetails: {
       sourceChannel: 'Local Owner Ikeja',
@@ -50,7 +48,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'Soul',
     year: 2018,
     color: 'White',
-    trim: 'EX',
     mileage: 42000,
     acquisitionDetails: {
       sourceChannel: 'Copart USA',
@@ -68,7 +65,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'F-150',
     year: 2020,
     color: 'Blue',
-    trim: 'XLT',
     mileage: 28000,
     acquisitionDetails: {
       sourceChannel: 'Manheim Auction',
@@ -85,7 +81,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'Accord',
     year: 2019,
     color: 'Red',
-    trim: 'Sport',
     mileage: 32000,
     acquisitionDetails: {
       sourceChannel: 'Local Dealer',
@@ -101,7 +96,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'C-Class',
     year: 2020,
     color: 'White',
-    trim: 'C300',
     mileage: 25000,
     acquisitionDetails: {
       sourceChannel: 'Adesa Auction Canada',
@@ -118,7 +112,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'Altima',
     year: 2018,
     color: 'Gray',
-    trim: 'SV',
     mileage: 45000,
     acquisitionDetails: {
       sourceChannel: 'Copart USA',
@@ -135,7 +128,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'RX',
     year: 2019,
     color: 'Black',
-    trim: '350',
     mileage: 30000,
     acquisitionDetails: {
       sourceChannel: 'Manheim Auction',
@@ -158,7 +150,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Shipping from Toronto to Lagos',
       amount: 3200,
       currency: 'USD',
-      exchangeRate: 850,
     },
   },
   {
@@ -169,7 +160,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Import duties and taxes',
       amount: 2800,
       currency: 'USD',
-      exchangeRate: 850,
     },
   },
   {
@@ -180,7 +170,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Full detail and ceramic coating',
       amount: 800,
       currency: 'USD',
-      exchangeRate: 850,
     },
   },
   
@@ -193,7 +182,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Engine tune-up, oil change, and brake service',
       amount: 1200,
       currency: 'USD',
-      exchangeRate: 845,
     },
   },
   {
@@ -204,7 +192,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Paint touch-up and minor dent repair',
       amount: 1800,
       currency: 'USD',
-      exchangeRate: 845,
     },
   },
   {
@@ -215,7 +202,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Replacement brake pads and rotors',
       amount: 650,
       currency: 'USD',
-      exchangeRate: 845,
     },
   },
   
@@ -228,7 +214,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Shipping from USA to Lagos',
       amount: 2800,
       currency: 'USD',
-      exchangeRate: 850,
     },
   },
   {
@@ -239,7 +224,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Import duties',
       amount: 2400,
       currency: 'USD',
-      exchangeRate: 850,
     },
   },
   {
@@ -250,7 +234,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Transmission service and fluid change',
       amount: 950,
       currency: 'USD',
-      exchangeRate: 850,
     },
   },
   {
@@ -261,7 +244,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Paint correction and minor repairs',
       amount: 1200,
       currency: 'USD',
-      exchangeRate: 850,
     },
   },
   
@@ -274,7 +256,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Shipping from USA to Lagos (large vehicle)',
       amount: 4500,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -285,7 +266,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Import duties (high value vehicle)',
       amount: 4200,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -296,7 +276,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Major engine work and transmission rebuild',
       amount: 3500,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -307,7 +286,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Extensive bodywork and paint job',
       amount: 2800,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -318,7 +296,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Engine parts and transmission components',
       amount: 2200,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   
@@ -331,7 +308,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Routine maintenance and inspection',
       amount: 750,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -342,7 +318,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Interior and exterior detailing',
       amount: 600,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   
@@ -355,7 +330,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Premium shipping from Canada',
       amount: 3800,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -366,7 +340,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Import duties for luxury vehicle',
       amount: 3500,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -377,7 +350,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Premium service and inspection',
       amount: 1500,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -388,7 +360,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Premium detailing and paint protection',
       amount: 1200,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   
@@ -401,7 +372,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Standard shipping from USA',
       amount: 2200,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -412,7 +382,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Import duties',
       amount: 1800,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -423,7 +392,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Basic service and oil change',
       amount: 400,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   
@@ -436,7 +404,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Premium shipping for SUV',
       amount: 4200,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -447,7 +414,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Import duties for luxury SUV',
       amount: 3800,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -458,7 +424,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Premium service and inspection',
       amount: 1800,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
   {
@@ -469,7 +434,6 @@ const sampleCosts: Array<{ vehicleId: string; cost: CostFormData }> = [
       description: 'Premium SUV detailing',
       amount: 1400,
       currency: 'USD',
-      exchangeRate: 840,
     },
   },
 ];
