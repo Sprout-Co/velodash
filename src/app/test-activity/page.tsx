@@ -1,11 +1,11 @@
 // Test Activity Feed
 // Simple test page to verify activity feed date handling
 
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import RecentActivityFeed from '@/components/dashboard/RecentActivityFeed';
-import { RecentActivity } from '@/types';
+import { useState, useEffect } from "react";
+import { RecentActivityFeed } from "@/components/dashboard/RecentActivityFeed";
+import { RecentActivity } from "@/types";
 
 export default function TestActivityPage() {
   const [activities, setActivities] = useState<RecentActivity[]>([]);
@@ -15,48 +15,48 @@ export default function TestActivityPage() {
     // Create test activities with various date formats
     const testActivities: RecentActivity[] = [
       {
-        id: '1',
-        userId: 'user1',
-        userName: 'John Doe',
-        action: 'added vehicle',
-        vehicleId: 'vehicle1',
-        vehicleName: 'Toyota Camry',
+        id: "1",
+        userId: "user1",
+        userName: "John Doe",
+        action: "added vehicle",
+        vehicleId: "vehicle1",
+        vehicleName: "Toyota Camry",
         timestamp: new Date(), // Regular Date object
       },
       {
-        id: '2',
-        userId: 'user2',
-        userName: 'Jane Smith',
-        action: 'updated vehicle',
-        vehicleId: 'vehicle2',
-        vehicleName: 'Honda Civic',
+        id: "2",
+        userId: "user2",
+        userName: "Jane Smith",
+        action: "updated vehicle",
+        vehicleId: "vehicle2",
+        vehicleName: "Honda Civic",
         timestamp: new Date(Date.now() - 3600000), // 1 hour ago
       },
       {
-        id: '3',
-        userId: 'user3',
-        userName: 'Bob Johnson',
-        action: 'added cost',
-        vehicleId: 'vehicle3',
-        vehicleName: 'Ford Focus',
-        timestamp: '2024-01-15T10:30:00Z', // ISO string
+        id: "3",
+        userId: "user3",
+        userName: "Bob Johnson",
+        action: "added cost",
+        vehicleId: "vehicle3",
+        vehicleName: "Ford Focus",
+        timestamp: "2024-01-15T10:30:00Z", // ISO string
       },
       {
-        id: '4',
-        userId: 'user4',
-        userName: 'Alice Brown',
-        action: 'changed status',
-        vehicleId: 'vehicle4',
-        vehicleName: 'BMW X5',
+        id: "4",
+        userId: "user4",
+        userName: "Alice Brown",
+        action: "changed status",
+        vehicleId: "vehicle4",
+        vehicleName: "BMW X5",
         timestamp: Date.now() - 86400000, // 1 day ago (timestamp)
       },
       {
-        id: '5',
-        userId: 'user5',
-        userName: 'Charlie Wilson',
-        action: 'updated vehicle',
-        vehicleId: 'vehicle5',
-        vehicleName: 'Mercedes C-Class',
+        id: "5",
+        userId: "user5",
+        userName: "Charlie Wilson",
+        action: "updated vehicle",
+        vehicleId: "vehicle5",
+        vehicleName: "Mercedes C-Class",
         timestamp: null, // Invalid date to test error handling
       },
     ];
@@ -72,7 +72,7 @@ export default function TestActivityPage() {
           <h1 className="text-2xl font-bold text-gray-900 mb-6">
             Activity Feed Date Handling Test
           </h1>
-          
+
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <h3 className="text-sm font-medium text-blue-800 mb-2">
               Test Cases
@@ -82,7 +82,9 @@ export default function TestActivityPage() {
               <li>• Date object (1 hour ago)</li>
               <li>• ISO string format</li>
               <li>• Timestamp number (1 day ago)</li>
-              <li>• Invalid/null date (should show &quot;Unknown time&quot;)</li>
+              <li>
+                • Invalid/null date (should show &quot;Unknown time&quot;)
+              </li>
             </ul>
           </div>
 
