@@ -748,62 +748,18 @@ export const dashboardService = {
         readyForSaleValue
       });
 
-      // Calculate 30-day gross profit (simplified - would need more complex logic in real app)
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      
-      const recentSales = vehicles.filter(v => {
-        // Check if vehicle is sold
-        if (v.status !== 'sold') {
-          return false;
-        }
-        
-        // If no sale date, check if it was updated recently (within 30 days)
-        if (!v.saleDetails?.saleDate) {
-          const updatedDate = safeDateConversion(v.updatedAt);
-          return updatedDate && updatedDate >= thirtyDaysAgo;
-        }
-        
-        // Check if sale date is within last 30 days
-        const saleDate = safeDateConversion(v.saleDetails.saleDate);
-        return saleDate && saleDate >= thirtyDaysAgo;
-      });
-      
-      console.log(`Found ${recentSales.length} recent sales out of ${vehicles.length} total vehicles`);
-      
-      const thirtyDayGrossProfit = recentSales.reduce((sum, vehicle) => {
-        // Calculate total cost including acquisition cost and additional costs
-        const acquisitionCost = vehicle.acquisitionDetails.purchasePrice * 850;
-        const additionalCosts = Array.isArray(vehicle.costs) 
-          ? vehicle.costs.reduce((costSum, cost) => costSum + cost.ngnAmount, 0)
-          : 0;
-        const totalCost = acquisitionCost + additionalCosts;
-        
-        // Use finalSalePrice if available, otherwise use listingPrice, otherwise use totalCost as fallback
-        const salePrice = vehicle.saleDetails?.finalSalePrice || 
-                         vehicle.saleDetails?.listingPrice || 
-                         totalCost;
-        
-        const grossProfit = salePrice - totalCost;
-        console.log(`Vehicle ${vehicle.id} gross profit: ${salePrice} - ${totalCost} = ${grossProfit}`);
-        return sum + grossProfit;
-      }, 0);
-
       // Debug logging
       console.log('Dashboard KPIs calculated:', {
         totalVehicles: vehicles.length,
         liveInventoryCount,
         capitalDeployed,
         readyForSaleValue,
-        thirtyDayGrossProfit,
-        recentSalesCount: recentSales.length
       });
 
       return {
         liveInventoryCount,
         capitalDeployed,
         readyForSaleValue,
-        thirtyDayGrossProfit,
       };
     } catch (error) {
       console.error('Error fetching KPIs:', error);
@@ -981,9 +937,8 @@ export const reportService = {
                          vehicle.saleDetails?.listingPrice || 
                          totalCost; // Fallback to cost if no sale price
         
-        const grossProfit = salePrice - totalCost;
-        const profitMargin = salePrice > 0 ? (grossProfit / salePrice) * 100 : 0;
-        const roi = totalCost > 0 ? (grossProfit / totalCost) * 100 : 0;
+        const profitMargin = salePrice > 0 ? ((salePrice - totalCost) / salePrice) * 100 : 0;
+        const roi = totalCost > 0 ? ((salePrice - totalCost) / totalCost) * 100 : 0;
         
         // Use sale date if available, otherwise use updatedAt as fallback
         const saleDate = vehicle.saleDetails?.saleDate || vehicle.updatedAt;
@@ -993,7 +948,6 @@ export const reportService = {
           vehicleName: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
           totalCost,
           salePrice,
-          grossProfit,
           profitMargin,
           roi,
           saleDate,
@@ -1003,7 +957,6 @@ export const reportService = {
       const summary = {
         totalRevenue: reportVehicles.reduce((sum, v) => sum + v.salePrice, 0),
         totalCostOfGoodsSold: reportVehicles.reduce((sum, v) => sum + v.totalCost, 0),
-        totalGrossProfit: reportVehicles.reduce((sum, v) => sum + v.grossProfit, 0),
         averageProfitMargin: reportVehicles.length > 0 
           ? reportVehicles.reduce((sum, v) => sum + v.profitMargin, 0) / reportVehicles.length 
           : 0,

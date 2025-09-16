@@ -561,7 +561,7 @@ export async function seedDatabase() {
       }
     }
     
-    // Update vehicle statuses and add sale details for realistic gross profit scenarios
+    // Update vehicle statuses and add sale details for realistic sales scenarios
     if (createdVehicles.length > 0) {
       // Toyota Camry (index 0) - HIGH PROFIT: Purchase $14,500 + costs ~$5,800 = ~$20,300 total cost, sold for ₦18M
       const recentSaleDate = new Date();
@@ -696,8 +696,8 @@ export async function seedDatabase() {
     console.log(`✅ Added ${sampleActivities.length} sample activities`);
     
     console.log('🎉 Database seeding completed successfully!');
-    console.log(`📊 Created ${createdVehicles.length} vehicles with comprehensive gross profit scenarios:`);
-    console.log('💰 GROSS PROFIT SCENARIOS:');
+    console.log(`📊 Created ${createdVehicles.length} vehicles with comprehensive sales scenarios:`);
+    console.log('💰 SALES SCENARIOS:');
     console.log('   🟢 HIGH PROFIT: Toyota Camry (₦1.7M profit)');
     console.log('   🟡 MODERATE PROFIT: BMW 3 Series (₦350K profit)');
     console.log('   🟠 BREAK-EVEN: Kia Soul (small loss)');
@@ -705,12 +705,12 @@ export async function seedDatabase() {
     console.log('   🟢 HIGH-END PROFIT: Mercedes C-Class (₦4M profit)');
     console.log('   🟢 BUDGET PROFIT: Nissan Altima (₦1.1M profit)');
     console.log('   📦 CURRENT INVENTORY: Honda Accord & Lexus RX (for sale)');
-    console.log('📈 Total 30-day gross profit from recent sales: ~₦4.2M');
+    console.log('📈 Total 30-day revenue from recent sales: ~₦4.2M');
     
     return {
       success: true,
       vehiclesCreated: createdVehicles.length,
-      message: 'Database seeded with comprehensive gross profit scenarios!',
+      message: 'Database seeded with comprehensive sales scenarios!',
     };
   } catch (error) {
     console.error('❌ Database seeding failed:', error);

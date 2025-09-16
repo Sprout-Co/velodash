@@ -30,12 +30,12 @@ export default function SeedDatabasePage() {
       <div className="max-w-3xl mx-auto">
         <div className="bg-white shadow rounded-lg p-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            Database Seeding - Gross Profit Scenarios
+            Database Seeding - Sales Scenarios
           </h1>
           
           <div className="mb-6">
             <p className="text-gray-600 mb-4">
-              This will populate your database with comprehensive vehicle data showing different gross profit scenarios:
+              This will populate your database with comprehensive vehicle data showing different sales scenarios:
             </p>
             <ul className="list-disc list-inside text-gray-600 space-y-2">
               <li><span className="font-semibold text-green-600">High Profit:</span> Toyota Camry (₦1.7M profit)</li>
@@ -53,7 +53,7 @@ export default function SeedDatabasePage() {
             disabled={isSeeding}
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium"
           >
-            {isSeeding ? 'Seeding Database...' : 'Seed Database with Gross Profit Data'}
+            {isSeeding ? 'Seeding Database...' : 'Seed Database with Sales Data'}
           </button>
 
           {result && (
@@ -92,7 +92,7 @@ export default function SeedDatabasePage() {
               <li>• Comprehensive cost structures (shipping, customs, repairs, etc.)</li>
               <li>• Sale data for 6 sold vehicles with different profit scenarios</li>
               <li>• 2 vehicles currently for sale in inventory</li>
-              <li>• Total 30-day gross profit: ~₦4.2M from recent sales</li>
+              <li>• Total 30-day revenue: ~₦4.2M from recent sales</li>
               <li>• Perfect for testing dashboard KPIs and reports</li>
             </ul>
           </div>

@@ -248,16 +248,13 @@ export function calculateProfitMetrics(
   totalCost: number,
   salePrice: number
 ): {
-  grossProfit: number;
   profitMargin: number;
   roi: number;
 } {
-  const grossProfit = salePrice - totalCost;
-  const profitMargin = salePrice > 0 ? (grossProfit / salePrice) * 100 : 0;
-  const roi = totalCost > 0 ? (grossProfit / totalCost) * 100 : 0;
+  const profitMargin = salePrice > 0 ? ((salePrice - totalCost) / salePrice) * 100 : 0;
+  const roi = totalCost > 0 ? ((salePrice - totalCost) / totalCost) * 100 : 0;
   
   return {
-    grossProfit,
     profitMargin: Math.round(profitMargin * 100) / 100,
     roi: Math.round(roi * 100) / 100,
   };

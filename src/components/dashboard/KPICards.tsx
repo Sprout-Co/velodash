@@ -34,14 +34,6 @@ const kpiConfig = [
     color: 'purple',
     format: (value: number) => formatCurrency(value, 'NGN'),
   },
-  {
-    key: 'thirtyDayGrossProfit' as keyof DashboardKPIs,
-    title: '30-Day Gross Profit',
-    description: 'Recent profit performance',
-    icon: '📈',
-    color: 'emerald',
-    format: (value: number) => formatCurrency(value, 'NGN'),
-  },
 ];
 
 export function KPICards({ data, isLoading }: KPICardsProps) {

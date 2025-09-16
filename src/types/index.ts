@@ -93,7 +93,6 @@ export interface DashboardKPIs {
   liveInventoryCount: number;
   capitalDeployed: number;
   readyForSaleValue: number;
-  thirtyDayGrossProfit: number;
 }
 
 export interface InventoryStatusFunnel {
@@ -134,7 +133,6 @@ export interface SalesPerformanceReport {
     vehicleName: string;
     totalCost: number;
     salePrice: number;
-    grossProfit: number;
     profitMargin: number;
     roi: number;
     saleDate: Date | string | any; // Flexible date handling for Firestore
@@ -142,7 +140,6 @@ export interface SalesPerformanceReport {
   summary: {
     totalRevenue: number;
     totalCostOfGoodsSold: number;
-    totalGrossProfit: number;
     averageProfitMargin: number;
     averageROI: number;
   };

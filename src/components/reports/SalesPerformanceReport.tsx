@@ -218,14 +218,10 @@ const SalesPerformanceReport: React.FC = () => {
       
       <div className="bg-white p-6 rounded-lg shadow">
         <h3 className="text-lg font-medium mb-4">Sales Summary</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
           <div className="funnel-step p-4 bg-blue-50 rounded-lg">
             <div className="text-2xl font-bold mb-1">{formatCurrency(reportData.summary.totalRevenue, 'NGN')}</div>
             <div className="text-gray-600">Total Revenue</div>
-          </div>
-          <div className="funnel-step p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold mb-1">{formatCurrency(reportData.summary.totalGrossProfit, 'NGN')}</div>
-            <div className="text-gray-600">Gross Profit</div>
           </div>
           <div className="funnel-step p-4 bg-amber-50 rounded-lg">
             <div className="text-2xl font-bold mb-1">{formatCurrency(reportData.summary.totalCostOfGoodsSold, 'NGN')}</div>

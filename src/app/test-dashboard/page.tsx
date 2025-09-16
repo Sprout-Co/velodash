@@ -70,10 +70,6 @@ export default function TestDashboardPage() {
                     <div className="text-2xl font-bold text-blue-600">₦{kpis.readyForSaleValue.toLocaleString()}</div>
                     <div className="text-sm text-blue-700">Ready for Sale</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600">₦{kpis.thirtyDayGrossProfit.toLocaleString()}</div>
-                    <div className="text-sm text-blue-700">30-Day Profit</div>
-                  </div>
                 </div>
               </div>
 
