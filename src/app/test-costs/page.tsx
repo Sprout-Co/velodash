@@ -101,7 +101,7 @@ export default function TestCostsPage() {
                   <div className="flex justify-between items-start mb-2">
                     <div>
                       <h3 className="text-lg font-medium text-gray-900">
-                        {vehicle.year} {vehicle.make} {vehicle.model} {vehicle.trim}
+                        {vehicle.year} {vehicle.make} {vehicle.model}
                       </h3>
                       <p className="text-sm text-gray-500">VIN: {vehicle.vin}</p>
                       <p className="text-sm text-gray-500">Status: {vehicle.status}</p>

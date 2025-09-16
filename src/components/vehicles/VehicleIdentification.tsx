@@ -37,8 +37,6 @@ export default function VehicleIdentification({ vehicle }: VehicleIdentification
         </div>
         
         <div className="identification-field">
-          <label className="text-sm text-gray-500">Trim</label>
-          <p className="font-medium">{vehicle.trim}</p>
         </div>
         
         <div className="identification-field">

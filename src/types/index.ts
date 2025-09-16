@@ -34,7 +34,6 @@ export interface Vehicle {
   model: string;
   year: number;
   color: string;
-  trim: string;
   mileage: number;
   status: VehicleStatus;
   acquisitionDetails: {
@@ -191,7 +190,6 @@ export interface VehicleFormData {
   model: string;
   year: number;
   color: string;
-  trim: string;
   mileage: number;
   acquisitionDetails: {
     sourceChannel: string;

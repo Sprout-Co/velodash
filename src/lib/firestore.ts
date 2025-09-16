@@ -300,7 +300,6 @@ export const vehicleService = {
         model: formData.model,
         year: formData.year,
         color: formData.color,
-        trim: formData.trim,
         mileage: formData.mileage,
         status: 'sourced' as const,
       acquisitionDetails: {
@@ -370,7 +369,6 @@ export const vehicleService = {
         model: formData.model,
         year: formData.year,
         color: formData.color,
-        trim: formData.trim,
         mileage: formData.mileage,
       acquisitionDetails: {
         sourceChannel: formData.acquisitionDetails.sourceChannel,

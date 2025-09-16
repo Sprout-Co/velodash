@@ -13,7 +13,6 @@ export async function testVehicleCreation() {
     model: 'Camry',
     year: 2023,
     color: 'Blue',
-    trim: 'LE',
     mileage: 1000,
     acquisitionDetails: {
       sourceChannel: 'Test Channel',
@@ -44,7 +43,6 @@ export async function testVehicleUpdate(vehicleId: string) {
     model: 'Camry',
     year: 2023,
     color: 'Red', // Changed color
-    trim: 'XLE', // Changed trim
     mileage: 1500, // Changed mileage
     acquisitionDetails: {
       sourceChannel: 'Updated Test Channel',

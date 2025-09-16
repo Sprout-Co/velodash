@@ -16,7 +16,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'Camry',
     year: 2021,
     color: 'Silver',
-    trim: 'XLE',
     mileage: 15000,
     acquisitionDetails: {
       sourceChannel: 'Adesa Auction Canada',
@@ -34,7 +33,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: '3 Series',
     year: 2019,
     color: 'Black',
-    trim: '330i',
     mileage: 35000,
     acquisitionDetails: {
       sourceChannel: 'Local Owner Ikeja',
@@ -50,7 +48,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'Soul',
     year: 2018,
     color: 'White',
-    trim: 'EX',
     mileage: 42000,
     acquisitionDetails: {
       sourceChannel: 'Copart USA',
@@ -68,7 +65,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'F-150',
     year: 2020,
     color: 'Blue',
-    trim: 'XLT',
     mileage: 28000,
     acquisitionDetails: {
       sourceChannel: 'Manheim Auction',
@@ -85,7 +81,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'Accord',
     year: 2019,
     color: 'Red',
-    trim: 'Sport',
     mileage: 32000,
     acquisitionDetails: {
       sourceChannel: 'Local Dealer',
@@ -101,7 +96,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'C-Class',
     year: 2020,
     color: 'White',
-    trim: 'C300',
     mileage: 25000,
     acquisitionDetails: {
       sourceChannel: 'Adesa Auction Canada',
@@ -118,7 +112,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'Altima',
     year: 2018,
     color: 'Gray',
-    trim: 'SV',
     mileage: 45000,
     acquisitionDetails: {
       sourceChannel: 'Copart USA',
@@ -135,7 +128,6 @@ const sampleVehicles: VehicleFormData[] = [
     model: 'RX',
     year: 2019,
     color: 'Black',
-    trim: '350',
     mileage: 30000,
     acquisitionDetails: {
       sourceChannel: 'Manheim Auction',

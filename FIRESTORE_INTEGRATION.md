@@ -188,7 +188,6 @@ interface Vehicle {
   model: string;
   year: number;
   color: string;
-  trim: string;
   mileage: number;
   status: VehicleStatus;
   acquisitionDetails: {
