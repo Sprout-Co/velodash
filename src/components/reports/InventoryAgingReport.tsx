@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   PieChart, 
   Pie, 
@@ -14,35 +14,109 @@ import {
   YAxis,
   CartesianGrid
 } from 'recharts';
-
-// Sample data - would be replaced with actual API data
-const inventoryAgingData = [
-  { name: '0-30 days', value: 45, color: '#10B981' },
-  { name: '31-60 days', value: 32, color: '#3B82F6' },
-  { name: '61-90 days', value: 18, color: '#F59E0B' },
-  { name: '90+ days', value: 12, color: '#EF4444' },
-];
-
-const vehicleAgingData = [
-  { id: 'VIN10234', make: 'Toyota', model: 'Camry', year: 2023, days: 102, price: 28500 },
-  { id: 'VIN20571', make: 'Honda', model: 'Civic', year: 2022, days: 95, price: 22800 },
-  { id: 'VIN31492', make: 'Ford', model: 'F-150', year: 2023, days: 88, price: 42000 },
-  { id: 'VIN42385', make: 'Chevrolet', model: 'Malibu', year: 2022, days: 81, price: 24700 },
-  { id: 'VIN53698', make: 'Nissan', model: 'Altima', year: 2023, days: 77, price: 26300 },
-  { id: 'VIN65742', make: 'BMW', model: '3 Series', year: 2022, days: 74, price: 48500 },
-  { id: 'VIN78159', make: 'Mercedes', model: 'C-Class', year: 2023, days: 70, price: 52000 },
-  { id: 'VIN86423', make: 'Audi', model: 'A4', year: 2023, days: 68, price: 46800 },
-];
-
-const costByAgingData = [
-  { range: '0-30 days', cost: 1562000, vehicles: 45 },
-  { range: '31-60 days', cost: 1248000, vehicles: 32 },
-  { range: '61-90 days', cost: 864000, vehicles: 18 },
-  { range: '90+ days', cost: 576000, vehicles: 12 },
-];
+import { useInventoryAgingData } from '@/hooks/useReportsData';
+import { formatCurrency } from '@/lib/utils';
 
 const InventoryAgingReport: React.FC = () => {
   const [view, setView] = useState('summary');
+  const { data: reportData, isLoading, error } = useInventoryAgingData();
+
+  // Transform data for charts
+  const inventoryAgingData = useMemo(() => {
+    if (!reportData) return [];
+    
+    const agingRanges = [
+      { name: '0-30 days', min: 0, max: 30, color: '#10B981' },
+      { name: '31-60 days', min: 31, max: 60, color: '#3B82F6' },
+      { name: '61-90 days', min: 61, max: 90, color: '#F59E0B' },
+      { name: '90+ days', min: 91, max: Infinity, color: '#EF4444' },
+    ];
+
+    return agingRanges.map(range => {
+      const count = reportData.vehicles.filter(vehicle => 
+        vehicle.daysInInventory >= range.min && vehicle.daysInInventory <= range.max
+      ).length;
+      
+      return {
+        name: range.name,
+        value: count,
+        color: range.color,
+      };
+    });
+  }, [reportData]);
+
+  const vehicleAgingData = useMemo(() => {
+    if (!reportData) return [];
+    
+    return reportData.vehicles
+      .sort((a, b) => b.daysInInventory - a.daysInInventory)
+      .slice(0, 10) // Show top 10 oldest vehicles
+      .map(vehicle => ({
+        id: vehicle.vehicleId,
+        make: vehicle.vehicleName.split(' ')[1], // Extract make
+        model: vehicle.vehicleName.split(' ').slice(2).join(' '), // Extract model
+        year: vehicle.vehicleName.split(' ')[0], // Extract year
+        days: vehicle.daysInInventory,
+        price: vehicle.listingPrice || vehicle.totalCost,
+        status: vehicle.status,
+      }));
+  }, [reportData]);
+
+  const costByAgingData = useMemo(() => {
+    if (!reportData) return [];
+    
+    const agingRanges = [
+      { name: '0-30 days', min: 0, max: 30 },
+      { name: '31-60 days', min: 31, max: 60 },
+      { name: '61-90 days', min: 61, max: 90 },
+      { name: '90+ days', min: 91, max: Infinity },
+    ];
+
+    return agingRanges.map(range => {
+      const vehicles = reportData.vehicles.filter(vehicle => 
+        vehicle.daysInInventory >= range.min && vehicle.daysInInventory <= range.max
+      );
+      
+      return {
+        range: range.name,
+        cost: vehicles.reduce((sum, vehicle) => sum + vehicle.totalCost, 0),
+        vehicles: vehicles.length,
+      };
+    });
+  }, [reportData]);
+
+  if (isLoading) {
+    return (
+      <div className="inventory-aging-report">
+        <div className="flex justify-center items-center h-64">
+          <div className="loading-spinner"></div>
+          <p className="ml-4">Loading inventory aging data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="inventory-aging-report">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h3 className="text-red-800 font-medium mb-2">Error Loading Data</h3>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!reportData) {
+    return (
+      <div className="inventory-aging-report">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h3 className="text-gray-800 font-medium mb-2">No Data Available</h3>
+          <p className="text-gray-600">No inventory data found.</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="inventory-aging-report">
@@ -67,20 +141,30 @@ const InventoryAgingReport: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="stats-card bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium mb-2">Total Inventory</h3>
-          <div className="text-3xl font-bold">107 Vehicles</div>
-          <div className="text-gray-600 mt-1">$4,250,000 total value</div>
+          <div className="text-3xl font-bold">{reportData.summary.totalVehicles} Vehicles</div>
+          <div className="text-gray-600 mt-1">
+            {formatCurrency(
+              reportData.vehicles.reduce((sum, v) => sum + v.totalCost, 0), 
+              'NGN'
+            )} total value
+          </div>
         </div>
         
         <div className="stats-card bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium mb-2">Average Days in Inventory</h3>
-          <div className="text-3xl font-bold">42 Days</div>
-          <div className="text-red-600 mt-1">↑ 5 days from previous month</div>
+          <div className="text-3xl font-bold">{reportData.summary.averageAge} Days</div>
+          <div className="text-gray-600 mt-1">Current average age</div>
         </div>
         
         <div className="stats-card bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium mb-2">Aging Risk</h3>
-          <div className="text-3xl font-bold">30 Vehicles</div>
-          <div className="text-amber-600 mt-1">28% of inventory over 60 days</div>
+          <div className="text-3xl font-bold">{reportData.summary.vehiclesOver90Days}</div>
+          <div className="text-amber-600 mt-1">
+            {reportData.summary.totalVehicles > 0 
+              ? ((reportData.summary.vehiclesOver90Days / reportData.summary.totalVehicles) * 100).toFixed(1)
+              : 0
+            }% of inventory over 90 days
+          </div>
         </div>
       </div>
       

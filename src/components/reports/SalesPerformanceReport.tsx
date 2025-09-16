@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { 
   BarChart, 
   Bar, 
@@ -13,35 +13,111 @@ import {
   LineChart,
   Line
 } from 'recharts';
-
-// Sample data - would be replaced with actual API data
-const monthlySalesData = [
-  { month: 'Jan', new: 65, used: 42, total: 107 },
-  { month: 'Feb', new: 59, used: 38, total: 97 },
-  { month: 'Mar', new: 80, used: 56, total: 136 },
-  { month: 'Apr', new: 81, used: 40, total: 121 },
-  { month: 'May', new: 56, used: 38, total: 94 },
-  { month: 'Jun', new: 55, used: 45, total: 100 },
-  { month: 'Jul', new: 72, used: 53, total: 125 },
-  { month: 'Aug', new: 69, used: 49, total: 118 },
-  { month: 'Sep', new: 88, used: 57, total: 145 },
-  { month: 'Oct', new: 74, used: 62, total: 136 },
-  { month: 'Nov', new: 71, used: 58, total: 129 },
-  { month: 'Dec', new: 90, used: 74, total: 164 }
-];
-
-const salesByRepData = [
-  { name: 'Alex Smith', sales: 427000, target: 450000, units: 32 },
-  { name: 'Jordan Lee', sales: 521000, target: 500000, units: 41 },
-  { name: 'Casey Jones', sales: 398000, target: 400000, units: 29 },
-  { name: 'Taylor Kim', sales: 603000, target: 550000, units: 47 },
-  { name: 'Morgan Chen', sales: 489000, target: 475000, units: 36 },
-  { name: 'Riley Patel', sales: 562000, target: 525000, units: 43 }
-];
+import { useSalesPerformanceData } from '@/hooks/useReportsData';
+import { formatCurrency } from '@/lib/utils';
 
 const SalesPerformanceReport: React.FC = () => {
   const [timeframe, setTimeframe] = useState('monthly');
   const [vehicleType, setVehicleType] = useState('all');
+  
+  // Calculate date range based on timeframe
+  const getDateRange = () => {
+    const endDate = new Date();
+    const startDate = new Date();
+    
+    switch (timeframe) {
+      case 'daily':
+        startDate.setDate(endDate.getDate() - 1);
+        break;
+      case 'weekly':
+        startDate.setDate(endDate.getDate() - 7);
+        break;
+      case 'monthly':
+        startDate.setMonth(endDate.getMonth() - 1);
+        break;
+      case 'quarterly':
+        startDate.setMonth(endDate.getMonth() - 3);
+        break;
+      case 'yearly':
+        startDate.setFullYear(endDate.getFullYear() - 1);
+        break;
+      default:
+        startDate.setMonth(endDate.getMonth() - 1);
+    }
+    
+    return { startDate, endDate };
+  };
+
+  const { startDate, endDate } = getDateRange();
+  const { data: reportData, isLoading, error } = useSalesPerformanceData(startDate, endDate);
+
+  // Transform data for charts
+  const monthlySalesData = useMemo(() => {
+    if (!reportData) return [];
+    
+    const monthlyData: { [key: string]: { new: number; used: number; total: number } } = {};
+    
+    reportData.vehicles.forEach(vehicle => {
+      const month = vehicle.saleDate.toLocaleDateString('en-US', { month: 'short' });
+      if (!monthlyData[month]) {
+        monthlyData[month] = { new: 0, used: 0, total: 0 };
+      }
+      
+      // For now, we'll categorize as "used" since we don't have that data
+      // In a real app, this would come from vehicle data
+      monthlyData[month].used += 1;
+      monthlyData[month].total += 1;
+    });
+
+    return Object.entries(monthlyData)
+      .map(([month, data]) => ({ month, ...data }))
+      .sort((a, b) => {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        return months.indexOf(a.month) - months.indexOf(b.month);
+      });
+  }, [reportData]);
+
+  const salesByRepData = useMemo(() => {
+    if (!reportData) return [];
+    
+    // Group by sales rep (for now, we'll use a placeholder since we don't have sales rep data)
+    return [
+      { name: 'Sales Team', sales: reportData.summary.totalRevenue, target: reportData.summary.totalRevenue * 1.1, units: reportData.vehicles.length }
+    ];
+  }, [reportData]);
+
+  if (isLoading) {
+    return (
+      <div className="sales-performance-report">
+        <div className="flex justify-center items-center h-64">
+          <div className="loading-spinner"></div>
+          <p className="ml-4">Loading sales performance data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="sales-performance-report">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h3 className="text-red-800 font-medium mb-2">Error Loading Data</h3>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!reportData) {
+    return (
+      <div className="sales-performance-report">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h3 className="text-gray-800 font-medium mb-2">No Data Available</h3>
+          <p className="text-gray-600">No sales data found for the selected period.</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="sales-performance-report">
@@ -75,14 +151,14 @@ const SalesPerformanceReport: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="stats-card bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium mb-2">Total Sales</h3>
-          <div className="text-3xl font-bold">$2,461,000</div>
-          <div className="text-green-600 mt-1">↑ 12% from previous period</div>
+          <div className="text-3xl font-bold">{formatCurrency(reportData.summary.totalRevenue, 'NGN')}</div>
+          <div className="text-green-600 mt-1">Average ROI: {reportData.summary.averageROI.toFixed(1)}%</div>
         </div>
         
         <div className="stats-card bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium mb-2">Units Sold</h3>
-          <div className="text-3xl font-bold">182</div>
-          <div className="text-green-600 mt-1">↑ 8% from previous period</div>
+          <div className="text-3xl font-bold">{reportData.vehicles.length}</div>
+          <div className="text-green-600 mt-1">Average Margin: {reportData.summary.averageProfitMargin.toFixed(1)}%</div>
         </div>
       </div>
       
@@ -140,23 +216,23 @@ const SalesPerformanceReport: React.FC = () => {
       </div>
       
       <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="text-lg font-medium mb-4">Conversion Funnel</h3>
+        <h3 className="text-lg font-medium mb-4">Sales Summary</h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
           <div className="funnel-step p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold mb-1">845</div>
-            <div className="text-gray-600">Leads</div>
+            <div className="text-2xl font-bold mb-1">{formatCurrency(reportData.summary.totalRevenue, 'NGN')}</div>
+            <div className="text-gray-600">Total Revenue</div>
           </div>
-          <div className="funnel-step p-4 bg-blue-100 rounded-lg">
-            <div className="text-2xl font-bold mb-1">412</div>
-            <div className="text-gray-600">Test Drives</div>
+          <div className="funnel-step p-4 bg-green-50 rounded-lg">
+            <div className="text-2xl font-bold mb-1">{formatCurrency(reportData.summary.totalGrossProfit, 'NGN')}</div>
+            <div className="text-gray-600">Gross Profit</div>
           </div>
-          <div className="funnel-step p-4 bg-blue-200 rounded-lg">
-            <div className="text-2xl font-bold mb-1">256</div>
-            <div className="text-gray-600">Negotiations</div>
+          <div className="funnel-step p-4 bg-amber-50 rounded-lg">
+            <div className="text-2xl font-bold mb-1">{formatCurrency(reportData.summary.totalCostOfGoodsSold, 'NGN')}</div>
+            <div className="text-gray-600">Cost of Goods</div>
           </div>
-          <div className="funnel-step p-4 bg-blue-300 rounded-lg">
-            <div className="text-2xl font-bold mb-1">182</div>
-            <div className="text-gray-600">Sales</div>
+          <div className="funnel-step p-4 bg-purple-50 rounded-lg">
+            <div className="text-2xl font-bold mb-1">{reportData.vehicles.length}</div>
+            <div className="text-gray-600">Vehicles Sold</div>
           </div>
         </div>
       </div>

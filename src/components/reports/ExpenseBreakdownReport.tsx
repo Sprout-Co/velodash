@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   PieChart, 
   Pie, 
@@ -16,48 +16,99 @@ import {
   LineChart,
   Line
 } from 'recharts';
-
-// Sample data - would be replaced with actual API data
-const expenseCategoriesData = [
-  { name: 'Inventory', value: 1850000, color: '#3B82F6' },
-  { name: 'Personnel', value: 680000, color: '#10B981' },
-  { name: 'Facilities', value: 320000, color: '#F59E0B' },
-  { name: 'Marketing', value: 240000, color: '#8B5CF6' },
-  { name: 'Operations', value: 210000, color: '#EC4899' },
-  { name: 'Other', value: 150000, color: '#6B7280' },
-];
-
-const monthlyExpensesData = [
-  { month: 'Jan', expenses: 278000, revenue: 412000 },
-  { month: 'Feb', expenses: 286000, revenue: 392000 },
-  { month: 'Mar', expenses: 302000, revenue: 435000 },
-  { month: 'Apr', expenses: 290000, revenue: 418000 },
-  { month: 'May', expenses: 295000, revenue: 405000 },
-  { month: 'Jun', expenses: 285000, revenue: 425000 },
-  { month: 'Jul', expenses: 293000, revenue: 438000 },
-  { month: 'Aug', expenses: 305000, revenue: 442000 },
-  { month: 'Sep', expenses: 316000, revenue: 456000 },
-  { month: 'Oct', expenses: 300000, revenue: 463000 },
-  { month: 'Nov', expenses: 310000, revenue: 472000 },
-  { month: 'Dec', expenses: 320000, revenue: 486000 },
-];
-
-const recentExpensesData = [
-  { date: '2025-09-12', category: 'Inventory', description: 'Vehicle Acquisition', amount: 42500 },
-  { date: '2025-09-10', category: 'Marketing', description: 'Digital Advertising', amount: 8500 },
-  { date: '2025-09-08', category: 'Personnel', description: 'Payroll', amount: 58000 },
-  { date: '2025-09-05', category: 'Facilities', description: 'Rent', amount: 22000 },
-  { date: '2025-09-03', category: 'Operations', description: 'Software Subscriptions', amount: 4800 },
-  { date: '2025-09-01', category: 'Inventory', description: 'Vehicle Maintenance', amount: 12500 },
-  { date: '2025-08-29', category: 'Marketing', description: 'Event Sponsorship', amount: 15000 },
-];
+import { useExpenseBreakdownData } from '@/hooks/useReportsData';
+import { formatCurrency } from '@/lib/utils';
 
 const ExpenseBreakdownReport: React.FC = () => {
   const [timeframe, setTimeframe] = useState('yearly');
   const [expenseType, setExpenseType] = useState('all');
   
+  // Calculate date range based on timeframe
+  const getDateRange = () => {
+    const endDate = new Date();
+    const startDate = new Date();
+    
+    switch (timeframe) {
+      case 'monthly':
+        startDate.setMonth(endDate.getMonth() - 1);
+        break;
+      case 'quarterly':
+        startDate.setMonth(endDate.getMonth() - 3);
+        break;
+      case 'yearly':
+        startDate.setFullYear(endDate.getFullYear() - 1);
+        break;
+      default:
+        startDate.setFullYear(endDate.getFullYear() - 1);
+    }
+    
+    return { startDate, endDate };
+  };
+
+  const { startDate, endDate } = getDateRange();
+  const { data: reportData, isLoading, error } = useExpenseBreakdownData(startDate, endDate);
+
+  // Transform data for charts
+  const expenseCategoriesData = useMemo(() => {
+    if (!reportData) return [];
+    
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6B7280'];
+    
+    return reportData.categories.map((category, index) => ({
+      name: category.category,
+      value: category.totalAmount,
+      color: colors[index % colors.length],
+    }));
+  }, [reportData]);
+
+  const recentExpensesData = useMemo(() => {
+    if (!reportData) return [];
+    
+    // This would need to be enhanced to get actual recent expenses
+    // For now, we'll create a simple representation from categories
+    return reportData.categories.slice(0, 5).map(category => ({
+      date: new Date().toISOString().split('T')[0],
+      category: category.category,
+      description: `${category.category} expenses`,
+      amount: category.totalAmount / 10, // Simplified representation
+    }));
+  }, [reportData]);
+
+  if (isLoading) {
+    return (
+      <div className="expense-breakdown-report">
+        <div className="flex justify-center items-center h-64">
+          <div className="loading-spinner"></div>
+          <p className="ml-4">Loading expense breakdown data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="expense-breakdown-report">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h3 className="text-red-800 font-medium mb-2">Error Loading Data</h3>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!reportData) {
+    return (
+      <div className="expense-breakdown-report">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h3 className="text-gray-800 font-medium mb-2">No Data Available</h3>
+          <p className="text-gray-600">No expense data found for the selected period.</p>
+        </div>
+      </div>
+    );
+  }
+
   // Calculate total expenses
-  const totalExpenses = expenseCategoriesData.reduce((sum, item) => sum + item.value, 0);
+  const totalExpenses = reportData.summary.totalExpenses;
   
   return (
     <div className="expense-breakdown-report">
@@ -92,20 +143,24 @@ const ExpenseBreakdownReport: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="stats-card bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium mb-2">Total Expenses</h3>
-          <div className="text-3xl font-bold">${totalExpenses.toLocaleString()}</div>
-          <div className="text-red-600 mt-1">↑ 5% from previous year</div>
+          <div className="text-3xl font-bold">{formatCurrency(totalExpenses, 'NGN')}</div>
+          <div className="text-gray-600 mt-1">For selected period</div>
         </div>
         
         <div className="stats-card bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-medium mb-2">Expense to Revenue Ratio</h3>
-          <div className="text-3xl font-bold">73.2%</div>
-          <div className="text-green-600 mt-1">↓ 2.1% from previous year</div>
+          <h3 className="text-lg font-medium mb-2">Average Per Vehicle</h3>
+          <div className="text-3xl font-bold">{formatCurrency(reportData.summary.averagePerVehicle, 'NGN')}</div>
+          <div className="text-gray-600 mt-1">Per vehicle cost</div>
         </div>
         
         <div className="stats-card bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium mb-2">Largest Expense Category</h3>
-          <div className="text-3xl font-bold">Inventory</div>
-          <div className="text-gray-600 mt-1">53.7% of total expenses</div>
+          <div className="text-3xl font-bold">
+            {reportData.categories.length > 0 ? reportData.categories[0].category : 'N/A'}
+          </div>
+          <div className="text-gray-600 mt-1">
+            {reportData.categories.length > 0 ? `${reportData.categories[0].percentage.toFixed(1)}% of total` : 'No data'}
+          </div>
         </div>
       </div>
       

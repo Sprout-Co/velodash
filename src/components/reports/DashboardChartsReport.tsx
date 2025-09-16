@@ -23,80 +23,86 @@ import {
   PolarRadiusAxis,
   Radar
 } from 'recharts';
-
-// Sample data - would be replaced with actual API data
-const salesPerformanceData = [
-  { month: 'Jan', sales: 412000, target: 400000 },
-  { month: 'Feb', sales: 392000, target: 400000 },
-  { month: 'Mar', sales: 435000, target: 420000 },
-  { month: 'Apr', sales: 418000, target: 420000 },
-  { month: 'May', sales: 405000, target: 420000 },
-  { month: 'Jun', sales: 425000, target: 440000 },
-  { month: 'Jul', sales: 438000, target: 440000 },
-  { month: 'Aug', sales: 442000, target: 440000 },
-  { month: 'Sep', sales: 456000, target: 460000 },
-];
-
-const inventoryMixData = [
-  { name: 'Sedan', value: 35, color: '#3B82F6' },
-  { name: 'SUV', value: 40, color: '#10B981' },
-  { name: 'Truck', value: 15, color: '#F59E0B' },
-  { name: 'Luxury', value: 10, color: '#8B5CF6' },
-];
-
-const customerDemographicsData = [
-  { age: '18-24', count: 56 },
-  { age: '25-34', count: 142 },
-  { age: '35-44', count: 168 },
-  { age: '45-54', count: 125 },
-  { age: '55-64', count: 98 },
-  { age: '65+', count: 64 },
-];
-
-const marketingEffectivenessData = [
-  { channel: 'Online Ads', leads: 320, sales: 48 },
-  { channel: 'Social Media', leads: 250, sales: 35 },
-  { channel: 'Email', leads: 180, sales: 32 },
-  { channel: 'Direct Mail', leads: 120, sales: 22 },
-  { channel: 'Events', leads: 90, sales: 28 },
-  { channel: 'Referral', leads: 85, sales: 42 },
-];
-
-const performanceMetricsData = [
-  {
-    subject: 'Sales',
-    A: 90,
-    B: 75,
-    fullMark: 100,
-  },
-  {
-    subject: 'Customer Sat',
-    A: 85,
-    B: 90,
-    fullMark: 100,
-  },
-  {
-    subject: 'Inventory',
-    A: 70,
-    B: 65,
-    fullMark: 100,
-  },
-  {
-    subject: 'Efficiency',
-    A: 75,
-    B: 80,
-    fullMark: 100,
-  },
-  {
-    subject: 'Growth',
-    A: 80,
-    B: 70,
-    fullMark: 100,
-  },
-];
+import { useDashboardChartsData } from '@/hooks/useReportsData';
+import { formatCurrency } from '@/lib/utils';
 
 const DashboardChartsReport: React.FC = () => {
   const [chartType, setChartType] = useState('all');
+  const { salesData, inventoryData, expenseData, isLoading, error } = useDashboardChartsData();
+
+  // Sample data for charts that don't have real data yet
+  const customerDemographicsData = [
+    { age: '18-24', count: 56 },
+    { age: '25-34', count: 142 },
+    { age: '35-44', count: 168 },
+    { age: '45-54', count: 125 },
+    { age: '55-64', count: 98 },
+    { age: '65+', count: 64 },
+  ];
+
+  const marketingEffectivenessData = [
+    { channel: 'Online Ads', leads: 320, sales: 48 },
+    { channel: 'Social Media', leads: 250, sales: 35 },
+    { channel: 'Email', leads: 180, sales: 32 },
+    { channel: 'Direct Mail', leads: 120, sales: 22 },
+    { channel: 'Events', leads: 90, sales: 28 },
+    { channel: 'Referral', leads: 85, sales: 42 },
+  ];
+
+  const performanceMetricsData = [
+    {
+      subject: 'Sales',
+      A: 90,
+      B: 75,
+      fullMark: 100,
+    },
+    {
+      subject: 'Customer Sat',
+      A: 85,
+      B: 90,
+      fullMark: 100,
+    },
+    {
+      subject: 'Inventory',
+      A: 70,
+      B: 65,
+      fullMark: 100,
+    },
+    {
+      subject: 'Efficiency',
+      A: 75,
+      B: 80,
+      fullMark: 100,
+    },
+    {
+      subject: 'Growth',
+      A: 80,
+      B: 70,
+      fullMark: 100,
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="dashboard-charts-report">
+        <div className="flex justify-center items-center h-64">
+          <div className="loading-spinner"></div>
+          <p className="ml-4">Loading dashboard charts data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard-charts-report">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h3 className="text-red-800 font-medium mb-2">Error Loading Data</h3>
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="dashboard-charts-report">
@@ -123,13 +129,13 @@ const DashboardChartsReport: React.FC = () => {
           <h3 className="text-lg font-medium mb-4">Monthly Sales Performance vs Target</h3>
           <ResponsiveContainer width="100%" height={350}>
             <LineChart
-              data={salesPerformanceData}
+              data={salesData}
               margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis />
-              <Tooltip formatter={(value) => [`$${value.toLocaleString()}`, '']} />
+              <Tooltip formatter={(value) => [formatCurrency(Number(value), 'NGN'), '']} />
               <Legend />
               <Line 
                 type="monotone" 
@@ -162,7 +168,7 @@ const DashboardChartsReport: React.FC = () => {
           <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie
-                data={inventoryMixData}
+                data={inventoryData}
                 cx="50%"
                 cy="50%"
                 labelLine={true}
@@ -171,11 +177,11 @@ const DashboardChartsReport: React.FC = () => {
                 dataKey="value"
                 label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
               >
-                {inventoryMixData.map((entry, index) => (
+                {inventoryData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value) => [`${value}%`, 'Percentage']} />
+              <Tooltip formatter={(value) => [`${value} vehicles`, 'Count']} />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
