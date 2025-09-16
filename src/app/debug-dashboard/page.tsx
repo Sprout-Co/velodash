@@ -9,6 +9,7 @@ import { KPICards } from '@/components/dashboard/KPICards';
 import { InventoryFunnel } from '@/components/dashboard/InventoryFunnel';
 import { ActionRequiredList } from '@/components/dashboard/ActionRequiredList';
 import { RecentActivityFeed } from '@/components/dashboard/RecentActivityFeed';
+import { TimeDisplay } from '@/components/ui/TimeDisplay';
 import { useDashboardDataDebug } from '@/hooks/useDashboardDataDebug';
 
 export default function DebugDashboardPage() {
@@ -48,7 +49,11 @@ export default function DebugDashboardPage() {
             </div>
             <div className="dashboard__header-actions">
               <div className="dashboard__last-updated">
-                Last updated: {new Date().toLocaleTimeString()}
+                <TimeDisplay 
+                  format="time" 
+                  prefix="Last updated: " 
+                  updateInterval={1000}
+                />
               </div>
             </div>
           </div>
