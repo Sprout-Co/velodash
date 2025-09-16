@@ -48,7 +48,6 @@ const COLLECTIONS = {
   COSTS: 'costs',
   USERS: 'users',
   ACTIVITIES: 'activities',
-  REPORTS: 'reports',
 } as const;
 
 // Helper function to convert Firestore timestamps to Date objects

@@ -1,0 +1,374 @@
+// Chart Components Styles
+// Styling for custom chart components
+
+.bar-chart {
+  &__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 1rem 0;
+    text-align: center;
+  }
+
+  &__container {
+    position: relative;
+    width: 100%;
+    background: var(--color-background-card);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  &__bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 100%;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+
+  &__bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__bar-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+  }
+
+  &__bar {
+    width: 100%;
+    min-height: 4px;
+    border-radius: 0.25rem 0.25rem 0 0;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+      transform: scaleY(1.05);
+    }
+  }
+
+  &__bar-value {
+    position: absolute;
+    top: -1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    background: var(--color-background-card);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--color-border);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  &__bar:hover &__bar-value {
+    opacity: 1;
+  }
+
+  &__label {
+    margin-top: 0.5rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  &__label-text {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    line-height: 1.2;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  &__label-percentage {
+    display: block;
+    font-size: 0.625rem;
+    color: var(--color-text-tertiary);
+    margin-top: 0.125rem;
+  }
+}
+
+.pie-chart {
+  &__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 1rem 0;
+    text-align: center;
+  }
+
+  &__container {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  &__chart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__svg {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+
+  &__slice {
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+      filter: brightness(1.1);
+    }
+  }
+
+  &__center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  &__center-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1;
+  }
+
+  &__center-label {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-top: 0.125rem;
+  }
+
+  &__legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 200px;
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: var(--color-background-hover);
+    }
+  }
+
+  &__legend-color {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border);
+  }
+
+  &__legend-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__legend-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+  }
+
+  &__legend-value {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-top: 0.125rem;
+  }
+}
+
+.line-chart {
+  &__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 1rem 0;
+    text-align: center;
+  }
+
+  &__container {
+    position: relative;
+    width: 100%;
+    background: var(--color-background-card);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow: hidden;
+  }
+
+  &__svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__grid {
+    opacity: 0.3;
+  }
+
+  &__grid-line {
+    stroke: var(--color-border);
+    stroke-width: 1;
+  }
+
+  &__grid-label {
+    font-size: 0.75rem;
+    fill: var(--color-text-tertiary);
+    font-weight: 500;
+  }
+
+  &__line {
+    stroke: var(--color-primary);
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+
+  &__dot {
+    fill: var(--color-primary);
+    stroke: var(--color-background-card);
+    stroke-width: 2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      r: 6;
+      fill: var(--color-primary-dark);
+    }
+  }
+
+  &__x-axis {
+    font-size: 0.75rem;
+  }
+
+  &__x-label {
+    fill: var(--color-text-secondary);
+    font-weight: 500;
+  }
+
+  &__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+}
+
+// Responsive design for charts
+@media (max-width: 768px) {
+  .bar-chart {
+    &__bars {
+      gap: 0.25rem;
+    }
+
+    &__label-text {
+      font-size: 0.625rem;
+    }
+
+    &__label-percentage {
+      font-size: 0.5rem;
+    }
+
+    &__bar-value {
+      font-size: 0.625rem;
+      top: -1.25rem;
+    }
+  }
+
+  .pie-chart {
+    &__container {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    &__legend {
+      min-width: auto;
+      width: 100%;
+    }
+
+    &__legend-item {
+      padding: 0.375rem;
+    }
+
+    &__legend-label {
+      font-size: 0.8rem;
+    }
+
+    &__legend-value {
+      font-size: 0.7rem;
+    }
+  }
+
+  .line-chart {
+    &__grid-label {
+      font-size: 0.625rem;
+    }
+
+    &__x-label {
+      font-size: 0.625rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .bar-chart {
+    &__container {
+      padding: 0.5rem;
+    }
+
+    &__bars {
+      gap: 0.125rem;
+    }
+  }
+
+  .pie-chart {
+    &__chart {
+      transform: scale(0.8);
+    }
+  }
+
+  .line-chart {
+    &__container {
+      padding: 0.5rem;
+    }
+  }
+}

@@ -93,7 +93,7 @@ export default function SeedDatabasePage() {
               <li>• Sale data for 6 sold vehicles with different profit scenarios</li>
               <li>• 2 vehicles currently for sale in inventory</li>
               <li>• Total 30-day revenue: ~₦4.2M from recent sales</li>
-              <li>• Perfect for testing dashboard KPIs and reports</li>
+              <li>• Perfect for testing dashboard KPIs</li>
             </ul>
           </div>
         </div>

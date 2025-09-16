@@ -95,21 +95,6 @@ export const ALLOWED_DOCUMENT_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
 
-// Date Ranges for Reports
-export const DATE_RANGE_OPTIONS = [
-  { value: 'today', label: 'Today' },
-  { value: 'yesterday', label: 'Yesterday' },
-  { value: 'last-7-days', label: 'Last 7 Days' },
-  { value: 'last-30-days', label: 'Last 30 Days' },
-  { value: 'last-90-days', label: 'Last 90 Days' },
-  { value: 'this-month', label: 'This Month' },
-  { value: 'last-month', label: 'Last Month' },
-  { value: 'this-quarter', label: 'This Quarter' },
-  { value: 'last-quarter', label: 'Last Quarter' },
-  { value: 'this-year', label: 'This Year' },
-  { value: 'last-year', label: 'Last Year' },
-  { value: 'custom', label: 'Custom Range' },
-] as const;
 
 // Action Required Thresholds
 export const ACTION_THRESHOLDS = {
@@ -136,7 +121,6 @@ export const CHART_COLORS = [
 export const API_ENDPOINTS = {
   VEHICLES: '/api/vehicles',
   COSTS: '/api/costs',
-  REPORTS: '/api/reports',
   UPLOAD: '/api/upload',
 } as const;
 
@@ -145,7 +129,6 @@ export const STORAGE_KEYS = {
   USER_PREFERENCES: 'velocity-dash-user-preferences',
   DASHBOARD_FILTERS: 'velocity-dash-dashboard-filters',
   VEHICLE_FILTERS: 'velocity-dash-vehicle-filters',
-  REPORT_FILTERS: 'velocity-dash-report-filters',
 } as const;
 
 // Notification Types

@@ -1,170 +1,767 @@
-// Reports Page Styling
+// Reports Page Styles
+// Comprehensive styling for the reports and analytics page
 
-.loading-spinner {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #e5e7eb;
-  border-top: 2px solid #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
+.reports {
+  min-height: 100vh;
+  background-color: var(--color-background);
+  padding: 2rem 0;
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.reports-container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-
-  h1 {
-    color: var(--heading-color);
+  &__header {
+    margin-bottom: 2rem;
   }
 
-  .btn-export, .btn-print {
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
+  &__header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
-  .btn-export {
-    background-color: var(--primary-color);
-    color: #fff;
-    margin-right: 0.5rem;
-
-    &:hover {
-      background-color: var(--primary-color-dark);
-    }
+  &__header-text {
+    flex: 1;
+    min-width: 300px;
   }
 
-  .btn-print {
-    background-color: #f1f5f9;
-    color: #334155;
-
-    &:hover {
-      background-color: #e2e8f0;
-    }
+  &__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
   }
 
-  .report-content {
-    min-height: 500px;
-    animation: fadeIn 0.3s ease-in-out;
+  &__subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: 1.4;
   }
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  &__header-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-end;
   }
-}
 
-// Tabs styling
-.tabs-list {
-  display: flex;
-  border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 1.5rem;
-
-  button {
-    padding: 0.75rem 1.25rem;
-    font-weight: 500;
-    color: #64748b;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s ease;
-
-    &:hover {
-      color: var(--primary-color);
-    }
-
-    &.active {
-      color: var(--primary-color);
-      border-bottom-color: var(--primary-color);
-    }
+  &__date-range {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-background-card);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
   }
-}
 
-// Common report components
-.stats-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  }
-}
-
-// Filters styling
-.filters {
-  .select-filter, .btn-filter {
-    padding: 0.5rem 1rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.25rem;
-    background-color: #fff;
+  &__date-label {
     font-size: 0.875rem;
-    transition: all 0.2s ease;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  &__date-input {
+    padding: 0.375rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    min-width: 120px;
 
     &:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-light);
     }
   }
 
-  .btn-filter {
-    &.active {
-      background-color: var(--primary-color);
-      color: #fff;
-      border-color: var(--primary-color);
+  &__date-separator {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+
+  &__last-updated {
+    font-size: 0.875rem;
+    color: var(--color-text-tertiary);
+  }
+
+  &__content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  &__nav {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  &__nav-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 0.5rem 0.5rem 0 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: fit-content;
+
+    &:hover {
+      background: var(--color-background-hover);
+      color: var(--color-text-primary);
+    }
+
+    &--active {
+      background: var(--color-primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+
+      &:hover {
+        background: var(--color-primary-dark);
+      }
+    }
+  }
+
+  &__nav-icon {
+    font-size: 1rem;
+  }
+
+  &__nav-label {
+    font-weight: 500;
+  }
+
+  &__main {
+    background: var(--color-background-card);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+
+  &__content-area {
+    padding: 2rem;
+  }
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  &__loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid var(--color-border);
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  &__loading-text {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-secondary);
+
+    h3 {
+      font-size: 1.5rem;
+      margin: 0 0 0.5rem 0;
+      color: var(--color-text-primary);
+    }
+
+    p {
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+
+  &__error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+  }
+
+  &__error-content {
+    text-align: center;
+    padding: 2rem;
+    background: var(--color-background-card);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    max-width: 500px;
+  }
+
+  &__error-title {
+    font-size: 1.5rem;
+    color: var(--color-error);
+    margin: 0 0 1rem 0;
+  }
+
+  &__error-message {
+    color: var(--color-text-secondary);
+    margin: 0 0 1.5rem 0;
+  }
+
+  &__error-retry {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: var(--color-primary-dark);
     }
   }
 }
 
-// Sales Performance Report
-.sales-performance-report {
-  .funnel-step {
-    transition: transform 0.2s ease;
+// Report-specific styles
+.sales-report,
+.inventory-report,
+.expense-report,
+.profitability-report {
+  &__header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 0.5rem 0;
+  }
+
+  &__period {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  &__summary {
+    margin-bottom: 2rem;
+  }
+
+  &__summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  &__summary-card {
+    background: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
       transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    &--revenue {
+      border-left: 4px solid var(--color-success);
+    }
+
+    &--profit {
+      border-left: 4px solid var(--color-primary);
+    }
+
+    &--roi {
+      border-left: 4px solid var(--color-warning);
+    }
+
+    &--vehicles {
+      border-left: 4px solid var(--color-info);
+    }
+
+    &--total {
+      border-left: 4px solid var(--color-primary);
+    }
+
+    &--average {
+      border-left: 4px solid var(--color-warning);
+    }
+
+    &--aging {
+      border-left: 4px solid var(--color-error);
+    }
+
+    &--value {
+      border-left: 4px solid var(--color-success);
+    }
+
+    &--categories {
+      border-left: 4px solid var(--color-info);
+    }
+
+    &--top {
+      border-left: 4px solid var(--color-warning);
     }
   }
-}
 
-// Inventory Aging Report
-.inventory-aging-report {
-  table {
+  &__summary-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  &__summary-content {
+    flex: 1;
+  }
+
+  &__summary-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__summary-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  &__charts {
+    margin-bottom: 2rem;
+  }
+
+  &__charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  &__charts-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+  }
+
+  &__chart {
+    background: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  &__details {
+    margin-top: 2rem;
+  }
+
+  &__details-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 1rem 0;
+  }
+
+  &__table-container {
+    overflow-x: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-background-card);
+
     th {
+      background: var(--color-background-hover);
+      padding: 1rem 0.75rem;
+      text-align: left;
       font-weight: 600;
-      color: #475569;
+      color: var(--color-text-primary);
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-primary);
+      font-size: 0.875rem;
+    }
+
+    tr:hover {
+      background: var(--color-background-hover);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  &__table-vehicle {
+    font-weight: 500;
+  }
+
+  &__table-cost,
+  &__table-price {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  &__table-profit {
+    font-family: var(--font-mono);
+    font-weight: 600;
+
+    &--positive {
+      color: var(--color-success);
+    }
+
+    &--negative {
+      color: var(--color-error);
+    }
+  }
+
+  &__table-margin,
+  &__table-roi {
+    font-weight: 600;
+
+    &--positive {
+      color: var(--color-success);
+    }
+
+    &--negative {
+      color: var(--color-error);
+    }
+  }
+
+  &__table-days {
+    font-weight: 500;
+  }
+
+  &__table-category {
+    font-weight: 500;
+  }
+
+  &__table-category-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__table-category-icon {
+    font-size: 1rem;
+  }
+
+  &__table-amount {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  &__table-percentage {
+    min-width: 120px;
+  }
+
+  &__table-percentage-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__table-percentage-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--color-border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  &__table-percentage-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  &__table-count {
+    text-align: center;
+    font-weight: 500;
+  }
+
+  &__table-average {
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+
+  &__status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    &--sourced {
+      background: var(--color-info-light);
+      color: var(--color-info-dark);
+    }
+
+    &--in-transit {
+      background: var(--color-warning-light);
+      color: var(--color-warning-dark);
+    }
+
+    &--in-customs {
+      background: var(--color-warning-light);
+      color: var(--color-warning-dark);
+    }
+
+    &--in-workshop {
+      background: var(--color-error-light);
+      color: var(--color-error-dark);
+    }
+
+    &--for-sale {
+      background: var(--color-success-light);
+      color: var(--color-success-dark);
+    }
+
+    &--sale-pending {
+      background: var(--color-info-light);
+      color: var(--color-info-dark);
+    }
+
+    &--sold {
+      background: var(--color-text-tertiary-light);
+      color: var(--color-text-tertiary-dark);
+    }
+
+    &--archived {
+      background: var(--color-text-tertiary-light);
+      color: var(--color-text-tertiary-dark);
+    }
+  }
+
+  &__aging-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    &--good {
+      background: var(--color-success-light);
+      color: var(--color-success-dark);
+    }
+
+    &--warning {
+      background: var(--color-warning-light);
+      color: var(--color-warning-dark);
+    }
+
+    &--critical {
+      background: var(--color-error-light);
+      color: var(--color-error-dark);
+    }
+  }
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  &__loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid var(--color-border);
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-secondary);
+
+    h3 {
+      font-size: 1.5rem;
+      margin: 0 0 0.5rem 0;
+      color: var(--color-text-primary);
+    }
+
+    p {
+      font-size: 1rem;
+      margin: 0;
     }
   }
 }
 
-// Expense Breakdown Report
-.expense-breakdown-report {
-  table {
-    th {
-      font-weight: 600;
-      color: #475569;
+// Special styles for profitability report
+.profitability-report {
+  &__overview {
+    margin-bottom: 2rem;
+  }
+
+  &__overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  &__overview-card {
+    background: var(--color-background-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  &__overview-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__overview-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 0.25rem 0;
+  }
+
+  &__overview-percentage {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .reports {
+    padding: 1rem 0;
+
+    &__header-content {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__header-actions {
+      align-items: stretch;
+    }
+
+    &__date-range {
+      justify-content: center;
+    }
+
+    &__title {
+      font-size: 2rem;
+    }
+
+    &__nav-tabs {
+      gap: 0.25rem;
+    }
+
+    &__nav-tab {
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+    }
+
+    &__content-area {
+      padding: 1rem;
+    }
+  }
+
+  .sales-report,
+  .inventory-report,
+  .expense-report,
+  .profitability-report {
+    &__summary-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    &__charts-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    &__charts-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    &__chart {
+      padding: 1rem;
+    }
+
+    &__table-container {
+      font-size: 0.8rem;
+    }
+
+    &__table {
+      th, td {
+        padding: 0.5rem 0.25rem;
+      }
+    }
+  }
+
+  .profitability-report {
+    &__overview-grid {
+      grid-template-columns: 1fr;
     }
   }
 }
 
-// Dashboard Charts Report
-.dashboard-charts-report {
-  button.text-blue-600 {
-    transition: all 0.2s ease;
-    
-    &:hover {
-      color: var(--primary-color-dark);
-      text-decoration: underline;
-    }
-  }
+// Animation keyframes
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

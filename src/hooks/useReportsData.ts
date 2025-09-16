@@ -1,234 +1,275 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { reportService } from '@/lib/firestore';
+import { useState, useEffect } from 'react';
 import { 
   SalesPerformanceReport, 
   InventoryAgingReport, 
-  ExpenseBreakdownReport 
+  ExpenseBreakdownReport,
+  Vehicle,
+  CostEntry,
+  CostCategory
 } from '@/types';
+import { getVehiclesData } from './useVehiclesData';
 
-// Sales Performance Hook
-export function useSalesPerformanceData(startDate: Date, endDate: Date) {
-  const [data, setData] = useState<SalesPerformanceReport | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const isFetchingRef = useRef(false);
-
-  useEffect(() => {
-    // Prevent multiple simultaneous fetches
-    if (isFetchingRef.current) return;
-    
-    const fetchData = async () => {
-      try {
-        isFetchingRef.current = true;
-        setIsLoading(true);
-        setError(null);
-        
-        // Add minimum loading time to prevent flickering
-        const [reportData] = await Promise.all([
-          reportService.getSalesPerformanceReport(startDate, endDate),
-          new Promise(resolve => setTimeout(resolve, 300)) // Minimum 300ms loading
-        ]);
-        
-        setData(reportData);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch sales performance data');
-        console.error('Sales performance data fetch error:', err);
-      } finally {
-        setIsLoading(false);
-        isFetchingRef.current = false;
-      }
-    };
-
-    fetchData();
-  }, [startDate, endDate]);
-
-  return { data, isLoading, error };
+interface DateRange {
+  start: Date;
+  end: Date;
 }
 
-// Inventory Aging Hook
-export function useInventoryAgingData() {
-  const [data, setData] = useState<InventoryAgingReport | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const isFetchingRef = useRef(false);
-
-  useEffect(() => {
-    // Prevent multiple simultaneous fetches
-    if (isFetchingRef.current) return;
-    
-    const fetchData = async () => {
-      try {
-        isFetchingRef.current = true;
-        setIsLoading(true);
-        setError(null);
-        
-        // Add minimum loading time to prevent flickering
-        const [reportData] = await Promise.all([
-          reportService.getInventoryAgingReport(),
-          new Promise(resolve => setTimeout(resolve, 300)) // Minimum 300ms loading
-        ]);
-        
-        setData(reportData);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch inventory aging data');
-        console.error('Inventory aging data fetch error:', err);
-      } finally {
-        setIsLoading(false);
-        isFetchingRef.current = false;
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  return { data, isLoading, error };
+interface ProfitabilityData {
+  vehicles: Array<{
+    vehicleId: string;
+    vehicleName: string;
+    totalCost: number;
+    salePrice?: number;
+    profit?: number;
+    profitMargin?: number;
+    roi?: number;
+    status: string;
+  }>;
+  summary: {
+    totalVehicles: number;
+    totalCost: number;
+    totalRevenue: number;
+    totalProfit: number;
+    averageProfitMargin: number;
+    averageROI: number;
+  };
 }
 
-// Expense Breakdown Hook
-export function useExpenseBreakdownData(startDate: Date, endDate: Date) {
-  const [data, setData] = useState<ExpenseBreakdownReport | null>(null);
+export function useReportsData(dateRange: DateRange) {
+  const [salesData, setSalesData] = useState<SalesPerformanceReport | null>(null);
+  const [inventoryData, setInventoryData] = useState<InventoryAgingReport | null>(null);
+  const [expenseData, setExpenseData] = useState<ExpenseBreakdownReport | null>(null);
+  const [profitabilityData, setProfitabilityData] = useState<ProfitabilityData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const isFetchingRef = useRef(false);
 
   useEffect(() => {
-    // Prevent multiple simultaneous fetches
-    if (isFetchingRef.current) return;
-    
-    const fetchData = async () => {
+    const fetchReportsData = async () => {
       try {
-        isFetchingRef.current = true;
-        setIsLoading(true);
-        setError(null);
-        
-        // Add minimum loading time to prevent flickering
-        const [reportData] = await Promise.all([
-          reportService.getExpenseBreakdownReport(startDate, endDate),
-          new Promise(resolve => setTimeout(resolve, 300)) // Minimum 300ms loading
-        ]);
-        
-        setData(reportData);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch expense breakdown data');
-        console.error('Expense breakdown data fetch error:', err);
-      } finally {
-        setIsLoading(false);
-        isFetchingRef.current = false;
-      }
-    };
-
-    fetchData();
-  }, [startDate, endDate]);
-
-  return { data, isLoading, error };
-}
-
-// Dashboard Charts Hook (combines multiple data sources)
-export function useDashboardChartsData() {
-  const [salesData, setSalesData] = useState<any[]>([]);
-  const [inventoryData, setInventoryData] = useState<any[]>([]);
-  const [expenseData, setExpenseData] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const isFetchingRef = useRef(false);
-
-  useEffect(() => {
-    // Prevent multiple simultaneous fetches
-    if (isFetchingRef.current) return;
-    
-    const fetchData = async () => {
-      try {
-        isFetchingRef.current = true;
         setIsLoading(true);
         setError(null);
 
-        // Get data for the last 12 months
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setMonth(startDate.getMonth() - 12);
+        const vehicles = await getVehiclesData();
+        
+        // Process sales performance data
+        const salesReport = generateSalesPerformanceReport(vehicles, dateRange);
+        setSalesData(salesReport);
 
-        const [salesReport, inventoryReport, expenseReport] = await Promise.all([
-          reportService.getSalesPerformanceReport(startDate, endDate),
-          reportService.getInventoryAgingReport(),
-          reportService.getExpenseBreakdownReport(startDate, endDate),
-        ]);
+        // Process inventory aging data
+        const inventoryReport = generateInventoryAgingReport(vehicles, dateRange);
+        setInventoryData(inventoryReport);
 
-        // Transform sales data for charts
-        const monthlySales = generateMonthlySalesData(salesReport);
-        setSalesData(monthlySales);
+        // Process expense breakdown data
+        const expenseReport = generateExpenseBreakdownReport(vehicles, dateRange);
+        setExpenseData(expenseReport);
 
-        // Transform inventory data for charts
-        const inventoryMix = generateInventoryMixData(inventoryReport);
-        setInventoryData(inventoryMix);
-
-        // Transform expense data for charts
-        const monthlyExpenses = generateMonthlyExpenseData(expenseReport);
-        setExpenseData(monthlyExpenses);
+        // Process profitability data
+        const profitabilityReport = generateProfitabilityData(vehicles, dateRange);
+        setProfitabilityData(profitabilityReport);
 
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch dashboard charts data');
-        console.error('Dashboard charts data fetch error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch reports data');
+        console.error('Error fetching reports data:', err);
       } finally {
         setIsLoading(false);
-        isFetchingRef.current = false;
       }
     };
 
-    fetchData();
-  }, []);
+    fetchReportsData();
+  }, [dateRange]);
 
-  return { salesData, inventoryData, expenseData, isLoading, error };
+  return {
+    salesData,
+    inventoryData,
+    expenseData,
+    profitabilityData,
+    isLoading,
+    error
+  };
 }
 
-// Helper functions to transform data for charts
-function generateMonthlySalesData(salesReport: SalesPerformanceReport) {
-  const monthlyData: { [key: string]: { sales: number; target: number } } = {};
-  
-  salesReport.vehicles.forEach(vehicle => {
-    const month = vehicle.saleDate.toISOString().substring(0, 7); // YYYY-MM
-    if (!monthlyData[month]) {
-      monthlyData[month] = { sales: 0, target: 0 };
+function generateSalesPerformanceReport(vehicles: Vehicle[], dateRange: DateRange): SalesPerformanceReport {
+  const soldVehicles = vehicles.filter(vehicle => 
+    vehicle.saleDetails && 
+    vehicle.saleDetails.saleDate &&
+    new Date(vehicle.saleDetails.saleDate) >= dateRange.start &&
+    new Date(vehicle.saleDetails.saleDate) <= dateRange.end
+  );
+
+  const salesVehicles = soldVehicles.map(vehicle => {
+    const totalCost = vehicle.costs.reduce((sum, cost) => sum + cost.amount, 0);
+    const salePrice = vehicle.saleDetails?.finalSalePrice || 0;
+    const profit = salePrice - totalCost;
+    const profitMargin = salePrice > 0 ? (profit / salePrice) * 100 : 0;
+    const roi = totalCost > 0 ? (profit / totalCost) * 100 : 0;
+
+    return {
+      vehicleId: vehicle.id,
+      vehicleName: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+      totalCost,
+      salePrice,
+      profitMargin,
+      roi,
+      saleDate: vehicle.saleDetails?.saleDate || new Date()
+    };
+  });
+
+  const totalRevenue = salesVehicles.reduce((sum, vehicle) => sum + vehicle.salePrice, 0);
+  const totalCostOfGoodsSold = salesVehicles.reduce((sum, vehicle) => sum + vehicle.totalCost, 0);
+  const averageProfitMargin = salesVehicles.length > 0 
+    ? salesVehicles.reduce((sum, vehicle) => sum + vehicle.profitMargin, 0) / salesVehicles.length 
+    : 0;
+  const averageROI = salesVehicles.length > 0 
+    ? salesVehicles.reduce((sum, vehicle) => sum + vehicle.roi, 0) / salesVehicles.length 
+    : 0;
+
+  return {
+    period: {
+      start: dateRange.start,
+      end: dateRange.end
+    },
+    vehicles: salesVehicles,
+    summary: {
+      totalRevenue,
+      totalCostOfGoodsSold,
+      averageProfitMargin,
+      averageROI
     }
-    monthlyData[month].sales += vehicle.salePrice;
-    // For now, we'll set a simple target (could be enhanced with actual targets)
-    monthlyData[month].target = monthlyData[month].sales * 1.1; // 10% above actual
-  });
-
-  return Object.entries(monthlyData)
-    .map(([month, data]) => ({
-      month: month.substring(5), // Just the month part
-      sales: data.sales,
-      target: data.target,
-    }))
-    .sort((a, b) => a.month.localeCompare(b.month));
+  };
 }
 
-function generateInventoryMixData(inventoryReport: InventoryAgingReport) {
-  const makeCounts: { [key: string]: number } = {};
-  
-  inventoryReport.vehicles.forEach(vehicle => {
-    const make = vehicle.vehicleName.split(' ')[1]; // Extract make from "Year Make Model"
-    makeCounts[make] = (makeCounts[make] || 0) + 1;
+function generateInventoryAgingReport(vehicles: Vehicle[], dateRange: DateRange): InventoryAgingReport {
+  const activeVehicles = vehicles.filter(vehicle => 
+    vehicle.status !== 'sold' && vehicle.status !== 'archived'
+  );
+
+  const inventoryVehicles = activeVehicles.map(vehicle => {
+    const totalCost = vehicle.costs.reduce((sum, cost) => sum + cost.amount, 0);
+    const daysInInventory = calculateDaysInInventory(vehicle);
+    
+    return {
+      vehicleId: vehicle.id,
+      vehicleName: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+      status: vehicle.status,
+      daysInInventory,
+      totalCost,
+      listingPrice: vehicle.saleDetails?.listingPrice
+    };
   });
 
-  const colors = ['#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#6B7280'];
-  
-  return Object.entries(makeCounts)
-    .map(([make, count], index) => ({
-      name: make,
-      value: count,
-      color: colors[index % colors.length],
-    }));
+  const totalVehicles = inventoryVehicles.length;
+  const averageAge = totalVehicles > 0 
+    ? inventoryVehicles.reduce((sum, vehicle) => sum + vehicle.daysInInventory, 0) / totalVehicles 
+    : 0;
+  const vehiclesOver90Days = inventoryVehicles.filter(vehicle => vehicle.daysInInventory > 90).length;
+
+  return {
+    period: {
+      start: dateRange.start,
+      end: dateRange.end
+    },
+    vehicles: inventoryVehicles,
+    summary: {
+      totalVehicles,
+      averageAge,
+      vehiclesOver90Days
+    }
+  };
 }
 
-function generateMonthlyExpenseData(expenseReport: ExpenseBreakdownReport) {
-  // This would need to be enhanced to get actual monthly data
-  // For now, we'll create a simple representation
-  return expenseReport.categories.map(category => ({
-    month: 'Current',
-    expenses: category.totalAmount,
-    category: category.category,
-  }));
+function generateExpenseBreakdownReport(vehicles: Vehicle[], dateRange: DateRange): ExpenseBreakdownReport {
+  const allCosts: CostEntry[] = [];
+  
+  vehicles.forEach(vehicle => {
+    vehicle.costs.forEach(cost => {
+      if (new Date(cost.date) >= dateRange.start && new Date(cost.date) <= dateRange.end) {
+        allCosts.push(cost);
+      }
+    });
+  });
+
+  const categoryTotals = new Map<CostCategory, { total: number; count: number }>();
+  
+  allCosts.forEach(cost => {
+    const existing = categoryTotals.get(cost.category) || { total: 0, count: 0 };
+    categoryTotals.set(cost.category, {
+      total: existing.total + cost.amount,
+      count: existing.count + 1
+    });
+  });
+
+  const totalExpenses = allCosts.reduce((sum, cost) => sum + cost.amount, 0);
+  const uniqueVehicles = new Set(allCosts.map(cost => cost.vehicleId)).size;
+
+  const categories = Array.from(categoryTotals.entries()).map(([category, data]) => ({
+    category,
+    totalAmount: data.total,
+    percentage: totalExpenses > 0 ? (data.total / totalExpenses) * 100 : 0,
+    vehicleCount: data.count
+  })).sort((a, b) => b.totalAmount - a.totalAmount);
+
+  return {
+    period: {
+      start: dateRange.start,
+      end: dateRange.end
+    },
+    categories,
+    summary: {
+      totalExpenses,
+      averagePerVehicle: uniqueVehicles > 0 ? totalExpenses / uniqueVehicles : 0
+    }
+  };
+}
+
+function generateProfitabilityData(vehicles: Vehicle[], dateRange: DateRange): ProfitabilityData {
+  const profitabilityVehicles = vehicles.map(vehicle => {
+    const totalCost = vehicle.costs.reduce((sum, cost) => sum + cost.amount, 0);
+    const salePrice = vehicle.saleDetails?.finalSalePrice;
+    const profit = salePrice ? salePrice - totalCost : undefined;
+    const profitMargin = salePrice && profit ? (profit / salePrice) * 100 : undefined;
+    const roi = totalCost > 0 && profit ? (profit / totalCost) * 100 : undefined;
+
+    return {
+      vehicleId: vehicle.id,
+      vehicleName: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+      totalCost,
+      salePrice,
+      profit,
+      profitMargin,
+      roi,
+      status: vehicle.status
+    };
+  });
+
+  const soldVehicles = profitabilityVehicles.filter(v => v.salePrice);
+  const totalCost = profitabilityVehicles.reduce((sum, v) => sum + v.totalCost, 0);
+  const totalRevenue = soldVehicles.reduce((sum, v) => sum + (v.salePrice || 0), 0);
+  const totalProfit = soldVehicles.reduce((sum, v) => sum + (v.profit || 0), 0);
+  const averageProfitMargin = soldVehicles.length > 0 
+    ? soldVehicles.reduce((sum, v) => sum + (v.profitMargin || 0), 0) / soldVehicles.length 
+    : 0;
+  const averageROI = soldVehicles.length > 0 
+    ? soldVehicles.reduce((sum, v) => sum + (v.roi || 0), 0) / soldVehicles.length 
+    : 0;
+
+  return {
+    vehicles: profitabilityVehicles,
+    summary: {
+      totalVehicles: vehicles.length,
+      totalCost,
+      totalRevenue,
+      totalProfit,
+      averageProfitMargin,
+      averageROI
+    }
+  };
+}
+
+function calculateDaysInInventory(vehicle: Vehicle): number {
+  const startDate = new Date(vehicle.acquisitionDetails.purchaseDate);
+  const endDate = vehicle.saleDetails?.saleDate ? new Date(vehicle.saleDetails.saleDate) : new Date();
+  const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 }

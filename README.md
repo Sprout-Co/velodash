@@ -32,7 +32,7 @@ VelocityDash serves as a comprehensive vehicle inventory and financial managemen
 
 ### Admin (Owner/Manager)
 - Full, unrestricted access
-- View all financial data and reports
+- View all financial data
 - Add/edit/delete all records
 - Manage user accounts
 - Access to sensitive financial summaries
@@ -89,10 +89,6 @@ VelocityDash serves as a comprehensive vehicle inventory and financial managemen
   - ROI = ((Final Sale Price - Total Landed & Ready Cost) / Total Landed & Ready Cost) × 100
 
 ### Module 5: Reporting & Business Intelligence
-- **Sales Performance Report**: Date-range sales analysis
-- **Inventory Aging Report**: Slow-moving stock identification
-- **Expense Breakdown Report**: Cost category analysis
-- **Data Export**: CSV/PDF export capabilities
 
 ## 🛠️ Technology Stack
 
@@ -124,7 +120,6 @@ velocity-dash/
 │   ├── app/                    # Next.js App Router
 │   │   ├── dashboard/          # Dashboard pages
 │   │   ├── vehicles/           # Vehicle management pages
-│   │   ├── reports/            # Reporting pages
 │   │   ├── globals.scss        # Global styles
 │   │   └── layout.tsx          # Root layout
 │   ├── components/             # Reusable UI components

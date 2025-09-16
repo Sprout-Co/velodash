@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation';
 import { 
   HomeIcon, 
   TruckIcon, 
-  ChartBarIcon, 
   CogIcon,
   UserGroupIcon,
-  WrenchScrewdriverIcon
+  WrenchScrewdriverIcon,
+  ChartBarIcon
 } from '@heroicons/react/24/outline';
 
 const navigation = [
