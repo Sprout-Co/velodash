@@ -4,7 +4,7 @@ const nextConfig = {
     includePaths: ['./src/styles'],
   },
   images: {
-    domains: ['firebasestorage.googleapis.com'],
+    domains: ['firebasestorage.googleapis.com', 'res.cloudinary.com'],
   },
 }
 

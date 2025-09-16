@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Vehicle, FileReference } from '@/types';
 import { Upload, X, ImageIcon, Film, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
@@ -23,13 +23,25 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
     videos: media?.videos || []
   });
 
+  // Sync localMedia when media prop changes
+  useEffect(() => {
+    console.log('VehicleMediaHub: media prop changed:', media);
+    setLocalMedia({
+      photos: media?.photos || [],
+      videos: media?.videos || []
+    });
+  }, [media]);
+
   // Helper functions to get URLs for both Google Drive and Cloudinary files
   const getImageUrl = (file: FileReference): string => {
+    console.log('getImageUrl called with file:', file);
     if ('url' in file) {
       // Cloudinary file reference
+      console.log('Using Cloudinary URL:', file.url);
       return file.url;
     } else {
       // Google Drive file reference
+      console.log('Using Google Drive URL:', file.webViewLink);
       return file.webViewLink;
     }
   };
@@ -105,8 +117,22 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
         }
       );
       
+      console.log('Uploaded files result:', uploadedFiles);
+      
       // Update local media state
-      const currentMediaArray = localMedia[activeTab] || [];
+      // Ensure we have a valid array for the current tab
+      const currentMediaArray = Array.isArray(localMedia[activeTab]) 
+        ? localMedia[activeTab] 
+        : [];
+      
+      console.log('Upload debug:', {
+        activeTab,
+        localMedia,
+        currentMediaArray,
+        uploadedFiles,
+        isArray: Array.isArray(currentMediaArray)
+      });
+      
       const updatedMedia = {
         ...localMedia,
         [activeTab]: [...currentMediaArray, ...uploadedFiles]
@@ -119,7 +145,10 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       
       // Notify parent component
       if (onMediaUpdate) {
+        console.log('Calling onMediaUpdate with:', updatedMedia);
         onMediaUpdate(updatedMedia);
+      } else {
+        console.warn('onMediaUpdate callback not provided');
       }
       
       // Clear progress
@@ -270,14 +299,37 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
       {/* Media Display */}
       {activeTab === 'photos' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {(localMedia.photos || []).length > 0 ? (
+          {(() => {
+            console.log('Rendering photos, localMedia.photos:', localMedia.photos);
+            console.log('Photos array length:', (localMedia.photos || []).length);
+            console.log(' ===>Photos array:', localMedia.photos);
+            const hasPhotos = (localMedia.photos || []).length > 0;
+            console.log('Has photos:', hasPhotos);
+            return hasPhotos;
+          })() ? (
             (localMedia.photos || []).map((photo, index) => (
               <div key={photo.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
-                <Image
+                {/* Temporary debug info */}
+                <div className="absolute top-0 left-0 bg-black bg-opacity-75 text-white text-xs p-1 z-10">
+                  {photo.name}
+                </div>
+                <img
                   src={getImageUrl(photo)}
                   alt={`Vehicle photo ${index + 1}`}
-                  fill
                   className="object-cover"
+                />
+              
+                {/* Fallback img tag for debugging */}
+                <img
+                  src={getImageUrl(photo)}
+                  alt={`Fallback ${index + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover opacity-0"
+                  onError={(e) => {
+                    console.error('Fallback img failed to load:', e);
+                  }}
+                  onLoad={() => {
+                    console.log('Fallback img loaded successfully:', getImageUrl(photo));
+                  }}
                 />
                 <div className="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <a
@@ -303,9 +355,11 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
             <div className="col-span-full text-center py-8 text-gray-500">
               <ImageIcon className="h-12 w-12 mx-auto mb-2" />
               <p>No photos uploaded yet</p>
+              <p className="text-xs mt-2">Debug: localMedia.photos = {JSON.stringify(localMedia.photos)}</p>
             </div>
           )}
         </div>
+        
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {(localMedia.videos || []).length > 0 ? (
