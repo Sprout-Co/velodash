@@ -342,9 +342,11 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
                   setIsImageModalOpen(true);
                 }}
               >
-                <img
+                <Image
                   src={getImageUrl(photo)}
                   alt={`Vehicle photo ${index + 1}`}
+                  width={300}
+                  height={300}
                   className="w-full h-full object-cover"
                 />
                 
@@ -466,9 +468,11 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
               </div>
             </div>
             <div className="image-preview-content">
-              <img
+              <Image
                 src={getImageUrl(selectedPhoto)}
                 alt={('name' in selectedPhoto && selectedPhoto.name) ? selectedPhoto.name : 'Vehicle photo preview'}
+                width={800}
+                height={600}
                 className="image-preview-img"
               />
             </div>

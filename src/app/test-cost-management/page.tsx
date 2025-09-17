@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
-import { VehicleCostManagement } from '@/components/vehicles/VehicleCostManagement';
+import VehicleCostManagement from '@/components/vehicles/VehicleCostManagement';
 import { vehicleService } from '@/lib/firestore';
 import { Vehicle } from '@/types';
 

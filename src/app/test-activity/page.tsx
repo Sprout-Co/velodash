@@ -4,7 +4,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import RecentActivityFeed from '@/components/dashboard/RecentActivityFeed';
+import { RecentActivityFeed } from '@/components/dashboard/RecentActivityFeed';
 import { RecentActivity } from '@/types';
 
 export default function TestActivityPage() {

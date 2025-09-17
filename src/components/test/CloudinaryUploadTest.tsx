@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Upload, X, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { storageService } from '@/lib/storage';
 
@@ -162,9 +163,11 @@ export default function CloudinaryUploadTest() {
                 <div key={file.id} className="border rounded-lg p-4">
                   <div className="aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden">
                     {file.format && ['jpg', 'jpeg', 'png', 'webp'].includes(file.format.toLowerCase()) ? (
-                      <img
+                      <Image
                         src={getImageUrl(file)}
                         alt={file.name}
+                        width={300}
+                        height={300}
                         className="w-full h-full object-cover"
                       />
                     ) : (

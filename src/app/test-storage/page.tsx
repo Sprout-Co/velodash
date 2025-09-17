@@ -4,12 +4,13 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { storageService } from '@/lib/storage';
 
 export default function TestStoragePage() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,17 +101,19 @@ export default function TestStoragePage() {
                 <h3 className="text-sm font-medium text-green-800 mb-2">Success!</h3>
                 <p className="text-sm text-green-700 mb-2">File uploaded successfully:</p>
                 <a
-                  href={result}
+                  href={result.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:text-blue-800 underline break-all"
                 >
-                  {result}
+                  {result.url}
                 </a>
                 <div className="mt-4">
-                  <img
-                    src={result}
+                  <Image
+                    src={result.url}
                     alt="Uploaded image"
+                    width={400}
+                    height={300}
                     className="max-w-full h-auto rounded-lg border"
                     style={{ maxHeight: '300px' }}
                   />
