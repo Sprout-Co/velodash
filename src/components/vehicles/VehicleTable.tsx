@@ -118,6 +118,7 @@ export default function VehicleTable({ vehicles, onRowClick, selectedVehicles = 
 
   return (
     <div className="table-container">
+      {/* Desktop Table */}
       <table className="vehicles-table">
         <thead>
           <tr>
@@ -209,6 +210,59 @@ export default function VehicleTable({ vehicles, onRowClick, selectedVehicles = 
           )}
         </tbody>
       </table>
+
+      {/* Mobile Card Layout */}
+      <div className="mobile-vehicle-cards">
+        {sortedVehicles.length > 0 ? (
+          sortedVehicles.map(vehicle => (
+            <div 
+              key={vehicle.id} 
+              className={`vehicle-card ${selectedVehicles.includes(vehicle.id) ? 'selected' : ''}`}
+              onClick={() => onRowClick(vehicle)}
+            >
+              <div className="card-header">
+                <h3 className="vehicle-title">
+                  {vehicle.year} {vehicle.make} {vehicle.model}
+                </h3>
+                <div className="card-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={selectedVehicles.includes(vehicle.id)}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      handleSelectVehicle(vehicle.id, e.target.checked);
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+              </div>
+              <div className="card-content">
+                <div className="vehicle-details">
+                  <div className="detail-item">
+                    <div className="detail-label">VIN</div>
+                    <div className="detail-value">{vehicle.vin}</div>
+                  </div>
+                  <div className="detail-item">
+                    <div className="detail-label">Days in Inventory</div>
+                    <div className="detail-value">{vehicle.daysInInventory}</div>
+                  </div>
+                  <div className="detail-item">
+                    <div className="detail-label">Total Cost</div>
+                    <div className="detail-value">{formatCurrency(vehicle.totalCost, 'NGN')}</div>
+                  </div>
+                </div>
+                <div className="vehicle-status">
+                  <StatusBadge status={vehicle.status} />
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="no-data-mobile">
+            <p>No vehicles found</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { VehicleFilters, VehicleStatus } from '@/types';
-import { Search } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface VehicleFiltersPanelProps {
   filters: VehicleFilters;
@@ -14,6 +14,7 @@ export default function VehicleFiltersPanel({
   onSearch,
 }: VehicleFiltersPanelProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
   const [availableMakes, setAvailableMakes] = useState<string[]>([
     'Toyota', 'Honda', 'Ford', 'Chevrolet', 'Mercedes', 'BMW', 'Audi', 'Lexus', 'Hyundai', 'Kia'
   ]); // Would come from API in real implementation
@@ -85,7 +86,16 @@ export default function VehicleFiltersPanel({
 
   return (
     <div className="vehicle-filters">
-      <h2>Filters</h2>
+      <div className="filters-header">
+        <h2>Filters</h2>
+        <button 
+          className="mobile-toggle"
+          onClick={() => setIsExpanded(!isExpanded)}
+          aria-label={isExpanded ? 'Collapse filters' : 'Expand filters'}
+        >
+          {isExpanded ? <ChevronUp className="icon" /> : <ChevronDown className="icon" />}
+        </button>
+      </div>
       
       <form onSubmit={handleSearchSubmit}>
         <div className="search-input-container">
@@ -99,6 +109,8 @@ export default function VehicleFiltersPanel({
         </div>
         <button type="submit" className="sr-only">Search</button>
       </form>
+      
+      <div className={`filters-content ${isExpanded ? 'expanded' : ''}`}>
       
       <div className="filter-section">
         <h3>Status</h3>
@@ -180,9 +192,10 @@ export default function VehicleFiltersPanel({
         </div>
       </div>
       
-      <button onClick={handleReset} className="reset-button">
-        Reset Filters
-      </button>
+        <button onClick={handleReset} className="reset-button">
+          Reset Filters
+        </button>
+      </div>
     </div>
   );
 }
