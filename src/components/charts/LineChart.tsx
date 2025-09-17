@@ -113,8 +113,9 @@ export function LineChart({
                 cy={y}
                 r="4"
                 className="line-chart__dot"
-                title={`${formatDate(point.date)}: ${formatValue(point.value)}`}
-              />
+              >
+                <title>{`${formatDate(point.date)}: ${formatValue(point.value)}`}</title>
+              </circle>
             );
           })}
 
