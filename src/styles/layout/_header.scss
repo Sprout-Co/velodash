@@ -29,6 +29,38 @@
     gap: 1rem;
   }
 
+  &__hamburger {
+    display: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    padding: 0.5rem;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: 0.5rem;
+
+    @media (max-width: 768px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    &:focus {
+      outline: 2px solid rgba(255, 255, 255, 0.5);
+      outline-offset: 2px;
+    }
+  }
+
+  &__hamburger-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
   &__title {
     font-size: 1.5rem;
     font-weight: 600;

@@ -1,12 +1,28 @@
 'use client';
 
 import React from 'react';
-import { BellIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { BellIcon, UserCircleIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-export function Header() {
+interface HeaderProps {
+  isSidebarOpen?: boolean;
+  onToggleSidebar?: () => void;
+}
+
+export function Header({ isSidebarOpen = false, onToggleSidebar }: HeaderProps) {
   return (
     <header className="header">
       <div className="header__left">
+        <button 
+          className="header__hamburger"
+          onClick={onToggleSidebar}
+          aria-label="Toggle sidebar"
+        >
+          {isSidebarOpen ? (
+            <XMarkIcon className="header__hamburger-icon" />
+          ) : (
+            <Bars3Icon className="header__hamburger-icon" />
+          )}
+        </button>
         <h1 className="header__title">Dashboard</h1>
       </div>
       
