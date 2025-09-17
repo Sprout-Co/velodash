@@ -342,40 +342,27 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
                   setIsImageModalOpen(true);
                 }}
               >
-                {/* Temporary debug info */}
-           
                 <img
                   src={getImageUrl(photo)}
                   alt={`Vehicle photo ${index + 1}`}
-                  className="object-cover"
+                  className="w-full h-full object-cover"
                 />
-              
-                {/* Fallback img tag for debugging */}
-                <img
-                  src={getImageUrl(photo)}
-                  alt={`Fallback ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover opacity-0"
-                  onError={(e) => {
-                    console.error('Fallback img failed to load:', e);
-                  }}
-                  onLoad={() => {
-                    console.log('Fallback img loaded successfully:', getImageUrl(photo));
-                  }}
-                />
-                <div className="absolute top-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                
+                {/* Action buttons overlay */}
+                <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   <a
                     href={getViewUrl(photo)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
-                    title="View in Google Drive"
+                    className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-colors"
+                    title="View in new tab"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <ExternalLink className="h-4 w-4 text-gray-600" />
                   </a>
                   <button 
                     onClick={(e) => { e.stopPropagation(); removeMedia(index); }}
-                    className="bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                    className="bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-red-50 hover:text-red-600 transition-colors"
                     title="Delete photo"
                   >
                     <X className="h-4 w-4 text-gray-600" />
