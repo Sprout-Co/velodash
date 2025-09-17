@@ -343,9 +343,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
                 }}
               >
                 {/* Temporary debug info */}
-                <div className="absolute top-0 left-0 bg-black bg-opacity-75 text-white text-xs p-1 z-10">
-                  {photo.name}
-                </div>
+           
                 <img
                   src={getImageUrl(photo)}
                   alt={`Vehicle photo ${index + 1}`}
@@ -389,7 +387,6 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
             <div className="col-span-full text-center py-8 text-gray-500">
               <ImageIcon className="h-12 w-12 mx-auto mb-2" />
               <p>No photos uploaded yet</p>
-              <p className="text-xs mt-2">Debug: localMedia.photos = {JSON.stringify(localMedia.photos)}</p>
             </div>
           )}
         </div>
