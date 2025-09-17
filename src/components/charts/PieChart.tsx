@@ -73,8 +73,9 @@ export function PieChart({
                   d={pathData}
                   fill={item.color || `hsl(${index * 40}, 70%, 50%)`}
                   className="pie-chart__slice"
-                  title={`${item.label}: ${formatValue(item.value)} (${(percentage * 100).toFixed(1)}%)`}
-                />
+                >
+                  <title>{`${item.label}: ${formatValue(item.value)} (${(percentage * 100).toFixed(1)}%)`}</title>
+                </path>
               );
             })}
           </svg>

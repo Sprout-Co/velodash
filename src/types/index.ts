@@ -237,6 +237,7 @@ export interface CostFormData {
   description: string;
   amount: number;
   currency: Currency;
+  exchangeRate?: number;
 }
 
 export interface SaleFormData {

@@ -4,6 +4,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { storageService } from '@/lib/storage';
 import { Upload, CheckCircle, AlertCircle, Loader2, X } from 'lucide-react';
 
@@ -39,7 +40,7 @@ export default function ImageUploadTest() {
         'photos'
       );
 
-      setUploadedUrls(prev => [...prev, ...urls]);
+      setUploadedUrls(prev => [...prev, ...urls.map(file => file.url)]);
       setSuccess(`Successfully uploaded ${urls.length} file(s)`);
       
     } catch (err) {
@@ -107,9 +108,11 @@ export default function ImageUploadTest() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {uploadedUrls.map((url, index) => (
               <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
-                <img
+                <Image
                   src={url}
                   alt={`Uploaded image ${index + 1}`}
+                  width={300}
+                  height={300}
                   className="w-full h-full object-cover"
                 />
                 <button

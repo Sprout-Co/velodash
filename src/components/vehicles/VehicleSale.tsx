@@ -119,7 +119,7 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
               <input
                 type="number"
                 value={formData.listingPrice}
-                onChange={(e) => handleInputChange('listingPrice', e.target.value ? parseFloat(e.target.value) : undefined)}
+                onChange={(e) => handleInputChange('listingPrice', e.target.value ? (isNaN(parseFloat(e.target.value)) ? undefined : parseFloat(e.target.value)) : undefined)}
                 className="vehicle-sale__form-input"
                 placeholder="Enter listing price"
                 min="0"
@@ -135,7 +135,7 @@ export default function VehicleSale({ saleDetails, vehicleId, onSaleUpdate }: Ve
               <input
                 type="number"
                 value={formData.finalSalePrice}
-                onChange={(e) => handleInputChange('finalSalePrice', e.target.value ? parseFloat(e.target.value) : undefined)}
+                onChange={(e) => handleInputChange('finalSalePrice', e.target.value ? (isNaN(parseFloat(e.target.value)) ? undefined : parseFloat(e.target.value)) : undefined)}
                 className="vehicle-sale__form-input"
                 placeholder="Enter final sale price"
                 min="0"
