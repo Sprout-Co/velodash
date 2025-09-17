@@ -40,7 +40,7 @@ export default function ImageUploadTest() {
         'photos'
       );
 
-      setUploadedUrls(prev => [...prev, ...urls]);
+      setUploadedUrls(prev => [...prev, ...urls.map(file => file.url)]);
       setSuccess(`Successfully uploaded ${urls.length} file(s)`);
       
     } catch (err) {
