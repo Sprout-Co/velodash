@@ -21,11 +21,15 @@ const navigation = [
   { name: 'Users', href: '/users', icon: UserGroupIcon },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+}
+
+export function Sidebar({ isOpen = false }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isOpen ? 'sidebar--open' : ''}`}>
       <div className="sidebar__brand">
         <h2 className="sidebar__title">VelocityDash</h2>
         <p className="sidebar__subtitle">Vehicle Management</p>
