@@ -5,11 +5,9 @@ import {
   signInWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
-  User,
-  createUserWithEmailAndPassword,
-  updateProfile
+  User
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from './firebase';
 import { AuthUser, LoginCredentials } from '@/types';
 
@@ -44,37 +42,6 @@ export const authService = {
     }
   },
 
-  // Create admin user (for initial setup)
-  async createAdminUser(email: string, password: string, displayName: string): Promise<AuthUser> {
-    try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(result.user, { displayName });
-      
-      // Create user document in Firestore
-      await setDoc(doc(db, 'users', result.user.uid), {
-        email: result.user.email,
-        displayName,
-        role: 'admin',
-        createdAt: new Date(),
-        lastLoginAt: new Date()
-      });
-
-      return {
-        uid: result.user.uid,
-        email: result.user.email,
-        displayName: result.user.displayName,
-        role: 'admin'
-      };
-    } catch (error: any) {
-      console.error('Error creating admin user:', error);
-      if (error.code === 'auth/email-already-in-use') {
-        throw new Error('Email already in use');
-      } else if (error.code === 'auth/weak-password') {
-        throw new Error('Password is too weak');
-      }
-      throw new Error('Failed to create admin user');
-    }
-  },
 
   // Sign out
   async signOut(): Promise<void> {

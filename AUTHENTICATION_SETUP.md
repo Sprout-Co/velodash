@@ -1,6 +1,6 @@
 # Firebase Authentication Setup Guide
 
-This guide will help you set up Firebase Authentication for the VelocityDash admin login system.
+This guide will help you set up Firebase Authentication for the VelocityDash internal admin system.
 
 ## Prerequisites
 
@@ -62,17 +62,27 @@ service cloud.firestore {
 }
 ```
 
-### 4. Creating the First Admin User
+### 4. Creating Admin Users (Internal Only)
 
-1. Start your development server: `npm run dev`
-2. Navigate to `/setup` in your browser
-3. Fill out the admin setup form with:
-   - Full Name
-   - Email Address
-   - Password (minimum 6 characters)
-   - Confirm Password
-4. Click "Create Admin Account"
-5. Once created, you can sign in at the login page
+Since this is internal software, admin users must be created manually through the Firebase Console:
+
+1. Go to the [Firebase Console](https://console.firebase.google.com/)
+2. Navigate to **Authentication** > **Users**
+3. Click **Add user**
+4. Enter the admin's email and password
+5. Click **Add user**
+6. Navigate to **Firestore Database** > **Data**
+7. Create a new document in the `users` collection with the user's UID as the document ID
+8. Add the following fields:
+   ```json
+   {
+     "email": "admin@yourcompany.com",
+     "displayName": "Admin Name",
+     "role": "admin",
+     "createdAt": "2024-01-01T00:00:00.000Z",
+     "lastLoginAt": null
+   }
+   ```
 
 ### 5. Using the Authentication System
 
@@ -104,9 +114,10 @@ service cloud.firestore {
 - Role-based authorization (admin/standard)
 - Protected routes
 - Secure logout functionality
+- No public account creation (internal only)
 
 ### User Management
-- Admin user creation
+- Manual admin user creation through Firebase Console
 - User profile storage in Firestore
 - Role assignment and management
 - Session management
@@ -117,7 +128,7 @@ service cloud.firestore {
 
 1. **"User profile not found" error**
    - Make sure the user document exists in Firestore
-   - Check that the user was created through the setup process
+   - Check that the user was created manually in Firebase Console
 
 2. **"Invalid email or password" error**
    - Verify the user exists in Firebase Authentication
@@ -147,6 +158,7 @@ service cloud.firestore {
 3. **Password Policies**: Configure strong password requirements
 4. **Rate Limiting**: Consider implementing rate limiting for login attempts
 5. **Audit Logging**: Add comprehensive audit logging for admin actions
+6. **Internal Access Only**: Ensure the application is only accessible to authorized personnel
 
 ## API Reference
 
@@ -169,9 +181,6 @@ const isAdminUser = isAdmin;
 
 ```typescript
 import { authService } from '@/lib/auth';
-
-// Create admin user (setup only)
-await authService.createAdminUser(email, password, displayName);
 
 // Sign in with email/password
 await authService.signInWithEmail({ email, password });

@@ -21,9 +21,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const unsubscribe = authService.onAuthStateChanged(async (firebaseUser: User | null) => {
       if (firebaseUser) {
-        // Get user profile from Firestore
-        const userProfile = await authService.getUserProfile(firebaseUser.uid);
-        setUser(userProfile);
+        try {
+          // Get user profile from Firestore
+          const userProfile = await authService.getUserProfile(firebaseUser.uid);
+          if (userProfile) {
+            setUser(userProfile);
+          } else {
+            // User exists in Firebase Auth but not in Firestore
+            console.log('User profile not found in Firestore');
+            setUser(null);
+          }
+        } catch (error) {
+          console.error('Error getting user profile:', error);
+          setUser(null);
+        }
       } else {
         setUser(null);
       }

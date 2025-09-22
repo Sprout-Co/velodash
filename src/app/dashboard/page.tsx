@@ -11,6 +11,14 @@ import { useDashboardData } from '@/hooks/useDashboardData';
 import { ProtectedRoute } from '@/components/auth';
 
 export default function DashboardPage() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
+  );
+}
+
+function DashboardContent() {
   const { 
     kpis, 
     funnelData, 
@@ -30,8 +38,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <ProtectedRoute>
-      <DashboardLayout>
+    <DashboardLayout>
         <div className="dashboard">
           <header className="dashboard__header">
             <div className="dashboard__header-content">
@@ -100,6 +107,5 @@ export default function DashboardPage() {
           </div>
         </div>
       </DashboardLayout>
-    </ProtectedRoute>
   );
 }
