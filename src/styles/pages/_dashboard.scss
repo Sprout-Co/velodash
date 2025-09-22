@@ -219,19 +219,19 @@
 
 .kpi-card {
   background: var(--color-card-background);
-  border-radius: 12px;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 1.75rem;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-border);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
   overflow: visible;
-  min-height: 140px;
+  min-height: 160px;
   display: flex;
   flex-direction: column;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-md);
   }
 
@@ -241,44 +241,31 @@
   }
 
   &--blue {
-    border-left: 4px solid var(--color-blue-500);
-    background-color: rgba(59, 130, 246, 0.05);
+    border-top: 4px solid var(--color-blue-500);
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.01) 100%);
   }
 
   &--green {
-    border-left: 4px solid var(--color-green-500);
-    background-color: rgba(16, 185, 129, 0.05);
+    border-top: 4px solid var(--color-green-500);
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.01) 100%);
   }
 
   &--purple {
-    border-left: 4px solid var(--color-purple-500);
-    background-color: rgba(139, 92, 246, 0.05);
+    border-top: 4px solid var(--color-purple-500);
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.05) 0%, rgba(139, 92, 246, 0.01) 100%);
   }
 
   &--emerald {
-    border-left: 4px solid var(--color-emerald-500);
-    background-color: rgba(5, 150, 105, 0.05);
-  }
-
-  &__skeleton {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    border-top: 4px solid var(--color-emerald-500);
+    background: linear-gradient(180deg, rgba(5, 150, 105, 0.05) 0%, rgba(5, 150, 105, 0.01) 100%);
   }
 
   &__skeleton-icon {
     width: 3rem;
     height: 3rem;
     background: var(--color-skeleton-shimmer);
-    border-radius: 8px;
+    border-radius: 50%;
     animation: shimmer 1.5s infinite;
-  }
-
-  &__skeleton-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
   }
 
   &__skeleton-title {
@@ -290,10 +277,11 @@
   }
 
   &__skeleton-value {
-    height: 1.5rem;
+    height: 2rem;
     background: var(--color-skeleton-shimmer);
     border-radius: 4px;
     width: 80%;
+    margin-bottom: 0.75rem;
     animation: shimmer 1.5s infinite;
   }
 
@@ -301,8 +289,15 @@
     height: 0.875rem;
     background: var(--color-skeleton-shimmer);
     border-radius: 4px;
-    width: 40%;
+    width: 50%;
     animation: shimmer 1.5s infinite;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
   }
 
   &__icon {
@@ -311,13 +306,21 @@
     justify-content: center;
     width: 3rem;
     height: 3rem;
-    border-radius: 8px;
+    border-radius: 50%;
     background: var(--color-background);
-    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
   }
 
   &__emoji {
     font-size: 1.5rem;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    margin: 0;
+    line-height: 1.2;
   }
 
   &__content {
@@ -327,21 +330,12 @@
     justify-content: space-between;
   }
 
-  &__title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-    margin: 0 0 0.5rem 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
   &__value {
-    font-size: 1.5rem !important;
+    font-size: 2rem !important;
     font-weight: 700;
     color: var(--color-text-primary);
-    margin: 0 0 0.5rem 0;
-    line-height: 1.2;
+    margin: 0 0 0.75rem 0;
+    line-height: 1.1;
     word-break: break-word;
     overflow-wrap: break-word;
   }

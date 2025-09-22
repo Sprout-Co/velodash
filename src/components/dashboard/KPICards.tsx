@@ -12,8 +12,8 @@ interface KPICardsProps {
 const kpiConfig = [
   {
     key: 'liveInventoryCount' as keyof DashboardKPIs,
-    title: 'Live Inventory Count',
-    description: 'Vehicles in pipeline',
+    title: 'Live Inventory',
+    description: 'Active vehicles in pipeline',
     icon: '🚗',
     color: 'blue',
     format: (value: number) => value.toString(),
@@ -28,7 +28,7 @@ const kpiConfig = [
   },
   {
     key: 'readyForSaleValue' as keyof DashboardKPIs,
-    title: 'Ready for Sale Value',
+    title: 'Ready for Sale',
     description: 'Total listing value',
     icon: '🏷️',
     color: 'purple',
@@ -36,10 +36,10 @@ const kpiConfig = [
   },
   {
     key: 'netProfit30Days' as keyof DashboardKPIs,
-    title: 'Net Profit (30 Days)',
-    description: 'Profit from last 30 days',
-    icon: '💰',
-    color: 'green',
+    title: '30-Day Profit',
+    description: 'Net profit this month',
+    icon: '📈',
+    color: 'emerald',
     format: (value: number) => formatCurrency(value, 'NGN'),
   },
 ];
@@ -50,13 +50,13 @@ export function KPICards({ data, isLoading }: KPICardsProps) {
       <div className="kpi-cards">
         {kpiConfig.map((kpi) => (
           <div key={kpi.key} className="kpi-card kpi-card--loading">
-            <div className="kpi-card__skeleton">
+            <div className="kpi-card__header">
               <div className="kpi-card__skeleton-icon"></div>
-              <div className="kpi-card__skeleton-content">
-                <div className="kpi-card__skeleton-title"></div>
-                <div className="kpi-card__skeleton-value"></div>
-                <div className="kpi-card__skeleton-description"></div>
-              </div>
+              <div className="kpi-card__skeleton-title"></div>
+            </div>
+            <div className="kpi-card__content">
+              <div className="kpi-card__skeleton-value"></div>
+              <div className="kpi-card__skeleton-description"></div>
             </div>
           </div>
         ))}
@@ -70,11 +70,13 @@ export function KPICards({ data, isLoading }: KPICardsProps) {
         const value = data[kpi.key];
         return (
           <div key={kpi.key} className={`kpi-card kpi-card--${kpi.color}`}>
-            <div className="kpi-card__icon">
-              <span className="kpi-card__emoji">{kpi.icon}</span>
+            <div className="kpi-card__header">
+              <div className="kpi-card__icon">
+                <span className="kpi-card__emoji">{kpi.icon}</span>
+              </div>
+              <h3 className="kpi-card__title">{kpi.title}</h3>
             </div>
             <div className="kpi-card__content">
-              <h3 className="kpi-card__title">{kpi.title}</h3>
               <div className="kpi-card__value">
                 {kpi.format(value)}
               </div>
