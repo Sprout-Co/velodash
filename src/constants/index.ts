@@ -30,6 +30,7 @@ export const COST_CATEGORIES = [
   { value: 'detailing', label: 'Detailing' },
   { value: 'marketing', label: 'Marketing' },
   { value: 'overhead-allocation', label: 'Overhead Allocation' },
+  { value: 'others', label: 'Others' },
 ] as const;
 
 // Currency Options

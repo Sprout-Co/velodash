@@ -23,7 +23,8 @@ export type CostCategory =
   | 'bodywork-labor'
   | 'detailing'
   | 'marketing'
-  | 'overhead-allocation';
+  | 'overhead-allocation'
+  | 'others';
 
 export type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'NGN';
 

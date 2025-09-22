@@ -755,6 +755,43 @@
     button {
       transition: all 0.2s ease-in-out;
     }
+    // Enhanced dropdown styling
+    .absolute {
+      background-color: white !important;
+      border: 1px solid #e5e7eb !important;
+      border-radius: 8px !important;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+      overflow: hidden !important;
+      min-width: 200px !important;
+      padding: 10px;
+      
+      button {
+        color: #1f2937 !important;
+        font-weight: 500 !important;
+        transition: all 0.15s ease-in-out !important;
+        border: none !important;
+        background: transparent !important;
+        
+        &:hover {
+          background-color: #f3f4f6 !important;
+          color: #111827 !important;
+        }
+        
+        &:active {
+          background-color: #e5e7eb !important;
+        }
+        
+        &:first-child {
+          border-top-left-radius: 8px !important;
+          border-top-right-radius: 8px !important;
+        }
+        
+        &:last-child {
+          border-bottom-left-radius: 8px !important;
+          border-bottom-right-radius: 8px !important;
+        }
+      }
+    }
   }
   
   // Media Hub
