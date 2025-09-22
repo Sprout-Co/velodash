@@ -200,7 +200,8 @@
     }
 
     input,
-    select {
+    select,
+    textarea {
       padding: 8px 12px;
       border: 1px solid #d1d5db;
       border-radius: 6px;
@@ -208,6 +209,7 @@
       color: #000000;
       background-color: #ffffff;
       transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
 
       &:focus {
         outline: none;
@@ -225,6 +227,12 @@
       &::placeholder {
         color: #6b7280;
       }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
     }
 
     .error-message {
