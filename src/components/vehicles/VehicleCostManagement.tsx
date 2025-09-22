@@ -33,6 +33,7 @@ const COST_CATEGORIES: { value: CostCategory; label: string }[] = [
   { value: 'detailing', label: 'Detailing' },
   { value: 'marketing', label: 'Marketing' },
   { value: 'overhead-allocation', label: 'Overhead Allocation' },
+  { value: 'others', label: 'Others' },
 ];
 
 const CURRENCY_OPTIONS: { value: Currency; label: string }[] = [
