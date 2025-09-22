@@ -61,8 +61,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setLoading(true);
       await authService.signOut();
+      // The onAuthStateChanged listener will handle setting user to null
+      // But we'll also set it here to ensure immediate state update
       setUser(null);
     } catch (error) {
+      console.error('Logout error:', error);
       setLoading(false);
       throw error;
     } finally {

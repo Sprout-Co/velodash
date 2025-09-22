@@ -8,6 +8,7 @@ import {
   RecentActivity 
 } from '@/types';
 import { dashboardService, activityService, vehicleService } from '@/lib/firestore';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DashboardData {
   kpis: DashboardKPIs;
@@ -20,8 +21,14 @@ export function useDashboardData() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user, loading: authLoading } = useAuth();
 
   useEffect(() => {
+    // Don't fetch data if user is not authenticated or auth is still loading
+    if (authLoading || !user) {
+      setIsLoading(false);
+      return;
+    }
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
@@ -59,7 +66,7 @@ export function useDashboardData() {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [user, authLoading]);
 
   return {
     kpis: data?.kpis || {

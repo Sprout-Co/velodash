@@ -74,12 +74,21 @@ export const authService = {
       const userData = userDoc.data();
       const firebaseUser = auth.currentUser;
       
-      return {
+      console.log('AuthService - Firestore user data:', userData);
+      console.log('AuthService - Firebase user data:', {
+        email: firebaseUser?.email,
+        displayName: firebaseUser?.displayName
+      });
+      
+      const authUser = {
         uid,
-        email: firebaseUser?.email || null,
-        displayName: firebaseUser?.displayName || null,
+        email: firebaseUser?.email || userData.email || null,
+        displayName: userData.displayName || firebaseUser?.displayName || null,
         role: userData.role || 'standard'
       };
+      
+      console.log('AuthService - Final auth user:', authUser);
+      return authUser;
     } catch (error) {
       console.error('Error getting user profile:', error);
       return null;
