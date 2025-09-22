@@ -143,11 +143,7 @@ export default function VehicleDocumentVault({ documents, vehicleId, onDocuments
         <h2 className="text-xl font-semibold text-gray-800">Document Vault</h2>
         <button
           onClick={() => setShowUploadForm(!showUploadForm)}
-          className={`flex items-center text-sm px-3 py-2 rounded-md transition-colors ${
-            showUploadForm 
-              ? 'bg-gray-200 text-gray-700 hover:bg-gray-300' 
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-          }`}
+          className="flex items-center text-sm bg-primary text-white px-3 py-2 rounded-md hover:bg-primary-dark transition-colors"
         >
           <Plus className="h-4 w-4 mr-1" />
           {showUploadForm ? 'Cancel' : 'Add Document'}
