@@ -118,6 +118,27 @@ export interface User {
   lastLoginAt?: Date | string | any; // Flexible date handling for Firestore
 }
 
+// Authentication types
+export interface AuthUser {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  role: 'admin' | 'standard';
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface AuthContextType {
+  user: AuthUser | null;
+  loading: boolean;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => Promise<void>;
+  isAdmin: boolean;
+}
+
 export interface DashboardKPIs {
   liveInventoryCount: number;
   capitalDeployed: number;
