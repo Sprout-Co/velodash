@@ -373,13 +373,13 @@ export default function VehicleCostManagement({
 
             <div className="cost-form__field">
               <label htmlFor="cost-description">Description *</label>
-              <input
-                type="text"
+              <textarea
                 id="cost-description"
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                 placeholder="Enter cost description"
                 className={formErrors.description ? 'error' : ''}
+                rows={3}
               />
               {formErrors.description && <span className="error-message">{formErrors.description}</span>}
             </div>
@@ -456,7 +456,12 @@ export default function VehicleCostManagement({
                       )}
                     </div>
                     <div className="cost-item__description">
-                      {cost.description}
+                      {cost.description.split('\n').map((line, index) => (
+                        <React.Fragment key={index}>
+                          {line}
+                          {index < cost.description.split('\n').length - 1 && <br />}
+                        </React.Fragment>
+                      ))}
                     </div>
                     <div className="cost-item__amounts">
                       <span className="cost-item__ngn">
@@ -492,7 +497,14 @@ export default function VehicleCostManagement({
                           <div className="cost-details__row cost-details__row--full">
                             <div className="cost-details__field">
                               <label>Description</label>
-                              <span className="cost-details__description">{cost.description}</span>
+                              <span className="cost-details__description">
+                                {cost.description.split('\n').map((line, index) => (
+                                  <React.Fragment key={index}>
+                                    {line}
+                                    {index < cost.description.split('\n').length - 1 && <br />}
+                                  </React.Fragment>
+                                ))}
+                              </span>
                             </div>
                           </div>
                         </div>
