@@ -59,6 +59,14 @@ export interface CloudinaryFileReference {
 // Union type for file references (supports both Google Drive and Cloudinary)
 export type FileReference = GoogleDriveFileReference | CloudinaryFileReference;
 
+export interface DocumentItem {
+  id: string;
+  file: FileReference;
+  title: string;
+  description?: string;
+  createdAt: Date | string | any;
+}
+
 export interface Vehicle {
   id: string;
   vin: string;
@@ -81,11 +89,7 @@ export interface Vehicle {
     videos: FileReference[];
   };
   documents: {
-    billOfLading?: FileReference;
-    customsDeclaration?: FileReference;
-    title?: FileReference;
-    purchaseInvoice?: FileReference;
-    repairReceipts: FileReference[];
+    items: DocumentItem[];
   };
   costs: CostEntry[];
   saleDetails?: {

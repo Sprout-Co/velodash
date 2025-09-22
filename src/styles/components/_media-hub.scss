@@ -227,6 +227,10 @@
   z-index: 1100;
   padding: 24px;
   backdrop-filter: blur(2px);
+  
+  * {
+    color: #ffffff !important;
+  }
 }
 
 .image-preview-modal {
@@ -247,6 +251,10 @@
   gap: 12px;
   padding: 12px 16px;
   background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0));
+  
+  * {
+    color: #ffffff !important;
+  }
 }
 
 .image-preview-overlay .image-preview-modal .image-preview-title {
@@ -254,6 +262,59 @@
   font-weight: 600;
   font-size: 14px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.image-preview-filename {
+  font-weight: 600;
+  font-size: 14px;
+  color: #ffffff !important;
+}
+
+.image-preview-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.image-preview-id-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-weight: 500;
+}
+
+.image-preview-overlay .image-preview-modal .image-preview-id-value,
+.image-preview-overlay .image-preview-modal .image-preview-title .image-preview-id-value {
+  color: #ffffff !important;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.image-preview-overlay .image-preview-modal .image-preview-copy-icon {
+  width: 12px;
+  height: 12px;
+  color: #ffffff !important;
+  flex-shrink: 0;
 }
 
 .image-preview-actions {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Vehicle, FileReference } from '@/types';
-import { Upload, X, ImageIcon, Film, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
+import { Upload, X, ImageIcon, Film, Loader2, AlertCircle, ExternalLink, Copy, Check } from 'lucide-react';
 import Image from 'next/image';
 import { storageService } from '@/lib/storage';
 // Removed generateThumbnail import as Cloudinary handles thumbnails automatically
@@ -24,6 +24,7 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
   });
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<FileReference | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Sync localMedia when media prop changes
   useEffect(() => {
@@ -68,6 +69,17 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
     } else {
       // Google Drive file reference
       return file.webContentLink;
+    }
+  };
+
+  // Handle copying Cloudinary ID to clipboard
+  const handleCopyId = async (publicId: string) => {
+    try {
+      await navigator.clipboard.writeText(publicId);
+      setCopiedId(publicId);
+      setTimeout(() => setCopiedId(null), 2000); // Reset after 2 seconds
+    } catch (error) {
+      console.error('Failed to copy ID:', error);
     }
   };
 
@@ -432,7 +444,27 @@ export default function VehicleMediaHub({ media, vehicleId, onMediaUpdate }: Veh
         >
           <div className="image-preview-modal">
             <div className="image-preview-header">
-              <div className="image-preview-title">{('name' in selectedPhoto && selectedPhoto.name) ? selectedPhoto.name : 'Preview'}</div>
+              <div className="image-preview-title">
+                <div className="image-preview-filename" style={{ color: '#ffffff !important', WebkitTextFillColor: '#ffffff' }}>{('name' in selectedPhoto && selectedPhoto.name) ? selectedPhoto.name : 'Preview'}</div>
+                {'publicId' in selectedPhoto && selectedPhoto.publicId && (
+                  <div className="image-preview-id">
+                    <span className="image-preview-id-label" style={{ color: '#ffffff !important', WebkitTextFillColor: '#ffffff' }}>Cloudinary ID:</span>
+                    <span 
+                      className="image-preview-id-value" 
+                      onClick={() => handleCopyId(selectedPhoto.publicId)}
+                      title="Click to copy"
+                      style={{ color: '#ffffff !important', WebkitTextFillColor: '#ffffff' }}
+                    >
+                      {selectedPhoto.publicId.split('/').pop()}
+                      {copiedId === selectedPhoto.publicId ? (
+                        <Check className="image-preview-copy-icon" style={{ color: '#ffffff !important' }} />
+                      ) : (
+                        <Copy className="image-preview-copy-icon" style={{ color: '#ffffff !important' }} />
+                      )}
+                    </span>
+                  </div>
+                )}
+              </div>
               <div className="image-preview-actions">
                 <a
                   href={getViewUrl(selectedPhoto)}
